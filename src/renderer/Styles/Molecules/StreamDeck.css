@@ -1,0 +1,73 @@
+.deck {
+  color: black;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+  border-radius: 7px;
+  background-color: #C0D9E2;
+  max-width: fit-content;
+}
+
+.stream-deck-btn {
+    width: 100px;
+    height: 40px;
+    margin-left: 5px;
+    margin-right: 5px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  box-shadow: gray 2px 2px 0px 0px;
+  cursor: pointer;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
+}
+
+.stream-deck-btn:active{
+box-shadow: 0px 0px 0px 0px;
+}
+
+.stream-deck-btn-wrapper {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+.stream-deck-btn-start {
+  background-color: red;
+}
+
+.stream-deck-btn-stop {
+  background-color: black;
+}
+
+.stream-deck-btn-stats {
+  background-color: #e6e6e6;
+  font-size: 14px;
+  margin-right: 10px;
+  color: black;
+}
+
+.circle {
+  height: 15px;
+  width: 15px;
+  border-radius: 100px;
+  background-color: white;
+  margin-right: 10px;
+}
+
+.square {
+  height: 15px;
+  width: 15px;
+  background-color: white;
+  margin-right: 10px;
+}

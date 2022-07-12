@@ -1,0 +1,13 @@
+.Scoreboard,
+.soccer-board-middle {
+    background-color: #F7F0F3;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.soccer-board-middle {
+    flex-direction: column;
+    align-items: center;
+}

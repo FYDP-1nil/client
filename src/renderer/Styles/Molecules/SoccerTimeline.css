@@ -1,0 +1,33 @@
+.timeline {
+    background-color: white;
+    border-radius: 8px;
+    height: 330px;
+    width: 100%;
+    box-shadow: 0 0 2px 0 rgba(48, 48, 48, 0.1), 0 4px 4px 0 rgba(48, 48, 48, 0.1);
+}
+
+.timeline-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 30px;
+    color: darkblue;
+    font-weight: bold;
+}
+
+.timeline-info,
+.lineup-info {
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 30px;
+    color: darkblue;
+    font-weight: bold; */
+    width: auto;
+    height: 84%;
+    padding: 10px;
+    border-radius: 0px 0px 8px 8px;
+    background: #b9ceb526;
+}

@@ -1,0 +1,89 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+.screen {
+  background: linear-gradient(
+    200.96deg,
+    #1bcbc5 -29.09%,
+    #1bb9cb 51.77%,
+    #52aba8 129.35%
+  );
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.logo {
+  max-width: 128px;
+  position: relative;
+  z-index: 10;
+}
+
+button {
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  appearance: none;
+  font-size: 1.3rem;
+  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
+    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+  transition: all ease-in 0.1s;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button:hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.textbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 170px;
+  justify-content: space-evenly;
+}
+
+.textbox {
+  height: 15px;
+  padding: 10px;
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 6px 6px 0px 0px;
+}
+
+.textbox:focus {
+  box-shadow: 0px 0px 0px 0px;
+}
+
+.btn {
+  width: 100px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  color: white;
+}
+
+.btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.login-btn {
+  background-color: green;
+}
+
+.signup-btn {
+  background-color: #78d51a;
+}
+
+a {
+  text-decoration: none;
+}

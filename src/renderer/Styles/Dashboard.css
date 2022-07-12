@@ -1,0 +1,64 @@
+.dashboard {
+    width: auto;
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.dashboard .title {
+    position: absolute;
+    top: 0;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.dashboard button {
+    font-size: 20px;
+    text-transform: uppercase;
+    max-width: 130px;
+    min-height: 57px;
+    margin: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    background: cadetblue;
+    color: white;
+    align-items: center;
+}
+
+.dashboard button:active {
+    transform: scale(0.85);
+}
+
+.dashboard button.start-stream-btn:hover {
+    background: aquamarine;
+    color: brown;
+}
+
+.dashboard button.settings-btn:hover {
+    background: aquamarine;
+    color: brown;
+}
+
+.dashboard-btn-wrapper {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 50px;
+}
+
+.blur > *:not(#GameOptions) {
+    filter: blur(1.5rem);
+    pointer-events:none;
+}
+
+#GameOptions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}

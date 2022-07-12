@@ -1,0 +1,57 @@
+.game-options {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  background-color: silver;
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  z-index: 100;
+}
+.game-options-close {
+    position: absolute;
+    top: 6px;
+    left: 520px;
+    font-size: 20px;
+    color: black;
+}
+.game-options-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: inherit;
+  justify-content: space-around;
+}
+.basketball-btn,
+.soccer-btn,
+.cricket-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: normal;
+}
+.basketball-btn:active,
+.soccer-btn:active,
+.cricket-btn:active {
+  transform: scale(0.85);
+}
+
+.game-options .btn {
+    width: 200px;
+    height: 10px; 
+    margin-left: 0px;
+    font-size: 13px;
+}
+
+.game-options .create-btn {
+    background-color: red;
+}
+
+.game-options .join-btn {
+    background-color: darkgreen;
+}
