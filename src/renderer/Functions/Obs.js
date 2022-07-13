@@ -150,9 +150,8 @@ export const obs = new OBSWebSocket();
 //     }
 
 export default async function runOBSMethod(method, param = {}) {
-  obs
+  return obs
     .call(method, param)
-    .then((data) => console.log(data))
     .catch((err) => console.log(err, 'NO SOURCES'));
 }
 

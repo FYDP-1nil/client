@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+      div {
+        animation-name: goalpost;
+        animation-duration: 1s;
+        animation-iteration-count:infinite;
+        animation-direction: alternate;
+      }
+
+      body {
+        animation-name: bganimate;
+        animation-duration: 1s;
+        animation-iteration-count:infinite;
+        animation-direction: alternate;
+      }
+
+      p {
+        animation-name: textanimate;
+        animation-duration: 1s;
+        animation-iteration-count:infinite;
+        animation-direction: alternate;
+      }
+
+      @keyframes goalpost {
+        from {
+          background-color: black;
+        }
+        to {
+          background-color: yellow;
+        }
+      }
+
+      @keyframes bganimate {
+        from {
+          background-color: aquamarine;
+        }
+        to {
+          background-color: black;
+        }
+      }
+
+      @keyframes textanimate {
+        from {
+          color: chocolate;
+        }
+        to {
+          color: white;
+        }
+      }
+
+
+
+    </style>
+  </head>
+  <body
+    style="
+      background-color: aquamarine;
+      height: 720px;
+      width: 1280px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
+    <p
+      style="
+        font-size: 300px;
+        font-weight: bold;
+        color: chocolate;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      "
+    >
+      GOAL
+    </p>
+    <div
+      style="
+        height: 10px;
+        position: absolute;
+        width: 968px;
+        background-color: black;
+        top: 142px;
+      "
+    ></div>
+    <div
+      style="
+        height: 355px;
+        position: absolute;
+        width: 10px;
+        background-color: black;
+        top: 142px;
+        left: 155px;
+      "
+    ></div>
+    <div
+      style="
+        height: 355px;
+        position: absolute;
+        width: 10px;
+        background-color: black;
+        top: 142px;
+        left: 1122px;
+      "
+    ></div>
+  </body>
+</html>

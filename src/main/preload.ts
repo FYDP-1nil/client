@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-
+import path from 'path';
 export type Channels = 'ipc-example';
 
 contextBridge.exposeInMainWorld('electron', {
@@ -17,5 +17,13 @@ contextBridge.exposeInMainWorld('electron', {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    sendSync(channel: Channels, args: unknown[]) {
+      return ipcRenderer.sendSync(channel, args);
+    }
   },
+  path: {
+    join(...paths: string[]){
+     return path.join(...paths);
+    }
+  }
 });

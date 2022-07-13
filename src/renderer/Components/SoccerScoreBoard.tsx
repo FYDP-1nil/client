@@ -24,13 +24,15 @@ const SoccerScoreBoard = (props) => {
   useEffect(() => {
         // obs.call('StopStream',{}).then(data=>console.log('hohh',data)).catch(()=>console.log('NO SOURCES'));
     // obs.disconnect();
-    // obs.connect();
+    // (async() => await obs.connect())();
     // obs.call('GetInputPropertiesListPropertyItems',{inputName:'TEST',propertyName:''});
     // obs.call('PressInputPropertiesButton',{inputName:'TEST',propertyName:'refreshnocache'}); //refresh
     // obs.call('GetInputList',{}).then(data=>console.log(data)).catch(()=>console.log('NO SOURCES'));
     // obs.call('SetStreamServiceSettings',{streamServiceType:'rtmp_custom',streamServiceSettings:{server:'youtube.com',key:'343434'}});
     // obs.s('RefreshBrowserSource', { sourceName: 'TEST' })
     // obs.call('PressInputPropertiesButton');
+    // obs.call('')
+    // obs.call('GetSceneList',{}).then(data=>console.log(data));
 
 }, []);
 
@@ -46,7 +48,7 @@ let navigate = useNavigate();
         <SoccerTimeline/>
       </div>
       <SoccerTeamButtons homeTeam={false} /> */}
-      <button onClick={()=>{soccer.startStream();}}>start</button>
+      <button onClick={()=>{soccer.startStream();}}>goal</button>
       <button onClick={()=>{soccer.stopStream();navigate("/dashboard", { replace: true });}}>stop</button>
     </div>
   );
