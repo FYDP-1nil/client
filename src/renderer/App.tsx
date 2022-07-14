@@ -11,9 +11,12 @@ const Home = () => {
 };
 
 const App = (props) => {
-  // useEffect(() => {
-  //   (async () => await obs.connect())();
-  // }, []);
+  useEffect(() => {
+    // (async () => {
+    //   await obs.connect();
+    //   await obs.call('SetStreamServiceSettings',{streamServiceType:'rtmp_custom',streamServiceSettings:{server:'twitch.tv',key:'live_808363638_cssKSYeC35ViMBiIT0RFRjLvTgcxEB'}}); 
+    // })();
+  }, []);
 
   const [isLoggedIn,setIsLoggedIn] = useState(false);
 

@@ -529,5 +529,5 @@ Here's the most notable changes since `v0.10.0`. Its been about a year since a r
 #### Features
 
 - **Webpack:** babel, react-hot, ...
-- **Flux:** actions, api, components, containers, stores..
+- **Flux:** actions, api, components, containers, stores?..
 - **Package:** darwin (osx), linux and win32 (windows) platform.

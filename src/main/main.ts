@@ -41,7 +41,25 @@ ipcMain.on('get-assets-dir', async (event, arg) => {
   event.returnValue = RESOURCES_PATH;
 });
 
-ipcMain.on('write-file',async (event, args) => {
+// ipcMain.on('write-file',async (event, args) => {
+//   const RESOURCES_PATH = app.isPackaged
+//   ? path.join(process.resourcesPath, `assets/${args.filename}`)
+//   : path.join(__dirname, `../../assets/${args.filename}`);
+//   // console.log(__dirname);
+
+//   var fileName = RESOURCES_PATH;
+
+  
+// var stream = fs.createWriteStream(fileName);
+
+// stream.once('open', function(fd) {
+//   stream.end(args.html);
+// });
+
+// })
+
+
+ipcMain.handle('write-file', async (event, args) => {
   const RESOURCES_PATH = app.isPackaged
   ? path.join(process.resourcesPath, `assets/${args.filename}`)
   : path.join(__dirname, `../../assets/${args.filename}`);
@@ -55,8 +73,8 @@ var stream = fs.createWriteStream(fileName);
 stream.once('open', function(fd) {
   stream.end(args.html);
 });
-
-})
+return 'done fam';
+});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

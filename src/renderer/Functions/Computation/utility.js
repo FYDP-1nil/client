@@ -1,3 +1,5 @@
+import runOBSMethod from "../Obs";
+
 export const getAssetPath = () => (
     window.electron.ipcRenderer.sendSync('get-assets-dir')
 );
@@ -10,6 +12,8 @@ export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export const writeToFile = (args) => (
-    window.electron.ipcRenderer.sendMessage('write-file',args)
+export const writeToFile = async (args) => (
+    window.electron.ipcRenderer.invoke('write-file',args).then(async(result) => {
+        await runOBSMethod('PressInputPropertiesButton',{inputName:args.inputName,propertyName:'refreshnocache'});
+      })
 );
