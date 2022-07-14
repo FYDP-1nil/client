@@ -1,7 +1,7 @@
 import runOBSMethod, { obs } from '../Obs';
 import { getAssetPath, pathJoin, sleep } from './utility';
 
-export const startStream = async () => {
+// export const startStream = async () => {
   //fetch to get stream key
   //setup scenes
   //stats html file
@@ -11,7 +11,7 @@ export const startStream = async () => {
   //foul html file
   //penalty html file
 
-  await obs.connect();
+//   await obs.connect();
   //   let defaultFlag = false;
   //   await runOBSMethod('GetSceneList').then((res) => {
   //     console.log(res);
@@ -25,11 +25,11 @@ export const startStream = async () => {
   //   runOBSMethod('GetSceneItemList',{sceneName:'game'}).then((res)=> );
 
   //   await runOBSMethod('CreateScene', { sceneName: 'game' });
-    await runOBSMethod('CreateInput', {
-      sceneName: 'game',
-      inputName: 'score',
-      inputKind: 'browser_source',
-    });
+//   await runOBSMethod('CreateInput', {
+//     sceneName: 'game',
+//     inputName: 'score',
+//     inputKind: 'browser_source',
+//   });
   //   await runOBSMethod('SetCurrentProgramScene', { sceneName: 'game' });
 
   //   await runOBSMethod('GetSceneItemId', {
@@ -62,36 +62,193 @@ export const startStream = async () => {
   //     })
   //   );
 
+//   async function goalTransition() {
+//     await runOBSMethod('SetCurrentProgramScene', { sceneName: 'goal' });
+//     await sleep(2000);
+//     await runOBSMethod('SetCurrentProgramScene', { sceneName: 'game' });
+//   }
 
-  async function goalTransition() {
-    await runOBSMethod('SetCurrentProgramScene', { sceneName: 'goal' });
-    await sleep(2000);
-    await runOBSMethod('SetCurrentProgramScene', { sceneName: 'game' });
-  }
+//   goalTransition();
+// };
 
-  goalTransition();
+export const generateGoalSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'goal' });
+
+  await runOBSMethod('CreateInput', {
+    sceneName: 'goal',
+    inputName: 'goalcard',
+    inputKind: 'browser_source',
+  });
 
   await runOBSMethod('SetInputSettings', {
-    inputName: 'score',
+    inputName: 'goalcard',
     inputSettings: {
       height: 720,
       is_local_file: true,
-      local_file: pathJoin(getAssetPath(),'/browser_source/goal.html'),
+      local_file: pathJoin(getAssetPath(), '/browser_source/soccer/goal.html'),
       width: 1280,
     },
   }).then((data) => console.log(data));
-
-  //   await runOBSMethod('StartStream');
 };
 
-export const generateStatsSource = async () => {};
+export const generateStatsSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'stats' });
 
-export const generateSubsSource = async () => {};
+  await runOBSMethod('CreateInput', {
+    sceneName: 'stats',
+    inputName: 'statscard',
+    inputKind: 'browser_source',
+  });
 
-export const generateRedCardSource = async () => {};
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'statscard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/stats.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
 
-export const generateYellowCardSource = async () => {};
+export const generateSubsSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'substitution' });
 
-export const generateFoulSource = async () => {};
+  await runOBSMethod('CreateInput', {
+    sceneName: 'substitution',
+    inputName: 'substitutioncard',
+    inputKind: 'browser_source',
+  });
 
-export const generatePenaltySource = async () => {};
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'substitutioncard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/substitution.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
+
+export const generateRedCardSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'redcard' });
+
+  await runOBSMethod('CreateInput', {
+    sceneName: 'redcard',
+    inputName: 'redcardcard',
+    inputKind: 'browser_source',
+  });
+
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'redcardcard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/red_card.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
+
+export const generateYellowCardSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'yellowcard' });
+
+  await runOBSMethod('CreateInput', {
+    sceneName: 'yellowcard',
+    inputName: 'yellowcardcard',
+    inputKind: 'browser_source',
+  });
+
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'yellowcardcard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/yellow_card.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
+
+export const generateFoulSource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'foul' });
+
+  await runOBSMethod('CreateInput', {
+    sceneName: 'foul',
+    inputName: 'foulcard',
+    inputKind: 'browser_source',
+  });
+
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'foulcard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/foul.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
+
+export const generatePenaltySource = async () => {
+  await runOBSMethod('CreateScene', { sceneName: 'penalty' });
+
+  await runOBSMethod('CreateInput', {
+    sceneName: 'penalty',
+    inputName: 'penaltycard',
+    inputKind: 'browser_source',
+  });
+
+  await runOBSMethod('SetInputSettings', {
+    inputName: 'penaltycard',
+    inputSettings: {
+      height: 720,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/penalty.html'
+      ),
+      width: 1280,
+    },
+  }).then((data) => console.log(data));
+};
+
+export const generateOffsideSource = async () => {
+    await runOBSMethod('CreateScene', { sceneName: 'offside' });
+  
+    await runOBSMethod('CreateInput', {
+      sceneName: 'offside',
+      inputName: 'offsidecard',
+      inputKind: 'browser_source',
+    });
+  
+    await runOBSMethod('SetInputSettings', {
+      inputName: 'offsidecard',
+      inputSettings: {
+        height: 720,
+        is_local_file: true,
+        local_file: pathJoin(
+          getAssetPath(),
+          '/browser_source/soccer/offside.html'
+        ),
+        width: 1280,
+      },
+    }).then((data) => console.log(data));
+  };
+  

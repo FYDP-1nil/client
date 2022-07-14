@@ -1,0 +1,43 @@
+body {
+    background-color: red;
+    height: 720px;
+    width: 1280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  animation-name: bganimate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+p {
+    font-size: 250px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation-name: textanimate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes bganimate {
+  from {
+    background-color: red;
+  }
+  to {
+    background-color: white;
+  }
+}
+
+@keyframes textanimate {
+  from {
+    color: white;
+  }
+  to {
+    color: red;
+  }
+}

@@ -1,0 +1,116 @@
+p {
+  margin: 0;
+}
+
+body {
+    background-color: black;
+    height: 720px;
+    width: 1280px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    font-size: 150px;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+    display: flex;
+    color: white;
+    flex-direction: column;
+    font-size: 150px;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p.playeroff {
+ color: red;
+}
+
+p.playeron {
+    color: green;
+   }
+
+@keyframes bounceDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  26% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes bounceUp {
+  55% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+  26% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  25% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  0% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.first-down {
+  animation-name: bounceDown;
+  animation-duration: 0.7s;
+  animation-delay: 0.2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  color: red;
+  height: 210px;
+  width: 150px;
+}
+.second-down {
+  animation-name: bounceDown;
+  animation-duration: 0.7s;
+  /* animation-delay: 0.2s; */
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  color: red;
+  height: 210px;
+  width: 150px;
+}
+
+.first-up {
+  animation-name: bounceUp;
+  animation-duration: 0.7s;
+  animation-delay: 0.2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  color: green;
+}
+.second-up {
+  animation-name: bounceUp;
+  animation-duration: 0.7s;
+  /* animation-delay: 0.2s; */
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  color: green;
+}

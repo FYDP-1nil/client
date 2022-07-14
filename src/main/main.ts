@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import fs from 'fs';
+
 
 class AppUpdater {
   constructor() {
@@ -38,6 +40,23 @@ ipcMain.on('get-assets-dir', async (event, arg) => {
   // console.log(__dirname);
   event.returnValue = RESOURCES_PATH;
 });
+
+ipcMain.on('write-file',async (event, args) => {
+  const RESOURCES_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, `assets/${args.filename}`)
+  : path.join(__dirname, `../../assets/${args.filename}`);
+  // console.log(__dirname);
+
+  var fileName = RESOURCES_PATH;
+
+  
+var stream = fs.createWriteStream(fileName);
+
+stream.once('open', function(fd) {
+  stream.end(args.html);
+});
+
+})
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

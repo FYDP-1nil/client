@@ -1,0 +1,54 @@
+body {
+    background-color: aquamarine;
+    height: 720px;
+    width: 1280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  animation-name: bganimate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+p.foul {
+    font-size: 300px;
+    font-weight: bold;
+    color: chocolate;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p.x {
+    font-size: 300px;
+    font-weight: bold;
+    color: chocolate;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+  animation-name: textanimate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes bganimate {
+  from {
+    background-color: grey;
+  }
+  to {
+    background-color: white;
+  }
+}
+
+@keyframes textanimate {
+  from {
+    color: white;
+  }
+  to {
+    color: grey;
+  }
+}
