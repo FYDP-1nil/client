@@ -1,6 +1,6 @@
 import '../../Styles/Molecules/SoccerScoreCard.css';
 
-const SoccerScoreCard = (props) => {
+const SoccerScoreCard = ({homeTeam,awayTeam}) => {
   return (
     <div className="soccer-score-container">
     <div className="soccer-score-match">
@@ -10,7 +10,7 @@ const SoccerScoreCard = (props) => {
             <div className="soccer-score-team-logo">
               <div id="soccer-score-circ"></div>
             </div>
-            <h2 style={{color:'blue'}} className="soccer-score-team-name">Team Blue</h2>
+            <h2 style={{color:'blue'}} className="soccer-score-team-name">{homeTeam}</h2>
           </div>
         </div>
         <div className="soccer-score-column">
@@ -30,7 +30,7 @@ const SoccerScoreCard = (props) => {
             <div className="soccer-score-team-logo">
               <div id="soccer-score-test"></div>
             </div>
-            <h2 style={{color:'red'}} className="soccer-score-team-name">Team Red</h2>
+            <h2 style={{color:'red'}} className="soccer-score-team-name">{awayTeam}</h2>
           </div>
         </div>
       </div>

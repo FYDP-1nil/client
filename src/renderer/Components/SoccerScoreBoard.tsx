@@ -11,45 +11,34 @@ import SoccerScoreCard from './Molecules/SoccerScoreCard';
 import SoccerTimeline from './Molecules/SoccerTimeline';
 import * as soccer from '../Functions/Computation/Soccer.js';
 
-const ttt = () => {
-  let scene = Math.round(Math.random()) ? 'Scene' : 'Scene2';
-  runOBSMethod('SetCurrentScene', {
-    'scene-name': scene,
-  });
-};
+// const ttt = () => {
+//   let scene = Math.round(Math.random()) ? 'Scene' : 'Scene2';
+//   runOBSMethod('SetCurrentScene', {
+//     'scene-name': scene,
+//   });
+// };
 
-const uuu = () => runOBSMethod('RefreshBrowserSource', { sourceName: 'TEST' });
+// const uuu = () => runOBSMethod('RefreshBrowserSource', { sourceName: 'TEST' });
 
 const SoccerScoreBoard = (props) => {
-  useEffect(() => {
-        // obs.call('StopStream',{}).then(data=>console.log('hohh',data)).catch(()=>console.log('NO SOURCES'));
-    // obs.disconnect();
-    // (async() => await obs.connect())();
-    // obs.call('GetInputPropertiesListPropertyItems',{inputName:'TEST',propertyName:''});
-    // obs.call('PressInputPropertiesButton',{inputName:'TEST',propertyName:'refreshnocache'}); //refresh
-    // obs.call('GetInputList',{}).then(data=>console.log(data)).catch(()=>console.log('NO SOURCES'));
-    // obs.call('SetStreamServiceSettings',{streamServiceType:'rtmp_custom',streamServiceSettings:{server:'youtube.com',key:'343434'}});
-    // obs.s('RefreshBrowserSource', { sourceName: 'TEST' })
-    // obs.call('PressInputPropertiesButton');
-    // obs.call('')
-    // obs.call('GetSceneList',{}).then(data=>console.log(data));
+//   useEffect(() => {
 
-}, []);
+// }, []);
 
-let navigate = useNavigate();
+// let navigate = useNavigate();
 
   return (
     <div className="Scoreboard">
-      {/* <SoccerTeamButtons homeTeam={true} />
+      <SoccerTeamButtons isHomeTeam={true} homeTeam={`kiii`} awayTeam={`jjj`} />
       <div className='soccer-board-middle'>
-        <SoccerScoreCard />
+        <SoccerScoreCard homeTeam={`kiii`} awayTeam={`jjj`} />
         <SoccerGameButtons />
         <StreamDeck />
         <SoccerTimeline/>
       </div>
-      <SoccerTeamButtons homeTeam={false} /> */}
-      <button onClick={()=>{soccer.startStream();}}>goal</button>
-      <button onClick={()=>{soccer.stopStream();navigate("/dashboard", { replace: true });}}>stop</button>
+      <SoccerTeamButtons isHomeTeam={false} homeTeam={`kiii`} awayTeam={`jjj`} />
+      {/* <button onClick={()=>{soccer.startStream();}}>goal</button>
+      <button onClick={()=>{soccer.stopStream();navigate("/dashboard", { replace: true });}}>stop</button> */}
     </div>
   );
 };

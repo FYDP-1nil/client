@@ -95,6 +95,7 @@
 .foul-btn-wrapper {
   display: flex;
   flex-direction: row;
+  cursor: pointer;
 }
 .foul-input-wrapper,
 .shot-input-wrapper,
@@ -155,6 +156,7 @@
   width: 20px;
   height: 30px;
   border: 2px solid black;
+  cursor: pointer;
 }
 .yellow-card-btn-wrapper {
   display: flex;
@@ -178,6 +180,7 @@
   width: 20px;
   height: 30px;
   border: 2px solid black;
+  cursor: pointer;
 }
 .red-card-btn-wrapper {
   display: flex;
@@ -220,6 +223,7 @@
 }
 .substitution-btn {
   font-size: 30px;
+  cursor: pointer;
   /* color: darkblue; */
 }
 .substitution-btn-wrapper {

@@ -27,7 +27,7 @@ export const writeScoreCard = async (args) => {
 
 export const writeRedCard = async (args) => {
   await writeToFile({
-    html: `<!DOCTYPE html><html lang="en"> <head> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <meta http-equiv="X-UA-Compatible" content="ie=edge"/> <link rel="stylesheet" type="text/css" href="browser_source/soccer/red_card.css"> </head> <body> <div> <p>RED CARD</p><p class="playername">${args.player}</p></div></body></html>`,
+    html: `<!DOCTYPE html><html lang="en"> <head> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <meta http-equiv="X-UA-Compatible" content="ie=edge"/> <link rel="stylesheet" type="text/css" href="red_card.css"> </head> <body> <div> <p>RED CARD</p><p class="playername">${args.player}</p></div></body></html>`,
     filename: 'browser_source/soccer/red_card.html',
     inputName: 'redcardcard',
   });
@@ -35,7 +35,7 @@ export const writeRedCard = async (args) => {
 
 export const writeYellowCard = async (args) => {
   await writeToFile({
-    html: `<!DOCTYPE html><html lang="en"> <head> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <meta http-equiv="X-UA-Compatible" content="ie=edge"/> <link rel="stylesheet" type="text/css" href="browser_source/soccer/yellow_card.css"> </head> <body> <div> <p>YELLOW CARD</p><p class="playername">${args.player}</p></div></body></html>`,
+    html: `<!DOCTYPE html><html lang="en"> <head> <meta charset="UTF-8"/> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <meta http-equiv="X-UA-Compatible" content="ie=edge"/> <link rel="stylesheet" type="text/css" href="yellow_card.css"> </head> <body> <div> <p>YELLOW CARD</p><p class="playername">${args.player}</p></div></body></html>`,
     filename: 'browser_source/soccer/yellow_card.html',
     inputName: 'yellowcardcard',
   });

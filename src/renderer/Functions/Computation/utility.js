@@ -1,4 +1,4 @@
-import runOBSMethod from "../Obs";
+import runOBSMethod, { obs } from "../Obs";
 
 export const getAssetPath = () => (
     window.electron.ipcRenderer.sendSync('get-assets-dir')

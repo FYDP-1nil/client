@@ -1,6 +1,6 @@
 import { MemoryRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { obs } from './Functions/Obs';
+import runOBSMethod, { obs } from './Functions/Obs';
 import LoginScreen from './Components/LoginScreen';
 import Dashboard from './Components/Dashboard';
 import SoccerScoreBoard from './Components/SoccerScoreBoard';
@@ -14,8 +14,31 @@ const App = (props) => {
   useEffect(() => {
     // (async () => {
     //   await obs.connect();
-    //   await obs.call('SetStreamServiceSettings',{streamServiceType:'rtmp_custom',streamServiceSettings:{server:'twitch.tv',key:'live_808363638_cssKSYeC35ViMBiIT0RFRjLvTgcxEB'}}); 
-    // })();
+    //   let inputList = await runOBSMethod('GetInputList');
+
+    //   let results = inputList?.inputs.map((input) =>
+    //       runOBSMethod('RemoveInput', {
+    //           inputName: input.inputName
+    //       })
+    //   )
+    //   results = await Promise.all(results);
+  
+  
+    //   //DONE: Delete all scenes except default
+    //   let defaultFlag = false;
+    //   let sceneList = await runOBSMethod('GetSceneList');
+  
+  
+    //   let removeScenes = sceneList?.scenes.map((scene) => {
+    //           if (scene.sceneName === 'default') {
+    //               defaultFlag = true;
+    //           } else runOBSMethod('RemoveScene', {
+    //               sceneName: scene.sceneName
+    //           });
+    //   });
+  
+    //   removeScenes = await Promise.all(removeScenes);
+    //   })();
   }, []);
 
   const [isLoggedIn,setIsLoggedIn] = useState(false);
