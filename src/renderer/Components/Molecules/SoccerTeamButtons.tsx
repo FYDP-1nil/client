@@ -1,5 +1,5 @@
 import '../../Styles/Molecules/SoccerTeamButtons.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   showFoul,
   showGoal,
@@ -10,8 +10,17 @@ import {
   showSubs,
   showYellowCard,
 } from 'renderer/Functions/Computation/Soccer';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'renderer/store';
+import * as homeGoalActions from 'renderer/Slice/goalHomeSlice';
+import * as awayGoalActions from 'renderer/Slice/goalAwaySlice';
 
-const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
+const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
+  const homeTeamScore = useSelector((state: RootState) => state.goalHome.value);
+  const awayTeamScore = useSelector((state: RootState) => state.goalAway.value);
+
+  const dispatch = useDispatch();
+
   const [goalPlayer, setGoalPlayer] = useState('');
   const [assistPlayer, setAssistPlayer] = useState('');
   const [shotPlayer, setShotPlayer] = useState('');
@@ -24,67 +33,114 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
   const [redPlayer, setRedPlayer] = useState('');
 
   const goal = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (goalPlayer) {
-      await showGoal({homeTeam,awayTeam,homeTeamScore:0,awayTeamScore:7,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      let homeScore = homeTeamScore + 1;
+      let awayScore = awayTeamScore + 1;
+
+      dispatch(
+        isHomeTeam ? homeGoalActions.increment() : awayGoalActions.increment()
+      );
+
+      if(homeScore >=5){
+          dispatch(homeGoalActions.reset());
+      }
+
+      await showGoal({
+        homeTeam,
+        awayTeam,
+        homeTeamScore: isHomeTeam ? homeScore : homeTeamScore,
+        awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setGoalPlayer('');
     setAssistPlayer('');
   };
 
   const shot = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (shotPlayer) {
-      await showShot({player:shotPlayer,onTarget,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      await showShot({
+        player: shotPlayer,
+        onTarget,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setShotPlayer('');
   };
 
   const subs = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (playerOn && playerOff) {
-      await showSubs({playerOn,playerOff,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      await showSubs({
+        playerOn,
+        playerOff,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setPlayerOff('');
     setPlayerOn('');
   };
 
   const foul = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (foulPlayer) {
-      await showFoul({player:foulPlayer,reason:foulReason,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      await showFoul({
+        player: foulPlayer,
+        reason: foulReason,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setFoulPlayer('');
     setFoulReason('');
   };
 
   const offside = async (e) => {
-    e.preventDefault();  
-    await showOffside({time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+    e.preventDefault();
+    await showOffside({
+      time: '88',
+      eventTeam: isHomeTeam ? homeTeam : awayTeam,
+    });
     // obs.call('GetInputPropertiesListPropertyItems',{inputName:'audio',propertyName:'device_id'}).then((e)=>console.log(e));
     // obs.call('GetInputPropertiesListPropertyItems',{inputName:'audio',propertyName:'device_id'}).then((e)=>console.log(e));
     // obs.call('GetInputList').then((e)=>console.log(e));
   };
 
   const yellowcard = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (yellowPlayer) {
-      await showYellowCard({player:yellowPlayer,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      await showYellowCard({
+        player: yellowPlayer,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setYellowPlayer('');
   };
 
   const redcard = async (e) => {
-    e.preventDefault();  
+    e.preventDefault();
     if (redPlayer) {
-      await showRedCard({player:redPlayer,time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+      await showRedCard({
+        player: redPlayer,
+        time: '88',
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+      });
     }
     setRedPlayer('');
   };
 
   const penalty = async (e) => {
-    e.preventDefault();  
-    await showPenalty({time:'88',eventTeam:isHomeTeam?homeTeam:awayTeam});
+    e.preventDefault();
+    await showPenalty({
+      time: '88',
+      eventTeam: isHomeTeam ? homeTeam : awayTeam,
+    });
   };
 
   return (
@@ -94,15 +150,25 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
         style={{ flexDirection: isHomeTeam ? 'row' : 'row-reverse' }}
       >
         <div className="goal-scorer-input-wrapper">
-          <input className="player-input" placeholder="*Goal from" value={goalPlayer} onChange={e => setGoalPlayer(e.target.value)} />
-          <input className="player-input" placeholder="Assist from" value={assistPlayer} onChange={e => setAssistPlayer(e.target.value)} />
+          <input
+            className="player-input"
+            placeholder="*Goal from"
+            value={goalPlayer}
+            onChange={(e) => setGoalPlayer(e.target.value)}
+          />
+          <input
+            className="player-input"
+            placeholder="Assist from"
+            value={assistPlayer}
+            onChange={(e) => setAssistPlayer(e.target.value)}
+          />
         </div>
         <div className="counter">
           <div onClick={goal} className="counter-btn">
             <div id="plusbg" />
             <div id="plus" />
           </div>
-          <p>2</p>
+          <p>{isHomeTeam ? homeTeamScore : awayTeamScore}</p>
           <div onClick={goal} className="counter-btn">
             <div id="minusbg" />
             <div id="minus" />
@@ -116,7 +182,7 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
           <label className="on-target-cb-label">
             <input
               checked={onTarget}
-              onClick={()=>setShotOnTarget((prev)=>!prev)}
+              onChange={() => setShotOnTarget((prev) => !prev)}
               className="on-target-cb"
               type="checkbox"
               placeholder="On Target?"
@@ -128,7 +194,12 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
               <div id="plusbg" />
               <div id="plus" />
             </div>
-            <input className="player-input" placeholder="*Player" value={shotPlayer} onChange={e => setShotPlayer(e.target.value)} />
+            <input
+              className="player-input"
+              placeholder="*Player"
+              value={shotPlayer}
+              onChange={(e) => setShotPlayer(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -140,8 +211,18 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
             🔄
           </div>
           <div className="substitution-input-wrapper">
-            <input className="player-input" placeholder="*Player ON" value={playerOn} onChange={e => setPlayerOn(e.target.value)} />
-            <input className="player-input" placeholder="*Player OFF" value={playerOff} onChange={e => setPlayerOff(e.target.value)} />
+            <input
+              className="player-input"
+              placeholder="*Player ON"
+              value={playerOn}
+              onChange={(e) => setPlayerOn(e.target.value)}
+            />
+            <input
+              className="player-input"
+              placeholder="*Player OFF"
+              value={playerOff}
+              onChange={(e) => setPlayerOff(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -153,8 +234,18 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
             🆇
           </div>
           <div className="foul-input-wrapper">
-            <input className="player-input" placeholder="*Player" value={foulPlayer} onChange={e => setFoulPlayer(e.target.value)} />
-            <input className="player-input" placeholder="Reason" value={foulReason} onChange={e => setFoulReason(e.target.value)} />
+            <input
+              className="player-input"
+              placeholder="*Player"
+              value={foulPlayer}
+              onChange={(e) => setFoulPlayer(e.target.value)}
+            />
+            <input
+              className="player-input"
+              placeholder="Reason"
+              value={foulReason}
+              onChange={(e) => setFoulReason(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -167,14 +258,24 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
           <div onClick={yellowcard} className="yellow-card-btn" />
-          <input className="player-input" placeholder="*Player" value={yellowPlayer} onChange={e => setYellowPlayer(e.target.value)} />
+          <input
+            className="player-input"
+            placeholder="*Player"
+            value={yellowPlayer}
+            onChange={(e) => setYellowPlayer(e.target.value)}
+          />
         </div>
       </div>
       <div className="soccer-btn-card red-card-wrapper">
         <p>RED CARD</p>
         <div className="red-card-btn-wrapper">
           <div onClick={redcard} className="red-card-btn" />
-          <input className="player-input" placeholder="*Player" value={redPlayer} onChange={e => setRedPlayer(e.target.value)} />
+          <input
+            className="player-input"
+            placeholder="*Player"
+            value={redPlayer}
+            onChange={(e) => setRedPlayer(e.target.value)}
+          />
         </div>
       </div>
       <div onClick={penalty} className="soccer-btn-card team-btn penalty-btn">

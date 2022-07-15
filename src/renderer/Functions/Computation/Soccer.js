@@ -402,6 +402,7 @@ export const showOffside = async (args) => {
 };
 
 export const showGoal = async (args) => {
+  console.log('SCORE IS',args.homeTeamScore)
   //TODO: fetch goal
   //TODO: write to scorecard file
   await writeScoreCard(args);
