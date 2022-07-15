@@ -455,6 +455,7 @@ export const halfTime = async () => {
 };
 
 export const endGame = async () => {
+  await showStats();
   //TODO: fetch game ended?
   //TODO: Timer UI stops => 90:09 to FT
   //if(startStreaming redux true){

@@ -115,6 +115,8 @@ const SoccerTeamButtons = ({ isHomeTeam,homeTeam,awayTeam }) => {
         <div className="shot-input-wrapper">
           <label className="on-target-cb-label">
             <input
+              checked={onTarget}
+              onClick={()=>setShotOnTarget((prev)=>!prev)}
               className="on-target-cb"
               type="checkbox"
               placeholder="On Target?"
