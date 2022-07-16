@@ -1,4 +1,5 @@
 import '../../Styles/Molecules/SoccerScoreCard.css';
+import Stopwatch from './Stopwatch';
 
 const SoccerScoreCard = ({homeTeam,awayTeam}) => {
   return (
@@ -21,7 +22,7 @@ const SoccerScoreCard = ({homeTeam,awayTeam}) => {
               <span style={{color:'red'}} className="soccer-score-match-score-number">0</span>
             </div>
             <div style={{color:'green'}} className="soccer-score-match-time-lapsed">
-              72:00
+             <Stopwatch />
             </div>
           </div>
         </div>

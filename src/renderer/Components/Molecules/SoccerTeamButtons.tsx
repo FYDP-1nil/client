@@ -18,6 +18,7 @@ import * as awayGoalActions from 'renderer/Slice/goalAwaySlice';
 const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const homeTeamScore = useSelector((state: RootState) => state.goalHome.value);
   const awayTeamScore = useSelector((state: RootState) => state.goalAway.value);
+  const time = useSelector((state:RootState)=>state.game.currentMinute);
 
   const dispatch = useDispatch();
 
@@ -51,7 +52,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         awayTeam,
         homeTeamScore: isHomeTeam ? homeScore : homeTeamScore,
         awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -65,7 +66,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       await showShot({
         player: shotPlayer,
         onTarget,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -78,7 +79,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       await showSubs({
         playerOn,
         playerOff,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -92,7 +93,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       await showFoul({
         player: foulPlayer,
         reason: foulReason,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -103,7 +104,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const offside = async (e) => {
     e.preventDefault();
     await showOffside({
-      time: '88',
+      time,
       eventTeam: isHomeTeam ? homeTeam : awayTeam,
     });
     // obs.call('GetInputPropertiesListPropertyItems',{inputName:'audio',propertyName:'device_id'}).then((e)=>console.log(e));
@@ -116,7 +117,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
     if (yellowPlayer) {
       await showYellowCard({
         player: yellowPlayer,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -128,7 +129,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
     if (redPlayer) {
       await showRedCard({
         player: redPlayer,
-        time: '88',
+        time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
       });
     }
@@ -138,7 +139,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const penalty = async (e) => {
     e.preventDefault();
     await showPenalty({
-      time: '88',
+      time,
       eventTeam: isHomeTeam ? homeTeam : awayTeam,
     });
   };

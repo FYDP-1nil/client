@@ -11,35 +11,35 @@ const Home = () => {
 };
 
 const App = (props) => {
-  useEffect(() => {
-    // (async () => {
-    //   await obs.connect();
-    //   let inputList = await runOBSMethod('GetInputList');
+  // useEffect(() => {
+  //   // (async () => {
+  //   //   await obs.connect();
+  //   //   let inputList = await runOBSMethod('GetInputList');
 
-    //   let results = inputList?.inputs.map((input) =>
-    //       runOBSMethod('RemoveInput', {
-    //           inputName: input.inputName
-    //       })
-    //   )
-    //   results = await Promise.all(results);
+  //   //   let results = inputList?.inputs.map((input) =>
+  //   //       runOBSMethod('RemoveInput', {
+  //   //           inputName: input.inputName
+  //   //       })
+  //   //   )
+  //   //   results = await Promise.all(results);
   
   
-    //   //DONE: Delete all scenes except default
-    //   let defaultFlag = false;
-    //   let sceneList = await runOBSMethod('GetSceneList');
+  //   //   //DONE: Delete all scenes except default
+  //   //   let defaultFlag = false;
+  //   //   let sceneList = await runOBSMethod('GetSceneList');
   
   
-    //   let removeScenes = sceneList?.scenes.map((scene) => {
-    //           if (scene.sceneName === 'default') {
-    //               defaultFlag = true;
-    //           } else runOBSMethod('RemoveScene', {
-    //               sceneName: scene.sceneName
-    //           });
-    //   });
+  //   //   let removeScenes = sceneList?.scenes.map((scene) => {
+  //   //           if (scene.sceneName === 'default') {
+  //   //               defaultFlag = true;
+  //   //           } else runOBSMethod('RemoveScene', {
+  //   //               sceneName: scene.sceneName
+  //   //           });
+  //   //   });
   
-    //   removeScenes = await Promise.all(removeScenes);
-    //   })();
-  }, []);
+  //   //   removeScenes = await Promise.all(removeScenes);
+  //   //   })();
+  // }, []);
 
   const [isLoggedIn,setIsLoggedIn] = useState(false);
 

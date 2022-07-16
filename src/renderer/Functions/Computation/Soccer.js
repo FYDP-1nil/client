@@ -213,15 +213,6 @@ export const startStream = async () => {
 
   sleep(43);
 
-  await writeScoreCard({
-    homeTeam: 'goose',
-    awayTeam: 'm',
-    homeTeamScore: 8,
-    awayTeamScore: 9,
-  });
-
-  sleep(43);
-
   //DONE: startstream OBS call
   await runOBSMethod('StartStream').catch((data) => console.log(data));
 
@@ -278,6 +269,9 @@ export const showStats = async () => {
     inputName: 'statscard',
     propertyName: 'refreshnocache',
   });
+
+  sleep(43);
+
   //DONE: switch to stats scene
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'stats',
@@ -301,6 +295,9 @@ export const showSubs = async (args) => {
     inputName: 'substitutioncard',
     propertyName: 'refreshnocache',
   });
+
+  sleep(43);
+
   //DONE: switch to subs scene
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'substitution',
@@ -324,6 +321,9 @@ export const showRedCard = async (args) => {
     inputName: 'redcardcard',
     propertyName: 'refreshnocache',
   });
+
+  sleep(43);
+
   //DONE: switch to redcard scene
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'redcard',
@@ -347,6 +347,9 @@ export const showYellowCard = async (args) => {
     inputName: 'yellowcardcard',
     propertyName: 'refreshnocache',
   });
+
+  sleep(43);
+
   //DONE: switch to subs scene
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'yellowcard',
@@ -365,6 +368,7 @@ export const showFoul = async (args) => {
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'foul',
   });
+  
   //DONE: sleep(3000)
   await sleep(3000);
   // DONE: switch back to game

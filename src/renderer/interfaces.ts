@@ -18,7 +18,8 @@ export interface TeamsState {
 export interface GameState {
     activeGame: boolean,
     isHalfTime: boolean,
-    currentMinute: number
+    currentMinute: number,
+    isSecondHalf: boolean
 }
 
 export interface StreamState {
