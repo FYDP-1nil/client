@@ -44,6 +44,49 @@ export const generateScoreCardSource = async () => {
   );
 };
 
+export const generateScoreCardTimer = async () => {
+  await runOBSMethod('CreateInput', {
+    sceneName: 'game',
+    inputName: 'scorecardtimer',
+    inputKind: 'browser_source',
+    inputSettings: {
+      height: 90,
+      is_local_file: true,
+      local_file: pathJoin(
+        getAssetPath(),
+        '/browser_source/soccer/scoretimer.html'
+      ),
+      width: 160,
+      css: '',
+    },
+  }).then((res) =>
+    runOBSMethod('SetSceneItemTransform', {
+      sceneName: 'game',
+      sceneItemId: res?.sceneItemId,
+      sceneItemTransform: {
+        alignment: 5,
+        boundsAlignment: 0,
+        boundsHeight: 1,
+        boundsType: 'OBS_BOUNDS_NONE',
+        boundsWidth: 1,
+        cropBottom: 0,
+        cropLeft: 0,
+        cropRight: 0,
+        cropTop: 0,
+        height: 57,
+        positionX: 553,
+        positionY: 519,
+        rotation: 0,
+        scaleX: 0.6312500238418579,
+        scaleY: 0.6333333253860474,
+        sourceHeight: 90,
+        sourceWidth: 160,
+        width: 101,
+      },
+    })
+  );
+};
+
 export const generateGoalSource = async () => {
   await runOBSMethod('CreateScene', { sceneName: 'goal' });
 

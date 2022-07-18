@@ -15,6 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
+import axios from 'axios';
 
 
 class AppUpdater {
@@ -75,6 +76,12 @@ stream.once('open', function(fd) {
 });
 return 'done fam';
 });
+
+ipcMain.handle('api-call', async (_, axios_request) => {
+  const result = await axios(axios_request)
+  return { data: result.data, status: result.status }
+})
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -141,6 +148,7 @@ const createWindow = async () => {
     }
   });
 
+  
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

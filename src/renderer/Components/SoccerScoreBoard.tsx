@@ -11,19 +11,8 @@ import SoccerScoreCard from './Molecules/SoccerScoreCard';
 import SoccerTimeline from './Molecules/SoccerTimeline';
 import * as soccer from '../Functions/Computation/Soccer.js';
 
-// const ttt = () => {
-//   let scene = Math.round(Math.random()) ? 'Scene' : 'Scene2';
-//   runOBSMethod('SetCurrentScene', {
-//     'scene-name': scene,
-//   });
-// };
-
-// const uuu = () => runOBSMethod('RefreshBrowserSource', { sourceName: 'TEST' });
 
 const SoccerScoreBoard = (props) => {
-//   useEffect(() => {
-
-// }, []);
 
 // let navigate = useNavigate();
 
@@ -37,8 +26,6 @@ const SoccerScoreBoard = (props) => {
         <SoccerTimeline/>
       </div>
       <SoccerTeamButtons isHomeTeam={false} homeTeam={`kiii`} awayTeam={`jjj`} />
-      {/* <button onClick={()=>{soccer.startStream();}}>goal</button>
-      <button onClick={()=>{soccer.stopStream();navigate("/dashboard", { replace: true });}}>stop</button> */}
     </div>
   );
 };

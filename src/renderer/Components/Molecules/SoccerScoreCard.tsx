@@ -1,7 +1,13 @@
+import { useSelector } from 'react-redux';
+import { RootState } from 'renderer/store';
 import '../../Styles/Molecules/SoccerScoreCard.css';
 import Stopwatch from './Stopwatch';
 
 const SoccerScoreCard = ({homeTeam,awayTeam}) => {
+  
+  const homeTeamScore = useSelector((state:RootState)=>state.goalHome.value);
+  const awayTeamScore = useSelector((state:RootState)=>state.goalAway.value);
+  
   return (
     <div className="soccer-score-container">
     <div className="soccer-score-match">
@@ -17,9 +23,9 @@ const SoccerScoreCard = ({homeTeam,awayTeam}) => {
         <div className="soccer-score-column">
           <div className="soccer-score-match-details">
             <div className="soccer-score-match-score">
-              <span style={{color:'blue'}} className="soccer-score-match-score-number soccer-score-match-score-number--leading">2</span>
+              <span style={{color:'blue'}} className="soccer-score-match-score-number soccer-score-match-score-number--leading">{homeTeamScore}</span>
               <span className="soccer-score-match-score-divider">:</span>
-              <span style={{color:'red'}} className="soccer-score-match-score-number">0</span>
+              <span style={{color:'red'}} className="soccer-score-match-score-number">{awayTeamScore}</span>
             </div>
             <div style={{color:'green'}} className="soccer-score-match-time-lapsed">
              <Stopwatch />

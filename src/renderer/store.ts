@@ -4,6 +4,7 @@ import goalAwayReducer from './Slice/goalAwaySlice';
 import gameReducer from './Slice/gameSlice';
 import teamsReducer from './Slice/teamsSlice';
 import streamingReducer from './Slice/streamingSlice';
+import tokenReducer from './Slice/tokenSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     game: gameReducer,
     teams: teamsReducer,
     streaming: streamingReducer,
+    tokens: tokenReducer
   },
 });
 

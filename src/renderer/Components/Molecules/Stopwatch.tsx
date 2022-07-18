@@ -11,48 +11,47 @@ const Stopwatch = () => {
 
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
-//   const minute = useSelector((state:RootState)=>state.game.currentMinute);
+  const gameEnded = useSelector((state: RootState) => state.game.gameEnded);
+
   const dispatch = useDispatch();
 
 
 
   useEffect(() => {
     let interval:any;
-    if (running) {
+    if (activeGame && !isHalfTime) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1000);
         setCounter(prev=>(prev+1)%60);
       }, 1000);
-    } else if (!running) {
+    } else {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [running]);
+  }, [activeGame,isHalfTime]);
 
   useEffect(() => {
-    // if(time){
-    // console.log(time);
     if(!counter){
         dispatch(gameActions.setCurrentMinute(Math.floor((time / 60000))));
-        console.log('minute: ',Math.floor((time / 60000)));
     }
-    // }
   }, [counter]);
+
+  useEffect(() => {
+    if(isHalfTime){
+        let minuteAtHalf = Math.floor((time / 60000)) >= 45 ? 2700000 : Math.floor((time / 60000)) * 60 * 1000; 
+        setTime(minuteAtHalf);
+        console.log(minuteAtHalf);
+        setCounter(0);
+    }
+  }, [isHalfTime]);
+
 
   return (
     <div className="stopwatch">
-      {isHalfTime?<div>HT</div>:<div className="numbers">
-      {/* <div>{(((time / 60000) % 90))}:</div> */}
+      {gameEnded ? <div>FT</div> : isHalfTime?<div>HT</div>:<div className="numbers">
         <span>{("0" + Math.floor((time / 60000))).slice(-2)}:</span>
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
       </div>}
-      {/* <div className="buttons"> */}
-        {/* <button onClick={() => setRunning(true)}>Start</button> */}
-        {/* <button onClick={() => setRunning(false)}>Stop</button> */}
-        {/* <button onClick={() => setTime(0)}>Reset</button> */}
-        {/* <button onClick={() => setEve(!eve)}>EVE</button> */}
-      {/* </div> */}
-      {/* <div>{minute}</div> */}
     </div>
   );
 };

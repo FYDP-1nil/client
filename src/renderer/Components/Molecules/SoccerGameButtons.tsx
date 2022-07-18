@@ -1,28 +1,97 @@
-import { endGame, halfTime, startGame } from 'renderer/Functions/Computation/Soccer';
-import '../../Styles/Molecules/SoccerGameButtons.css'
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { generateScoreCardTimer } from 'renderer/Functions/Computation/Obs';
+import {
+  endGame,
+  halfTime,
+  startGame,
+} from 'renderer/Functions/Computation/Soccer';
+import { writeTimer } from 'renderer/Functions/Computation/SoccerTemplates';
+import { sleep } from 'renderer/Functions/Computation/utility';
+import { RootState } from 'renderer/store';
+import * as gameActions from '../../Slice/gameSlice';
+import * as goalAwayActions from '../../Slice/goalAwaySlice';
+import * as goalHomeActions from '../../Slice/goalHomeSlice';
+import * as teamActions from '../../Slice/teamsSlice';
+
+import '../../Styles/Molecules/SoccerGameButtons.css';
 const SoccerGameButtons = (props) => {
+  const dispatch = useDispatch();
+  const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
+  const activeGame = useSelector((state: RootState) => state.game.activeGame);
+  const isSecondHalf = useSelector(
+    (state: RootState) => state.game.isSecondHalf
+  );
+  const isStreaming = useSelector(
+    (state: RootState) => state.streaming.isStreaming
+  );
+  const gameId = useSelector((state: RootState) => state.game.gameId);
 
-    const start = () => {
-        startGame();
-    };
+  const navigate = useNavigate();
 
-    const half = () => {
-        halfTime();
-    };
+  const start = async () => {
+    if (!activeGame) {
+      //activegame already
+      await startGame({ period: 'first' });
+    } else if (isHalfTime) {
+      startGame({ period: 'second', isStreaming });
+      dispatch(gameActions.setHalfTime(false));
+      dispatch(gameActions.setSecondHalf(true));
+    }
+  };
 
-    const end = () => {
-        endGame();
-    };
+  const half = () => {
+    if (!isHalfTime && !isSecondHalf) {
+      halfTime();
+      dispatch(gameActions.setHalfTime(true));
+    }
+  };
+
+  const end = () => {
+    endGame();
+    if (!isStreaming) {
+      // TODO: go to dashabord
+      dispatch(gameActions.reset());
+      dispatch(teamActions.resetNames());
+      dispatch(goalAwayActions.reset());
+      dispatch(goalHomeActions.reset());
+      navigate("/dashboard", { replace: true });
+
+    } else {
+      dispatch(gameActions.setGameEnded(true));
+      dispatch(gameActions.setHalfTime(false));
+      dispatch(gameActions.setActiveGame(false));
+      dispatch(gameActions.setCurrentMinute(0));
+    }
+  };
+
+  useEffect(() => {
+    if (gameId) {
+      //gameId changes and is not blank
+      //TODO: activeGame redux dispatch
+      dispatch(gameActions.setActiveGame(true));
+      if (isStreaming) {
+       (async () => { await generateScoreCardTimer();
+        sleep(43);
+        await writeTimer({
+          gameSequence: 'First Half',
+          minute: 0,
+          startTimePrint: '00:00',
+        }); })();
+      }
+    }
+  }, [gameId]);
 
   return (
-    <div className='soccer-game-btns'>
-      <div onClick={start} className='soccer-game-btn soccer-game-btn-start'>
+    <div className="soccer-game-btns">
+      <div onClick={start} className="soccer-game-btn soccer-game-btn-start">
         <p>START GAME</p>
       </div>
-      <div onClick={half} className='soccer-game-btn soccer-game-btn-half'>
+      <div onClick={half} className="soccer-game-btn soccer-game-btn-half">
         <p>HALF TIME</p>
       </div>
-      <div onClick={end} className='soccer-game-btn soccer-game-btn-end'>
+      <div onClick={end} className="soccer-game-btn soccer-game-btn-end">
         <p>END GAME</p>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { gameSlice } from 'renderer/Slice/gameSlice';
+import { store } from 'renderer/store';
 import runOBSMethod, { obs } from '../Obs';
 import {
   generateFoulSource,
@@ -6,6 +8,7 @@ import {
   generatePenaltySource,
   generateRedCardSource,
   generateScoreCardSource,
+  generateScoreCardTimer,
   generateStatsSource,
   generateSubsSource,
   generateYellowCardSource,
@@ -15,6 +18,7 @@ import {
   writeScoreCard,
   writeStats,
   writeSubs,
+  writeTimer,
   writeYellowCard,
 } from './SoccerTemplates';
 import { getAssetPath, pathJoin, sleep, writeToFile } from './utility';
@@ -48,8 +52,8 @@ export const startStream = async () => {
       })
     );
 
-    if(results) {
-    results = await Promise.all(results);
+    if (results) {
+      results = await Promise.all(results);
     }
   }
 
@@ -68,9 +72,9 @@ export const startStream = async () => {
       }
     });
 
-    if(removeScenes){
-    removeScenes = await Promise.all(removeScenes);
-}
+    if (removeScenes) {
+      removeScenes = await Promise.all(removeScenes);
+    }
   }
 
   if (!defaultFlag)
@@ -142,7 +146,7 @@ export const startStream = async () => {
 
   // await runOBSMethod('GetInputSettings',{inputName:'redcardcard'}).then((data)=>console.log(data));
 
-  // TODO: add scorecard input to game scene
+  // DONE: add scorecard input to game scene
   await generateScoreCardSource();
 
   sleep(43);
@@ -205,11 +209,24 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //TODO: startStream:true dispatch Redux
+  //DONE: startStream:true dispatch Redux
 
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'game',
   });
+
+  sleep(43);
+
+  if(store.getState().game.activeGame){
+    await generateScoreCardTimer();
+    sleep(43);
+    await writeTimer({
+      gameSequence: 'First Half',
+      minute: store.getState().game.currentMinute,
+      startTimePrint: `${store.getState().game.currentMinute}:00`,
+      noTime: false
+    });
+  }
 
   sleep(43);
 
@@ -227,7 +244,7 @@ export const stopStream = async () => {
   //DONE: delete non-default inputs
   await runOBSMethod('StopStream').catch((e) => console.log(e));
 
-  //TODO: startStream:true dispatch Redux
+  //DONE: startStream:false dispatch Redux
 
   //DONE: delete non-default inputs
   let inputList = await runOBSMethod('GetInputList');
@@ -238,8 +255,8 @@ export const stopStream = async () => {
         inputName: input.inputName,
       })
     );
-    if(results){
-    results = await Promise.all(results);
+    if (results) {
+      results = await Promise.all(results);
     }
   }
   //DONE: delete non-default scene
@@ -287,7 +304,7 @@ export const showStats = async () => {
 export const showSubs = async (args) => {
   //TODO: fetch subs
 
-  //TODO: write to subs file
+  //DONE: write to subs file
   await writeSubs(args);
 
   //DONE: refresh subs input
@@ -313,7 +330,7 @@ export const showSubs = async (args) => {
 export const showRedCard = async (args) => {
   //TODO: fetch redcard
 
-  //TODO: write to redcard file
+  //DONE: write to redcard file
   await writeRedCard(args);
 
   //DONE: refresh redcard input
@@ -339,7 +356,7 @@ export const showRedCard = async (args) => {
 export const showYellowCard = async (args) => {
   //TODO: fetch yellowcard
 
-  //TODO: write to yellowcard file
+  //DONE: write to yellowcard file
   await writeYellowCard(args);
 
   //DONE: refresh yellowcard input
@@ -368,7 +385,7 @@ export const showFoul = async (args) => {
   await runOBSMethod('SetCurrentProgramScene', {
     sceneName: 'foul',
   });
-  
+
   //DONE: sleep(3000)
   await sleep(3000);
   // DONE: switch back to game
@@ -406,28 +423,36 @@ export const showOffside = async (args) => {
 };
 
 export const showGoal = async (args) => {
-  console.log('SCORE IS',args.homeTeamScore)
+  // console.log('SCORE IS', args.homeTeamScore);
   //TODO: fetch goal
-  //TODO: write to scorecard file
+  //DONE: write to scorecard file
   await writeScoreCard(args);
 
-  //DONE: switch to goal scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'goal',
-  });
-  //DONE: refresh scorecard input
-  await runOBSMethod('PressInputPropertiesButton', {
-    inputName: 'scorecard',
-    propertyName: 'refreshnocache',
-  });
-  //DONE: sleep(3000)
-  await sleep(2000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
+  if (args.celebrate) {
+    //DONE: switch to goal scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'goal',
+    });
+    //DONE: refresh scorecard input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+    //DONE: sleep(3000)
+    await sleep(2000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  } else {
+    //DONE: refresh scorecard input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+  }
 
-  //TODO: redux goal updates
+  //DONE: redux goal updates
 };
 
 export const showShot = async (args) => {
@@ -438,11 +463,23 @@ export const deleteGoal = async (args) => {
   //TODO: fetch goal DELETE
 };
 
-export const startGame = async () => {
-  //TODO: fetch game create ?
-  //TODO: activeGame redux dispatch
-  //if (startStreaming redux true?) {
-  //TODO: 00:00 timer.html input added to scene game on top of scoreboard
+export const startGame = async (args) => {
+  if (args.period === 'first') {
+    //TODO: fetch game create ?
+    store.dispatch(gameSlice.actions.setGameId('hoooo'));
+  } else {
+    if (store.getState().streaming.isStreaming) {
+      // await generateScoreCardTimer();
+      sleep(43);
+      await writeTimer({
+        gameSequence: 'Second Half',
+        minute: Math.min(store.getState().game.currentMinute,45),
+        startTimePrint: `${Math.min(store.getState().game.currentMinute,45)}:00`,
+        noTime: false
+      });
+    }
+    //TODO: 00:00 timer.html input added to scene game on top of scoreboard
+  }
   //TODO: start UI timer on scorecard
   //TODO: disable start game button
 };
@@ -450,19 +487,36 @@ export const startGame = async () => {
 export const halfTime = async () => {
   //TODO: Timer UI stops => 45:09 to HT
   //if (startStreaming redux true?) {
-  //TODO: Update
-  //TODO: Refresh
+  //TODO: Update scorecard/timer
+  //TODO: Refresh scorecard/timer
 
   //TODO: isHalf time dispatch true
   //DONE: showStats()
-  await showStats();
+  if (store.getState().streaming.isStreaming) {
+    await showStats();
+    await writeTimer({
+      gameSequence: 'HT',
+      minute: 0,
+      startTimePrint: '',
+      noTime: true
+    });
+  }
   //TODO: enable start game button
 };
 
 export const endGame = async () => {
-  await showStats();
   //TODO: fetch game ended?
   //TODO: Timer UI stops => 90:09 to FT
+  store.dispatch(gameSlice.actions.setGameId(''));
+  if(store.getState().streaming.isStreaming){
+    await showStats();
+    await writeTimer({
+      gameSequence: 'FT',
+      minute: 0,
+      startTimePrint: '',
+      noTime: true
+    });
+  }
   //if(startStreaming redux true){
   //TODO: timer.html stopped -> FT, refresh OBS
   //TODO: disable all buttons (except stream)

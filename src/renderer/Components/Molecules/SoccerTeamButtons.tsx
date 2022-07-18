@@ -18,7 +18,8 @@ import * as awayGoalActions from 'renderer/Slice/goalAwaySlice';
 const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const homeTeamScore = useSelector((state: RootState) => state.goalHome.value);
   const awayTeamScore = useSelector((state: RootState) => state.goalAway.value);
-  const time = useSelector((state:RootState)=>state.game.currentMinute);
+  const time = useSelector((state: RootState) => state.game.currentMinute);
+  const activeGame = useSelector((state: RootState) => state.game.activeGame);
 
   const dispatch = useDispatch();
 
@@ -43,10 +44,6 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         isHomeTeam ? homeGoalActions.increment() : awayGoalActions.increment()
       );
 
-      if(homeScore >=5){
-          dispatch(homeGoalActions.reset());
-      }
-
       await showGoal({
         homeTeam,
         awayTeam,
@@ -54,6 +51,29 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
         time,
         eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        celebrate: true,
+      });
+    }
+    setGoalPlayer('');
+    setAssistPlayer('');
+  };
+
+  const deleteGoal = async (e) => {
+    e.preventDefault();
+
+    if ((isHomeTeam && homeTeamScore) || (!isHomeTeam && awayTeamScore)) {
+      dispatch(
+        isHomeTeam ? homeGoalActions.decrement() : awayGoalActions.decrement()
+      );
+
+      await showGoal({
+        homeTeam,
+        awayTeam,
+        homeTeamScore: isHomeTeam ? homeTeamScore - 1 : homeTeamScore,
+        awayTeamScore: isHomeTeam ? awayTeamScore : awayTeamScore - 1,
+        time,
+        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        celebrate: false,
       });
     }
     setGoalPlayer('');
@@ -107,9 +127,6 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       time,
       eventTeam: isHomeTeam ? homeTeam : awayTeam,
     });
-    // obs.call('GetInputPropertiesListPropertyItems',{inputName:'audio',propertyName:'device_id'}).then((e)=>console.log(e));
-    // obs.call('GetInputPropertiesListPropertyItems',{inputName:'audio',propertyName:'device_id'}).then((e)=>console.log(e));
-    // obs.call('GetInputList').then((e)=>console.log(e));
   };
 
   const yellowcard = async (e) => {
@@ -165,12 +182,15 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
           />
         </div>
         <div className="counter">
-          <div onClick={goal} className="counter-btn">
+          <div onClick={!activeGame ? undefined : goal} className="counter-btn">
             <div id="plusbg" />
             <div id="plus" />
           </div>
           <p>{isHomeTeam ? homeTeamScore : awayTeamScore}</p>
-          <div onClick={goal} className="counter-btn">
+          <div
+            onClick={!activeGame ? undefined : deleteGoal}
+            className="counter-btn"
+          >
             <div id="minusbg" />
             <div id="minus" />
           </div>
@@ -191,7 +211,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
             <p style={{ fontWeight: 'normal' }}>On Target?</p>
           </label>
           <div className="shot-btn-wrapper">
-            <div onClick={shot} className="counter-btn">
+            <div
+              onClick={!activeGame ? undefined : shot}
+              className="counter-btn"
+            >
               <div id="plusbg" />
               <div id="plus" />
             </div>
@@ -208,7 +231,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       <div className="soccer-btn-card substitution-wrapper">
         <p>SUBSTITUTION</p>
         <div className="substitution-btn-wrapper">
-          <div onClick={subs} className="substitution-btn">
+          <div
+            onClick={!activeGame ? undefined : subs}
+            className="substitution-btn"
+          >
             🔄
           </div>
           <div className="substitution-input-wrapper">
@@ -231,7 +257,7 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       <div className="soccer-btn-card foul-wrapper">
         <p>FOUL</p>
         <div className="foul-btn-wrapper">
-          <div onClick={foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
             🆇
           </div>
           <div className="foul-input-wrapper">
@@ -251,14 +277,20 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         </div>
       </div>
 
-      <div onClick={offside} className="soccer-btn-card team-btn offside-btn">
+      <div
+        onClick={!activeGame ? undefined : offside}
+        className="soccer-btn-card team-btn offside-btn"
+      >
         <p>OFFSIDE</p>
       </div>
       <div className="soccer-btn-card yellow-card-wrapper">
         <p>YELLOW CARD</p>
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
-          <div onClick={yellowcard} className="yellow-card-btn" />
+          <div
+            onClick={!activeGame ? undefined : yellowcard}
+            className="yellow-card-btn"
+          />
           <input
             className="player-input"
             placeholder="*Player"
@@ -270,7 +302,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       <div className="soccer-btn-card red-card-wrapper">
         <p>RED CARD</p>
         <div className="red-card-btn-wrapper">
-          <div onClick={redcard} className="red-card-btn" />
+          <div
+            onClick={!activeGame ? undefined : redcard}
+            className="red-card-btn"
+          />
           <input
             className="player-input"
             placeholder="*Player"
@@ -279,7 +314,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
           />
         </div>
       </div>
-      <div onClick={penalty} className="soccer-btn-card team-btn penalty-btn">
+      <div
+        onClick={!activeGame ? undefined : penalty}
+        className="soccer-btn-card team-btn penalty-btn"
+      >
         <p>PENALTY</p>
       </div>
     </div>

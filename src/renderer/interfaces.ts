@@ -19,9 +19,17 @@ export interface GameState {
     activeGame: boolean,
     isHalfTime: boolean,
     currentMinute: number,
-    isSecondHalf: boolean
+    isSecondHalf: boolean,
+    gameEnded: boolean,
+    gameId:string
 }
 
 export interface StreamState {
     isStreaming: boolean,
+}
+
+export interface TokenState {
+  leagueValid: boolean,
+  userToken: string
+  // awayTeamName: string;
 }
