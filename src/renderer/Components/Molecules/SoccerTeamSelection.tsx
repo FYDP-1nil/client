@@ -1,10 +1,23 @@
 import { useEffect, useState } from 'react';
 import '../../Styles/Molecules/GameOptions.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { teamsSlice } from 'renderer/Slice/teamsSlice';
 
 const SoccerTeamSelection = (props) => {
 
 const navigate = useNavigate();
+const dispatch = useDispatch();
+
+const [homeTeam, setHomeTeam] = useState('');
+const [awayTeam, setAwayTeam] = useState('');
+
+const setTeams = () => {
+    if(homeTeam && awayTeam){
+        dispatch(teamsSlice.actions.assignTeamNames({homeTeamName:homeTeam,awayTeamName:awayTeam}));
+        navigate('/soccer-scoreboard');
+    }
+};
 
   return (
     <div className="game-options">
@@ -23,20 +36,20 @@ const navigate = useNavigate();
             className="textbox"
             placeholder="Home Team Name"
             type="text"
-            // value={search}
-            // onChange={searchChange}
+            value={homeTeam}
+            onChange={(e)=>setHomeTeam(e.target.value)}
           />
                     <input
             className="textbox"
             placeholder="Away Team Name"
             type="text"
-            // value={search}
-            // onChange={searchChange}
+            value={awayTeam}
+            onChange={(e)=>setAwayTeam(e.target.value)}
           />
           <div className="btn-wrapper">
-            <Link to="/soccer-scoreboard">
-              <button style={{width:'auto'}} className="btn join-btn">NEXT</button>
-            </Link>
+            {/* <Link to="/soccer-scoreboard"> */}
+              <button style={{width:'auto'}} onClick={setTeams} className="btn join-btn">NEXT</button>
+            {/* </Link> */}
           </div>
         </div>
       </div>

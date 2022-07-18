@@ -15,7 +15,10 @@ import { RootState } from 'renderer/store';
 import * as homeGoalActions from 'renderer/Slice/goalHomeSlice';
 import * as awayGoalActions from 'renderer/Slice/goalAwaySlice';
 
-const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
+const SoccerTeamButtons = ({isHomeTeam}) => {
+
+  const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
+  const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
   const homeTeamScore = useSelector((state: RootState) => state.goalHome.value);
   const awayTeamScore = useSelector((state: RootState) => state.goalAway.value);
   const time = useSelector((state: RootState) => state.game.currentMinute);
@@ -50,7 +53,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         homeTeamScore: isHomeTeam ? homeScore : homeTeamScore,
         awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
         time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+        scorer: goalPlayer,
+        assist: assistPlayer,
         celebrate: true,
       });
     }
@@ -72,9 +78,13 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
         homeTeamScore: isHomeTeam ? homeTeamScore - 1 : homeTeamScore,
         awayTeamScore: isHomeTeam ? awayTeamScore : awayTeamScore - 1,
         time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+        scorer: goalPlayer,
+        assist: assistPlayer,
         celebrate: false,
       });
+
     }
     setGoalPlayer('');
     setAssistPlayer('');
@@ -84,10 +94,10 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
     e.preventDefault();
     if (shotPlayer) {
       await showShot({
-        player: shotPlayer,
+        scorer: shotPlayer,
         onTarget,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
       });
     }
     setShotPlayer('');
@@ -113,8 +123,8 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
       await showFoul({
         player: foulPlayer,
         reason: foulReason,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
       });
     }
     setFoulPlayer('');
@@ -124,9 +134,9 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const offside = async (e) => {
     e.preventDefault();
     await showOffside({
-      time,
-      eventTeam: isHomeTeam ? homeTeam : awayTeam,
-    });
+      teamFor: isHomeTeam ? homeTeam : awayTeam,
+      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+  });
   };
 
   const yellowcard = async (e) => {
@@ -134,8 +144,8 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
     if (yellowPlayer) {
       await showYellowCard({
         player: yellowPlayer,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
       });
     }
     setYellowPlayer('');
@@ -146,8 +156,8 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
     if (redPlayer) {
       await showRedCard({
         player: redPlayer,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
+        teamFor: isHomeTeam ? homeTeam : awayTeam,
+        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
       });
     }
     setRedPlayer('');
@@ -156,13 +166,13 @@ const SoccerTeamButtons = ({ isHomeTeam, homeTeam, awayTeam }) => {
   const penalty = async (e) => {
     e.preventDefault();
     await showPenalty({
-      time,
-      eventTeam: isHomeTeam ? homeTeam : awayTeam,
-    });
+      teamFor: isHomeTeam ? homeTeam : awayTeam,
+      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+  });
   };
 
   return (
-    <div className="soccer-team-btns">
+    <div style={{opacity:activeGame?"1":"0.5"}} className="soccer-team-btns">
       <div
         className=" goal-counter-wrapper"
         style={{ flexDirection: isHomeTeam ? 'row' : 'row-reverse' }}

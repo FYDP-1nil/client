@@ -15,6 +15,7 @@ const StreamDeck = (props) => {
   const dispatch = useDispatch();
 
   const gameEnded = useSelector((state:RootState)=>state.game.gameEnded);
+  const isStreaming = useSelector((state:RootState)=>state.streaming.isStreaming);
 
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ const StreamDeck = (props) => {
   };
 
   const stop = () => {
+    if(isStreaming){
     stopStream();
     dispatch(streamingActions.setStreaming(false));
     if(gameEnded){
@@ -33,6 +35,7 @@ const StreamDeck = (props) => {
       dispatch(goalHomeActions.reset());
       navigate('/dashboard',{replace:true});
     }
+  }
   };
 
   const stats = () => {

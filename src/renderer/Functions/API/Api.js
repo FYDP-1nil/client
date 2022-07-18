@@ -1,53 +1,125 @@
 import axios from 'axios';
+import { gameSlice } from 'renderer/Slice/gameSlice';
 import { tokenSlice } from 'renderer/Slice/tokenSlice';
 import { store } from 'renderer/store';
-// import React from "react";
 
 const baseURL = 'http://127.0.0.1:5000';
 
-// export default function App() {
-//   const [post, setPost] = React.useState(null);
 
-//   React.useEffect(() => {
-//     axios.get(`${baseURL}/1`).then((response) => {
-//       setPost(response.data);
-//     });
-//   }, []);
+export const joinLeague = async(name,pass) => {
 
-// function createPost() {
-//   axios
-//     .post(baseURL, {
-//       title: "Hello World!",
-//       body: "This is a new post."
-//     })
-//     .then((response) => {
-//       setPost(response.data);
-//     });
-// }
+    let res = false;
 
-// export const joinLeague = async() => {
-//     axios.get(`${baseURL}/league/join`).then((response) => {
-//       console.log(response.data);
-//     }).catch((e)=>return e);
-// };
+    console.log(name,pass,store.getState().tokens.userToken);
 
-// export const createGame = async() => {
-//   axios.post(`${baseURL}/game/create`).then((response) => {
-//     console.log(response.data);
-//   }).catch((e)=>return e)
-// };
+    try {
+      let response = await window.electron.ipcRenderer.invoke('api-call', {
+        data: {
+          league_name: name,
+          league_password: pass,
+        },
+        method: 'POST',
+        url: `${baseURL}/league/join`,
+        headers:{
+          "Authorization" : `Bearer ${store.getState().tokens.userToken}`
+        }
+      });
+      console.log(response);
+      store.dispatch(tokenSlice.actions.verifyLeague(true));
+      res = true;
+    } catch (err) {
+      console.log(err);
+      return res;
+    }
+    return res;
 
-// export const postGameEvent = async() => {
-//   axios.post(`${baseURL}/game/events`).then((response) => {
-//     console.log(response.data);
-//   }).catch((e)=>return e)
-// };
+};
 
-// export const getStats = async(type,id) => {
-//   axios.get(`${baseURL}/game/${type}/${id}/stats`).then((response) => {
-//     console.log(response.data);
-//   }).catch((e)=>return e)
-// };
+//todo
+export const createGame = async() => {
+let res = false;
+
+try {
+  let response = await window.electron.ipcRenderer.invoke('api-call', {
+    data: {
+      home_team: store.getState().teams.homeTeamName,
+      away_team: store.getState().teams.awayTeamName,
+    },
+    method: 'POST',
+    url: `${baseURL}/game/create`,
+    headers:{
+      "Authorization" : `Bearer ${store.getState().tokens.userToken}`
+    }
+  });
+  console.log(response.data.game_id);
+  store.dispatch(gameSlice.actions.setGameId(response.data.game_id));
+  res = true;
+} catch (err) {
+  console.log(err);
+  return res;
+}
+return res;
+
+};
+
+//todo
+export const postGameEvent = async(data) => {
+
+  let res = false;
+    
+
+  // {
+  //   teamName
+  //   eventType = shot, foul, offside
+  //   gameId
+  //   time
+  //   eventOptions{
+
+  //   }
+  // }
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data,
+      method: 'POST',
+      url: `${baseURL}/game/events`,
+      headers:{
+        "Authorization" : `Bearer ${store.getState().tokens.userToken}`
+      }
+    });
+    console.log(response);
+    // store.dispatch(gameSlice.actions.setGameId(response.gameId));
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+  
+  };
+  
+//todo
+export const getStats = async(type) => {
+  let res = false;
+  
+  
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      method: 'GET',
+      url: `${baseURL}/game/${type}/${store.getState().game.gameId}/stats`,
+      // headers:{
+      //   "Authorization" : `Bearer ${store.getState().tokens.userToken}`
+      // }
+    });
+    console.log(response);
+    // store.dispatch(gameSlice.actions.setGameId(response.gameId));
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+
+};
 
 // export const createUser = async() => {
 //   axios.post(`${baseURL}/1`).then((response) => {
@@ -63,11 +135,12 @@ export const loginUser = async (user, pass) => {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
       data: {
         username: user,
-        password: pass,
+        userpassword: pass,
       },
       method: 'POST',
       url: `${baseURL}/login`,
     });
+    console.log(response.data.access_token);
     store.dispatch(tokenSlice.actions.saveJWT(response.data.access_token));
     res = true;
   } catch (err) {
@@ -75,66 +148,3 @@ export const loginUser = async (user, pass) => {
   }
   return res;
 };
-
-//   if (!post) return "No post!"
-
-//   return (
-//     <div>
-//       <h1>{post.title}</h1>
-//       <p>{post.body}</p>
-//       <button onClick={createPost}>Create Post</button>
-//     </div>
-//   );
-// }
-
-// import axios from "axios";
-// import { API } from "../actions/types";
-// import { accessDenied, apiError, apiStart, apiEnd } from "../actions/api";
-
-// const apiMiddleware = ({ dispatch }) => next => action => {
-//   next(action);
-
-//   if (action.type !== API) return;
-
-//   const {
-//     url,
-//     method,
-//     data,
-//     accessToken,
-//     onSuccess,
-//     onFailure,
-//     label,
-//     headers
-//   } = action.payload;
-
-//   const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
-
-//   // axios default configs
-//   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || "";
-//   axios.defaults.headers.common["Content-Type"]="application/json";
-//   axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
-
-//   axios
-//     .request({
-//       url,
-//       method,
-//       headers,
-//       [dataOrParams]: data
-//     })
-//     .then(({ data }) => {
-//       dispatch(onSuccess(data));
-//     })
-//     .catch(error => {
-//       dispatch(apiError(error));
-//       dispatch(onFailure(error));
-
-//       if (error.response && error.response.status === 403) {
-//         dispatch(accessDenied(window.location.pathname));
-//       }
-//     })
-//    .finally(() => {
-//       if (label) {
-//         dispatch(apiEnd(label));
-//       }
-//    });
-// };

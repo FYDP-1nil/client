@@ -49,7 +49,7 @@ const LoginScreen = (props) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <p>{error}</p>}
+        {error && <p style={{textAlign:"center"}}>{error}</p>}
         <div className="btn-wrapper">
           {/* <Link to="/dashboard"> */}
           <button onClick={login} className="btn login-btn">

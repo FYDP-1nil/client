@@ -18,14 +18,14 @@ const SoccerScoreBoard = (props) => {
 
   return (
     <div className="Scoreboard">
-      <SoccerTeamButtons isHomeTeam={true} homeTeam={`kiii`} awayTeam={`jjj`} />
+      <SoccerTeamButtons isHomeTeam={true} />
       <div className='soccer-board-middle'>
-        <SoccerScoreCard homeTeam={`kiii`} awayTeam={`jjj`} />
+        <SoccerScoreCard />
         <SoccerGameButtons />
         <StreamDeck />
         <SoccerTimeline/>
       </div>
-      <SoccerTeamButtons isHomeTeam={false} homeTeam={`kiii`} awayTeam={`jjj`} />
+      <SoccerTeamButtons isHomeTeam={false} />
     </div>
   );
 };

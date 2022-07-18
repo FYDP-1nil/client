@@ -1,13 +1,43 @@
 import { useEffect, useState } from 'react';
 import '../../Styles/Molecules/GameOptions.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SoccerTeamSelection from './SoccerTeamSelection';
 import { useSelector } from 'react-redux';
 import { RootState } from 'renderer/store';
+import { sleep } from 'renderer/Functions/Computation/utility';
+import { joinLeague } from 'renderer/Functions/API/Api';
+import Spinner from '../Utility/Spinner';
 
 const LeagueScreen = (props) => {
 
-  const validLeague = useSelector((state:RootState)=>state.tokens.leagueValid);
+  // const validLeague = useSelector((state:RootState)=>state.tokens.leagueValid);
+
+  const [validLeague, setValidateLeague] = useState(false);
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // const navigate = useNavigate();
+
+  const login = async () => {
+    if (name && password) {
+      setError('');
+      setIsLoading(true);
+      await sleep(500);
+      let response = await joinLeague(name, password);
+      if (response) {
+        setIsLoading(false);
+        setError('');
+        setValidateLeague(true);
+        // navigate('/dashboard');
+      } else {
+        setIsLoading(false);
+        setError('Wrong Credentials. Try Again');
+      }
+    }
+  };
+
 
   return validLeague ? (
     <SoccerTeamSelection
@@ -25,25 +55,26 @@ const LeagueScreen = (props) => {
       >
         x
       </div>
-      <p>JOIN YOUR LEAGUE</p>
+      <p style={{textAlign:"center",marginBottom:'20px'}}>JOIN YOUR LEAGUE</p>
       <div className="game-options-wrapper">
         <div className="textbox-wrapper">
           <input
             className="textbox"
             placeholder="League Name"
             type="text"
-            // value={search}
-            // onChange={searchChange}
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
           />
           <input
             className="textbox"
             placeholder="Password"
             type="password"
-            // value={search}
-            // onChange={searchChange}
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
           />
+          {error && <p style={{textAlign:"center",marginTop:'10px',fontWeight:"normal"}}>{error}</p>}
           <div className="btn-wrapper">
-            <button className="btn join-btn" onClick={authLeague}>JOIN</button>
+            <button className="btn join-btn" onClick={login}>{isLoading?<Spinner style={{'transform':'scale(0.4)'}} />:`JOIN`}</button>
             <button className="btn create-btn">CREATE NEW LEAGUE</button>
           </div>
         </div>

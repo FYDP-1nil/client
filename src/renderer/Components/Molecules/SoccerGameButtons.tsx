@@ -62,6 +62,7 @@ const SoccerGameButtons = (props) => {
       dispatch(gameActions.setGameEnded(true));
       dispatch(gameActions.setHalfTime(false));
       dispatch(gameActions.setActiveGame(false));
+      dispatch(gameActions.setGameId(''));
       dispatch(gameActions.setCurrentMinute(0));
     }
   };
@@ -78,6 +79,7 @@ const SoccerGameButtons = (props) => {
           gameSequence: 'First Half',
           minute: 0,
           startTimePrint: '00:00',
+          noTime: false
         }); })();
       }
     }
@@ -87,6 +89,7 @@ const SoccerGameButtons = (props) => {
     <div className="soccer-game-btns">
       <div onClick={start} className="soccer-game-btn soccer-game-btn-start">
         <p>START GAME</p>
+        {/* <p>{gameId}</p> */}
       </div>
       <div onClick={half} className="soccer-game-btn soccer-game-btn-half">
         <p>HALF TIME</p>

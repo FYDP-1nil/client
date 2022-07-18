@@ -3,8 +3,10 @@ import { RootState } from 'renderer/store';
 import '../../Styles/Molecules/SoccerScoreCard.css';
 import Stopwatch from './Stopwatch';
 
-const SoccerScoreCard = ({homeTeam,awayTeam}) => {
+const SoccerScoreCard = () => {
   
+  const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
+  const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
   const homeTeamScore = useSelector((state:RootState)=>state.goalHome.value);
   const awayTeamScore = useSelector((state:RootState)=>state.goalAway.value);
   
