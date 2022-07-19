@@ -104,15 +104,16 @@ export const getStats = async(type) => {
   
   try {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
-      method: 'GET',
+      method: 'POST',
       url: `${baseURL}/game/${type}/${store.getState().game.gameId}/stats`,
-      // headers:{
-      //   "Authorization" : `Bearer ${store.getState().tokens.userToken}`
-      // }
+      headers:{
+        "Authorization" : `Bearer ${store.getState().tokens.userToken}`
+      }
     });
     console.log(response);
     // store.dispatch(gameSlice.actions.setGameId(response.gameId));
-    res = true;
+    return response.data.stats;
+    // res = true;
   } catch (err) {
     console.log(err);
     return res;

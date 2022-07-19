@@ -1,6 +1,6 @@
 import { gameSlice } from 'renderer/Slice/gameSlice';
 import { store } from 'renderer/store';
-import { createGame, postGameEvent } from '../API/Api';
+import { createGame, getStats, postGameEvent } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
   generateFoulSource,
@@ -218,14 +218,14 @@ export const startStream = async () => {
 
   sleep(43);
 
-  if(store.getState().game.activeGame){
+  if (store.getState().game.activeGame) {
     await generateScoreCardTimer();
     sleep(43);
     await writeTimer({
       gameSequence: 'First Half',
       minute: store.getState().game.currentMinute,
       startTimePrint: `${store.getState().game.currentMinute}:00`,
-      noTime: false
+      noTime: false,
     });
   }
 
@@ -280,305 +280,292 @@ export const stopStream = async () => {
 export const showStats = async () => {
   //TODO: fetch stats
   //TODO: write to stats file
+  let stats = await getStats('soccer');
+  console.log('YO FAM UR IN SHOW STATS',stats);
   // await writeStats(null);
   if (store.getState().streaming.isStreaming) {
+    let reduxStore = store.getState();
 
+    await writeStats({
+      homeTeam: reduxStore.teams.homeTeamName,
+      awayTeam: reduxStore.teams.awayTeamName,
+      homeTeamGoals: reduxStore.goalHome.value,
+      awayTeamGoals: reduxStore.goalAway.value,
+      homeTeamShots: stats.team1.shots,
+      awayTeamShots: stats.team2.shots,
+      homeTeamShotsOnTarget: stats.team1.shots_on_target,
+      awayTeamShotsOnTarget: stats.team2.shots_on_target,
+      homeTeamFouls: stats.team1.fouls,
+      awayTeamFouls: stats.team2.fouls,
+      homeTeamYellowCards: stats.team1.yellow_cards,
+      awayTeamYellowCards: stats.team2.yellow_cards,
+      homeTeamRedCards: stats.team1.red_cards,
+      awayTeamRedCards: stats.team2.red_cards,
+      homeTeamOffsides: stats.team1.offsides,
+      awayTeamOffsides: stats.team2.offsides
+    });
 
-  let reduxStore = store.getState();
+    //DONE: refresh stats input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'statscard',
+      propertyName: 'refreshnocache',
+    });
 
-  await writeStats({
-    homeTeam: reduxStore.teams.homeTeamName,
-    awayTeam: reduxStore.teams.awayTeamName,
-    homeTeamGoals: reduxStore.goalHome,
-    awayTeamGoals: reduxStore.goalAway,
-    // homeTeamShots: 
-    // awayTeamShots:
-    // homeTeamShotsOnTarget:
-    // awayTeamShotsOnTarget:
-    // homeTeamFouls:
-    // awayTeamFouls:
-    // homeTeamYellowCards:
-    // awayTeamYellowCards:
-    // homeTeamRedCards:
-    // awayTeamRedCards:
-    // homeTeamOffsides:
-    // awayTeamOffsides:
-  });
+    sleep(43);
 
-  //DONE: refresh stats input
-  await runOBSMethod('PressInputPropertiesButton', {
-    inputName: 'statscard',
-    propertyName: 'refreshnocache',
-  });
-
-  sleep(43);
-
-  //DONE: switch to stats scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'stats',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-
-}
+    //DONE: switch to stats scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'stats',
+    });
+    //DONE: sleep(3000)
+    await sleep(6000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showSubs = async (args) => {
   //TODO: fetch subs
   //DONE: write to subs file
   if (store.getState().streaming.isStreaming) {
+    await writeSubs(args);
 
-  await writeSubs(args);
+    //DONE: refresh subs input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'substitutioncard',
+      propertyName: 'refreshnocache',
+    });
 
-  //DONE: refresh subs input
-  await runOBSMethod('PressInputPropertiesButton', {
-    inputName: 'substitutioncard',
-    propertyName: 'refreshnocache',
-  });
+    sleep(43);
 
-  sleep(43);
-
-  //DONE: switch to subs scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'substitution',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-}
+    //DONE: switch to subs scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'substitution',
+    });
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showRedCard = async (args) => {
   //TODO: fetch redcard
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "foul",
-      "event": {
-          "is_yellow": false,
-          "is_red": true,
-          "player": args.player,
-          "reason": 'Red Card',
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'foul',
+    event: {
+      is_yellow: false,
+      is_red: true,
+      player: args.player,
+      reason: 'Red Card',
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      time: store.getState().game.currentMinute,
+    },
   });
 
   if (store.getState().streaming.isStreaming) {
+    //DONE: write to redcard file
+    await writeRedCard(args);
 
+    //DONE: refresh redcard input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'redcardcard',
+      propertyName: 'refreshnocache',
+    });
 
-  //DONE: write to redcard file
-  await writeRedCard(args);
+    sleep(43);
 
-  //DONE: refresh redcard input
-  await runOBSMethod('PressInputPropertiesButton', {
-    inputName: 'redcardcard',
-    propertyName: 'refreshnocache',
-  });
-
-  sleep(43);
-
-  //DONE: switch to redcard scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'redcard',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-
-}
+    //DONE: switch to redcard scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'redcard',
+    });
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showYellowCard = async (args) => {
   //TODO: fetch yellowcard
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "foul",
-      "event": {
-          "is_yellow": true,
-          "is_red": false,
-          "player": args.player,
-          "reason": 'Yellow Card',
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'foul',
+    event: {
+      is_yellow: true,
+      is_red: false,
+      player: args.player,
+      reason: 'Yellow Card',
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      time: store.getState().game.currentMinute,
+    },
   });
 
   if (store.getState().streaming.isStreaming) {
+    //DONE: write to yellowcard file
+    await writeYellowCard(args);
 
+    //DONE: refresh yellowcard input
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'yellowcardcard',
+      propertyName: 'refreshnocache',
+    });
 
-  //DONE: write to yellowcard file
-  await writeYellowCard(args);
+    sleep(43);
 
-  //DONE: refresh yellowcard input
-  await runOBSMethod('PressInputPropertiesButton', {
-    inputName: 'yellowcardcard',
-    propertyName: 'refreshnocache',
-  });
-
-  sleep(43);
-
-  //DONE: switch to subs scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'yellowcard',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-
-}
+    //DONE: switch to subs scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'yellowcard',
+    });
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showFoul = async (args) => {
   //TODO: fetch foul
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "foul",
-      "event": {
-          "is_yellow": false,
-          "is_red": false,
-          "player": args.player,
-          "reason": args.reason,
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'foul',
+    event: {
+      is_yellow: false,
+      is_red: false,
+      player: args.player,
+      reason: args.reason,
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      time: store.getState().game.currentMinute,
+    },
   });
 
   if (store.getState().streaming.isStreaming) {
+    //DONE: switch to foul scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'foul',
+    });
 
-
-  //DONE: switch to foul scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'foul',
-  });
-
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-
-}
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showPenalty = async (args) => {
   //TODO: fetch penalty
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "foul",
-      "event": {
-          "is_yellow": false,
-          "is_red": false,
-          "player": '',
-          "reason": 'Penalty',
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'foul',
+    event: {
+      is_yellow: false,
+      is_red: false,
+      player: '',
+      reason: 'Penalty',
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      time: store.getState().game.currentMinute,
+    },
   });
 
   if (store.getState().streaming.isStreaming) {
-
-  //DONE: switch to penalty scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'penalty',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
+    //DONE: switch to penalty scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'penalty',
+    });
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
   }
-  
 };
 
 export const showOffside = async (args) => {
   //TODO: fetch offside
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "offside",
-      "event": {
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'offside',
+    event: {
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      time: store.getState().game.currentMinute,
+    },
   });
 
   if (store.getState().streaming.isStreaming) {
-
-  //DONE: switch to offside scene
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'offside',
-  });
-  //DONE: sleep(3000)
-  await sleep(3000);
-  // DONE: switch back to game
-  await runOBSMethod('SetCurrentProgramScene', {
-    sceneName: 'game',
-  });
-}
+    //DONE: switch to offside scene
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'offside',
+    });
+    //DONE: sleep(3000)
+    await sleep(3000);
+    // DONE: switch back to game
+    await runOBSMethod('SetCurrentProgramScene', {
+      sceneName: 'game',
+    });
+  }
 };
 
 export const showGoal = async (args) => {
   // console.log('SCORE IS', args.homeTeamScore);
   //TODO: fetch goal
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "shot",
-      "event": {
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "is_goal": true,
-          "is_on_target": true,
-          "scorer": args.scorer,
-          "assist": args.assist,
-          "time": args.time
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'shot',
+    event: {
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      is_goal: true,
+      is_on_target: true,
+      scorer: args.scorer,
+      assist: args.assist,
+      time: args.time,
+    },
   });
   //DONE: write to scorecard file
   await writeScoreCard(args);
 
   if (store.getState().streaming.isStreaming) {
-  if (args.celebrate) {
-    //DONE: switch to goal scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'goal',
-    });
-    //DONE: refresh scorecard input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'scorecard',
-      propertyName: 'refreshnocache',
-    });
-    //DONE: sleep(3000)
-    await sleep(2000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
-  } else {
-    //DONE: refresh scorecard input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'scorecard',
-      propertyName: 'refreshnocache',
-    });
-  }}
+    if (args.celebrate) {
+      //DONE: switch to goal scene
+      await runOBSMethod('SetCurrentProgramScene', {
+        sceneName: 'goal',
+      });
+      //DONE: refresh scorecard input
+      await runOBSMethod('PressInputPropertiesButton', {
+        inputName: 'scorecard',
+        propertyName: 'refreshnocache',
+      });
+      //DONE: sleep(3000)
+      await sleep(2000);
+      // DONE: switch back to game
+      await runOBSMethod('SetCurrentProgramScene', {
+        sceneName: 'game',
+      });
+    } else {
+      //DONE: refresh scorecard input
+      await runOBSMethod('PressInputPropertiesButton', {
+        inputName: 'scorecard',
+        propertyName: 'refreshnocache',
+      });
+    }
+  }
 
   //DONE: redux goal updates
 };
@@ -586,17 +573,17 @@ export const showGoal = async (args) => {
 export const showShot = async (args) => {
   //TODO: fetch shot
   postGameEvent({
-    "game_id": store.getState().game.gameId,
-      "event_type": "shot",
-      "event": {
-          "team_for": args.teamFor,
-          "team_against": args.teamAgainst,
-          "is_goal": false,
-          "is_on_target": args.onTarget,
-          "scorer": args.scorer,
-          "assist": '',
-          "time": store.getState().game.currentMinute
-      }
+    game_id: store.getState().game.gameId,
+    event_type: 'shot',
+    event: {
+      team_for: args.teamFor,
+      team_against: args.teamAgainst,
+      is_goal: false,
+      is_on_target: args.onTarget,
+      scorer: args.scorer,
+      assist: '',
+      time: store.getState().game.currentMinute,
+    },
   });
 };
 
@@ -614,9 +601,12 @@ export const startGame = async (args) => {
       sleep(43);
       await writeTimer({
         gameSequence: 'Second Half',
-        minute: Math.min(store.getState().game.currentMinute,45),
-        startTimePrint: `${Math.min(store.getState().game.currentMinute,45)}:00`,
-        noTime: false
+        minute: Math.min(store.getState().game.currentMinute, 45),
+        startTimePrint: `${Math.min(
+          store.getState().game.currentMinute,
+          45
+        )}:00`,
+        noTime: false,
       });
     }
     //TODO: 00:00 timer.html input added to scene game on top of scoreboard
@@ -639,7 +629,7 @@ export const halfTime = async () => {
       gameSequence: 'HT',
       minute: 0,
       startTimePrint: '',
-      noTime: true
+      noTime: true,
     });
   }
   //TODO: enable start game button
@@ -649,13 +639,13 @@ export const endGame = async () => {
   //TODO: fetch game ended?
   //TODO: Timer UI stops => 90:09 to FT
   store.dispatch(gameSlice.actions.setGameId(''));
-  if(store.getState().streaming.isStreaming){
+  if (store.getState().streaming.isStreaming) {
     await showStats();
     await writeTimer({
       gameSequence: 'FT',
       minute: 0,
       startTimePrint: '',
-      noTime: true
+      noTime: true,
     });
   }
   //if(startStreaming redux true){
