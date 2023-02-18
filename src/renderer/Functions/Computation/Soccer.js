@@ -102,17 +102,20 @@ export const startStream = async () => {
   sleep(43);
 
   //FIRST CREATE THE INPUT SOURCE, THEN FIND THE CAMERA AND SET THE DEVICE
-  runOBSMethod('GetInputPropertiesListPropertyItems',{
-    inputName:'vid',
-    propertyName:'device'
-  }).then((res)=>runOBSMethod('SetInputSettings',{
-    inputName:'vid',
-    inputSettings: {
-      // device_name:'FaceTime HD Camera',
-      device: res?.propertyItems?.filter((item)=>item.itemName==="FaceTime HD Camera")[0]?.itemValue,
-    }
-  }));
-
+  runOBSMethod('GetInputPropertiesListPropertyItems', {
+    inputName: 'vid',
+    propertyName: 'device',
+  }).then((res) =>
+    runOBSMethod('SetInputSettings', {
+      inputName: 'vid',
+      inputSettings: {
+        // device_name:'FaceTime HD Camera',
+        device: res?.propertyItems?.filter(
+          (item) => item.itemName === 'FaceTime HD Camera'
+        )[0]?.itemValue,
+      },
+    })
+  );
 
   await runOBSMethod('CreateInput', {
     sceneName: 'game',
@@ -242,6 +245,52 @@ export const startStream = async () => {
 
   sleep(43);
 
+  //IRAM DEBUGGING REMOVE THIS CALL
+  await runOBSMethod('CreateInput', {
+    sceneName: 'game',
+    inputName: 'test',
+    inputKind: 'browser_source',
+    inputSettings: {
+      height: 195,
+      is_local_file: true,
+      local_file: pathJoin(
+      getAssetPath(),
+      '/browser_source/basketball/3pt.html'
+      ),
+      width: 424,
+      css: '',
+    },
+  }).then((res) =>
+    runOBSMethod('SetSceneItemTransform', {
+      sceneName: 'game',
+      sceneItemId: res?.sceneItemId,
+      sceneItemTransform: {
+        alignment: 5,
+        boundsAlignment: 0,
+        boundsHeight: 1.0,
+        boundsType: 'OBS_BOUNDS_NONE',
+        boundsWidth: 1.0,
+        cropBottom: 0,
+        cropLeft: 0,
+        cropRight: 0,
+        cropTop: 0,
+        height: 195,
+        positionX: 430,
+        positionY: 512,
+        rotation: 0,
+        scaleX: 0.8479999899864197,
+        scaleY: 0.8478260636329651,
+        sourceHeight: 230,
+        sourceWidth: 500,
+        width: 424,
+      },
+    })
+  );
+  await runOBSMethod('GetInputDefaultSettings', {
+    inputKind: 'browser_source',
+  }).then((res) => console.log('{}{}{}', res));
+  //REMOVE BETWEEN
+
   //DONE: startstream OBS call
   await runOBSMethod('StartStream').catch((data) => console.log(data));
 
@@ -292,51 +341,51 @@ export const showStats = async () => {
   //TODO: fetch stats
   //TODO: write to stats file
   let stats = await getStats('soccer');
-  console.log('YO FAM UR IN SHOW STATS',stats);
-  if(stats){
-  // await writeStats(null);
-  if (store.getState().streaming.isStreaming) {
-    let reduxStore = store.getState();
+  console.log('YO FAM UR IN SHOW STATS', stats);
+  if (stats) {
+    // await writeStats(null);
+    if (store.getState().streaming.isStreaming) {
+      let reduxStore = store.getState();
 
-    await writeStats({
-      homeTeam: reduxStore.teams.homeTeamName,
-      awayTeam: reduxStore.teams.awayTeamName,
-      homeTeamGoals: reduxStore.goalHome.value,
-      awayTeamGoals: reduxStore.goalAway.value,
-      homeTeamShots: stats.team1.shots,
-      awayTeamShots: stats.team2.shots,
-      homeTeamShotsOnTarget: stats.team1.shots_on_target,
-      awayTeamShotsOnTarget: stats.team2.shots_on_target,
-      homeTeamFouls: stats.team1.fouls,
-      awayTeamFouls: stats.team2.fouls,
-      homeTeamYellowCards: stats.team1.yellow_cards,
-      awayTeamYellowCards: stats.team2.yellow_cards,
-      homeTeamRedCards: stats.team1.red_cards,
-      awayTeamRedCards: stats.team2.red_cards,
-      homeTeamOffsides: stats.team1.offsides,
-      awayTeamOffsides: stats.team2.offsides
-    });
+      await writeStats({
+        homeTeam: reduxStore.teams.homeTeamName,
+        awayTeam: reduxStore.teams.awayTeamName,
+        homeTeamGoals: reduxStore.goalHome.value,
+        awayTeamGoals: reduxStore.goalAway.value,
+        homeTeamShots: stats.team1.shots,
+        awayTeamShots: stats.team2.shots,
+        homeTeamShotsOnTarget: stats.team1.shots_on_target,
+        awayTeamShotsOnTarget: stats.team2.shots_on_target,
+        homeTeamFouls: stats.team1.fouls,
+        awayTeamFouls: stats.team2.fouls,
+        homeTeamYellowCards: stats.team1.yellow_cards,
+        awayTeamYellowCards: stats.team2.yellow_cards,
+        homeTeamRedCards: stats.team1.red_cards,
+        awayTeamRedCards: stats.team2.red_cards,
+        homeTeamOffsides: stats.team1.offsides,
+        awayTeamOffsides: stats.team2.offsides,
+      });
 
-    //DONE: refresh stats input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'statscard',
-      propertyName: 'refreshnocache',
-    });
+      //DONE: refresh stats input
+      await runOBSMethod('PressInputPropertiesButton', {
+        inputName: 'statscard',
+        propertyName: 'refreshnocache',
+      });
 
-    sleep(43);
+      sleep(43);
 
-    //DONE: switch to stats scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'stats',
-    });
-    //DONE: sleep(3000)
-    await sleep(6000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
+      //DONE: switch to stats scene
+      await runOBSMethod('SetCurrentProgramScene', {
+        sceneName: 'stats',
+      });
+      //DONE: sleep(3000)
+      await sleep(6000);
+      // DONE: switch back to game
+      await runOBSMethod('SetCurrentProgramScene', {
+        sceneName: 'game',
+      });
+    }
   }
-}
 };
 
 export const showSubs = async (args) => {
