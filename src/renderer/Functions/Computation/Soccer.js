@@ -97,13 +97,22 @@ export const startStream = async () => {
     sceneName: 'game',
     inputName: 'vid',
     inputKind: 'av_capture_input',
-    inputSettings: {
-      // device_name:'FaceTime HD Camera',
-      device: 'EAB7A68FEC2B4487AADFD8A91C1CB782',
-    },
   });
 
   sleep(43);
+
+  //FIRST CREATE THE INPUT SOURCE, THEN FIND THE CAMERA AND SET THE DEVICE
+  runOBSMethod('GetInputPropertiesListPropertyItems',{
+    inputName:'vid',
+    propertyName:'device'
+  }).then((res)=>runOBSMethod('SetInputSettings',{
+    inputName:'vid',
+    inputSettings: {
+      // device_name:'FaceTime HD Camera',
+      device: res?.propertyItems?.filter((item)=>item.itemName==="FaceTime HD Camera")[0]?.itemValue,
+    }
+  }));
+
 
   await runOBSMethod('CreateInput', {
     sceneName: 'game',
@@ -115,6 +124,8 @@ export const startStream = async () => {
       // device_name: "FaceTime HD Camera"
     },
   });
+
+  // runOBSMethod('GetInputSettings',{inputName:'audio'}).then((res)=> console.log('{}{}{}',res));
 
   sleep(43);
 
@@ -282,6 +293,7 @@ export const showStats = async () => {
   //TODO: write to stats file
   let stats = await getStats('soccer');
   console.log('YO FAM UR IN SHOW STATS',stats);
+  if(stats){
   // await writeStats(null);
   if (store.getState().streaming.isStreaming) {
     let reduxStore = store.getState();
@@ -324,6 +336,7 @@ export const showStats = async () => {
       sceneName: 'game',
     });
   }
+}
 };
 
 export const showSubs = async (args) => {
@@ -638,7 +651,6 @@ export const halfTime = async () => {
 export const endGame = async () => {
   //TODO: fetch game ended?
   //TODO: Timer UI stops => 90:09 to FT
-  store.dispatch(gameSlice.actions.setGameId(''));
   if (store.getState().streaming.isStreaming) {
     await showStats();
     await writeTimer({
@@ -648,6 +660,7 @@ export const endGame = async () => {
       noTime: true,
     });
   }
+  store.dispatch(gameSlice.actions.setGameId(''));
   //if(startStreaming redux true){
   //TODO: timer.html stopped -> FT, refresh OBS
   //TODO: disable all buttons (except stream)

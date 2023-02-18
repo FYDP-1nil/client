@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import '../../Styles/Molecules/GameOptions.css';
 
-import basketball from '../../../../assets/basketball.png';
-import soccer from '../../../../assets/soccer-ball.png';
-import cricket from '../../../../assets/cricket-ball.png';
-import { Link } from 'react-router-dom';
+// import basketball from '../../../../assets/basketball.png';
+// import soccer from '../../../../assets/soccer-ball.png';
+// import gridiron from '../../../../assets/gridiron-ball.png';
+// import { Link } from 'react-router-dom';
 import LeagueScreen from './LeagueScreen';
 
 const GameOptions = (props) => {
   enum SPORT_TYPE {
     SOCCER = 'soccer',
     BASKETBALL = 'basketball',
-    CRICKET = 'cricket',
+    GRIDIRON = 'gridiron',
   }
 
   const [sportSelected, setSportSelected] = useState('');
@@ -34,16 +34,16 @@ const GameOptions = (props) => {
       <p>CHOOSE SPORT TO STREAM</p>
       <div className="game-options-wrapper">
         <div className="basketball-btn">
-          <img className="logo" src={basketball} alt="basketball" />
+        <p className="logo">🏀</p>
           BASKETBALL
         </div>
         <div className="soccer-btn" onClick={() => setSportSelected('SOCCER')}>
-          <img className="logo" src={soccer} alt="soccer" />
+        <p className="logo">⚽️</p>
           SOCCER
         </div>
-        <div className="cricket-btn">
-          <img className="logo" src={cricket} alt="cricket" />
-          CRICKET
+        <div className="gridiron-btn">
+          <p className="logo">🏈</p>
+          FOOTBALL
         </div>
       </div>
     </div>

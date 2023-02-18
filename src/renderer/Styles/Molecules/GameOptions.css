@@ -28,7 +28,7 @@
 }
 .basketball-btn,
 .soccer-btn,
-.cricket-btn {
+.gridiron-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,8 +38,11 @@
 }
 .basketball-btn:active,
 .soccer-btn:active,
-.cricket-btn:active {
+.gridiron-btn:active {
   transform: scale(0.85);
+}
+.logo {
+  font-size: 100px;
 }
 
 .game-options .btn {
