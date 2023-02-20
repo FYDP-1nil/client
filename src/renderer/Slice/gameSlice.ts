@@ -7,6 +7,7 @@ const initialState: GameState = {
   isHalfTime: false,
   isSecondHalf: false,
   currentMinute: 0,
+  currentQuarter: 0,
   gameId: ''
 }
 
@@ -31,6 +32,9 @@ export const gameSlice = createSlice({
     },
     setCurrentMinute: (state,action:PayloadAction<number>) => {
       return {...state,currentMinute:action.payload};
+    },
+    setQuarter: (state,action:PayloadAction<number>) => {
+      return {...state,currentQuarter:action.payload};
     },
     reset: (state) => {
       return {...state,...initialState};

@@ -3,34 +3,24 @@ import { store } from 'renderer/store';
 import { createGame, getStats, postGameEvent } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
+  generate2PTSource,
+  generate3PTSource,
   generateFoulSource,
-  generateGoalSource,
-  generateOffsideSource,
-  generatePenaltySource,
-  generateRedCardSource,
   generateScoreCardSource,
   generateScoreCardTimer,
   generateStatsSource,
-  generateSubsSource,
-  generateYellowCardSource,
-} from './SoccerObsHelper';
+  generateTimeoutSource
+} from './BasketballObsHelper';
 import {
-  writeRedCard,
   writeScoreCard,
   writeStats,
-  writeSubs,
-  writeTimer,
-  writeYellowCard,
-} from './SoccerTemplates';
+  writeTimer
+} from './BasketballTemplates';
 import { getAssetPath, pathJoin, sleep, writeToFile } from './utility';
 
 export const startStream = async () => {
-  //DONE: obs.connect()
   await obs.connect();
 
-  //TODO: getStreamKey fetch
-
-  //------>TODONE: setStreamKey obs call
   await runOBSMethod('SetStreamServiceSettings', {
     streamServiceType: 'rtmp_common',
     streamServiceSettings: {
@@ -41,9 +31,6 @@ export const startStream = async () => {
     },
   });
 
-  // await runOBSMethod('GetStreamServiceSettings').then((ss) => console.log(ss));
-  // await runOBSMethod('GetInputPropertiesListPropertyItems');
-  // //DONE: delete non-default inputs
   let inputList = await runOBSMethod('GetInputList');
 
   if (inputList) {
@@ -58,30 +45,7 @@ export const startStream = async () => {
     }
   }
 
-  // //DONE: Delete all scenes except default
-  // let defaultFlag = false;
   let sceneList = await runOBSMethod('GetSceneList');
-
-  // if (sceneList) {
-  //   let removeScenes = sceneList?.scenes.forEach(async (scene) => {
-  //     if (scene.sceneName === 'default') {
-  //       defaultFlag = true;
-  //     } else {
-  //       runOBSMethod('RemoveScene', {
-  //         sceneName: scene.sceneName,
-  //       });
-  //     }
-  //   });
-
-  //   if (removeScenes) {
-  //     removeScenes = await Promise.all(removeScenes);
-  //   }
-  // }
-
-  // if (!defaultFlag)
-  //   await runOBSMethod('CreateScene', {
-  //     sceneName: 'default',
-  //   });
 
   sleep(43);
 
@@ -130,38 +94,7 @@ export const startStream = async () => {
     },
   });
 
-  // runOBSMethod('GetInputSettings',{inputName:'audio'}).then((res)=> console.log('{}{}{}',res));
-
   sleep(43);
-
-  // await runOBSMethod('CreateScene', { sceneName: 'redcard' });
-  // runOBSMethod('GetInputSettings',{inputName:'audio'}).then((res)=> console.log(res));
-
-  // await runOBSMethod('CreateInput', {
-  //   sceneName: 'redcard',
-  //   inputName: 'redcardcard',
-  //   inputKind: 'browser_source',
-  // //   inputSettings: {
-  // //     height: 720,
-  // //     is_local_file: true,
-  // //     local_file:
-  // //       '/Users/knotscientific/Documents/1nil/client/assets/browser_source/soccer/red_card.html',
-  // //     width: 1280,
-  // //     css: '',
-  // //   },
-  // }).then((data) => console.log(data));
-
-  // await runOBSMethod('SetInputSettings', {
-  //     inputName: 'redcardcard',
-  //     inputSettings: {
-  //       height: 720,
-  //       is_local_file: true,
-  //       local_file: pathJoin(getAssetPath(),'/browser_source/soccer/goal.html'),
-  //       width: 1280,
-  //     },
-  //   }).then((data) => console.log(data));
-
-  // await runOBSMethod('GetInputSettings',{inputName:'redcardcard'}).then((data)=>console.log(data));
 
   // DONE: add scorecard input to game scene
   await generateScoreCardSource(sceneList?.scenes);
@@ -656,10 +589,6 @@ export const showShot = async (args) => {
       time: store.getState().game.currentMinute,
     },
   });
-};
-
-export const deleteGoal = async (args) => {
-  //TODO: fetch goal DELETE
 };
 
 export const startGame = async (args) => {

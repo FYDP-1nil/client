@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { generateScoreCardTimer } from 'renderer/Functions/Computation/Obs';
+import { generateScoreCardTimer } from 'renderer/Functions/Computation/SoccerObsHelper';
 import {
   endGame,
   halfTime,
@@ -11,8 +11,8 @@ import { writeTimer } from 'renderer/Functions/Computation/SoccerTemplates';
 import { sleep } from 'renderer/Functions/Computation/utility';
 import { RootState } from 'renderer/store';
 import * as gameActions from '../../Slice/gameSlice';
-import * as goalAwayActions from '../../Slice/goalAwaySlice';
-import * as goalHomeActions from '../../Slice/goalHomeSlice';
+import * as pointAwayActions from '../../Slice/pointAwaySlice';
+import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 
 import '../../Styles/Molecules/SoccerGameButtons.css';
@@ -54,8 +54,8 @@ const SoccerGameButtons = (props) => {
       // TODO: go to dashabord
       dispatch(gameActions.reset());
       dispatch(teamActions.resetNames());
-      dispatch(goalAwayActions.reset());
-      dispatch(goalHomeActions.reset());
+      dispatch(pointAwayActions.reset());
+      dispatch(pointHomeActions.reset());
       navigate("/dashboard", { replace: true });
 
     } else {

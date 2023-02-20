@@ -1,7 +1,7 @@
 import '../../Styles/Molecules/SoccerTimeline.css'
 const SoccerTimeline = (props) => {
   return (
-    <div className='timeline'>
+    <div className='timeline' style={{"visibility":'hidden'}}>
         <div className='timeline-btn'>
         <p>TIMELINE</p>
         <p>LINEUP</p>

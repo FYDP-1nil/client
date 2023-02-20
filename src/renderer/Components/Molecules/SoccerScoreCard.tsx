@@ -7,8 +7,8 @@ const SoccerScoreCard = () => {
   
   const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
   const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
-  const homeTeamScore = useSelector((state:RootState)=>state.goalHome.value);
-  const awayTeamScore = useSelector((state:RootState)=>state.goalAway.value);
+  const homeTeamScore = useSelector((state:RootState)=>state.pointHome.value);
+  const awayTeamScore = useSelector((state:RootState)=>state.pointAway.value);
   
   return (
     <div className="soccer-score-container">

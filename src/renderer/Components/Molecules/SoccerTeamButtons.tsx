@@ -12,15 +12,15 @@ import {
 } from 'renderer/Functions/Computation/Soccer';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'renderer/store';
-import * as homeGoalActions from 'renderer/Slice/goalHomeSlice';
-import * as awayGoalActions from 'renderer/Slice/goalAwaySlice';
+import * as homeGoalActions from 'renderer/Slice/pointHomeSlice';
+import * as awayGoalActions from 'renderer/Slice/pointAwaySlice';
 
 const SoccerTeamButtons = ({isHomeTeam}) => {
 
   const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
   const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
-  const homeTeamScore = useSelector((state: RootState) => state.goalHome.value);
-  const awayTeamScore = useSelector((state: RootState) => state.goalAway.value);
+  const homeTeamScore = useSelector((state: RootState) => state.pointHome.value);
+  const awayTeamScore = useSelector((state: RootState) => state.pointAway.value);
   const time = useSelector((state: RootState) => state.game.currentMinute);
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
 

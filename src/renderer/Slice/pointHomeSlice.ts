@@ -5,8 +5,8 @@ const initialState: CounterState = {
   value: 0,
 }
 
-export const goalAwaySlice = createSlice({
-  name: 'goalAway',
+export const pointHomeSlice = createSlice({
+  name: 'pointHome',
   initialState,
   reducers: {
     increment: (state) => {
@@ -17,7 +17,33 @@ export const goalAwaySlice = createSlice({
       state.value += 1
     },
     decrement: (state) => {
-      state.value -= 1
+      if(state.value>=1){
+        state.value -= 1
+      }
+    },
+    plus2: (state) => {
+      state.value += 2
+    },
+    minus2: (state) => {
+      if(state.value>=2){
+        state.value -= 2
+      }
+    },
+    plus3: (state) => {
+      state.value += 3
+    },
+    minus3: (state) => {
+      if(state.value>=3){
+        state.value -= 3
+      }
+    },
+    plus6: (state) => {
+      state.value += 6
+    },
+    minus6: (state) => {
+      if(state.value>=6){
+        state.value -= 6
+      }
     },
     reset: (state) => {
       return {...state,value:0}
@@ -26,6 +52,6 @@ export const goalAwaySlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, reset } = goalAwaySlice.actions
+export const { increment, decrement, reset } = pointHomeSlice.actions
 
-export default goalAwaySlice.reducer
+export default pointHomeSlice.reducer

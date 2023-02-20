@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import goalHomeReducer from './Slice/goalHomeSlice';
-import goalAwayReducer from './Slice/goalAwaySlice';
+import pointHomeReducer from './Slice/pointHomeSlice';
+import pointAwayReducer from './Slice/pointAwaySlice';
 import gameReducer from './Slice/gameSlice';
 import teamsReducer from './Slice/teamsSlice';
 import streamingReducer from './Slice/streamingSlice';
@@ -8,8 +8,8 @@ import tokenReducer from './Slice/tokenSlice';
 
 export const store = configureStore({
   reducer: {
-    goalHome: goalHomeReducer,
-    goalAway: goalAwayReducer,
+    pointHome: pointHomeReducer,
+    pointAway: pointAwayReducer,
     game: gameReducer,
     teams: teamsReducer,
     streaming: streamingReducer,

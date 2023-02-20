@@ -83,12 +83,19 @@ export const generateScoreCardTimer = async () => {
         sourceWidth: 160,
         width: 101,
       },
-    })
+    }).then(()=>runOBSMethod('SetSceneItemIndex',{
+      sceneName: 'game',
+      sceneItemId: res?.sceneItemId,
+      sceneItemIndex: 3
+    }))
   );
 };
 
-export const generateGoalSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'goal' });
+export const generateGoalSource = async (scenes) => {
+  
+  if(scenes.find(e => e.sceneName !== 'goal')){
+    await runOBSMethod('CreateScene', { sceneName: 'goal' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'goal',
@@ -104,8 +111,10 @@ export const generateGoalSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateStatsSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'stats' });
+export const generateStatsSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'stats')){
+    await runOBSMethod('CreateScene', { sceneName: 'stats' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'stats',
@@ -121,8 +130,10 @@ export const generateStatsSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateSubsSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'substitution' });
+export const generateSubsSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'substitution')){
+    await runOBSMethod('CreateScene', { sceneName: 'substitution' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'substitution',
@@ -141,9 +152,10 @@ export const generateSubsSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateRedCardSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'redcard' });
-
+export const generateRedCardSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'redcard')){
+    await runOBSMethod('CreateScene', { sceneName: 'redcard' });
+  }
   await runOBSMethod('CreateInput', {
     sceneName: 'redcard',
     inputName: 'redcardcard',
@@ -161,8 +173,10 @@ export const generateRedCardSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateYellowCardSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'yellowcard' });
+export const generateYellowCardSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'yellowcard')){
+    await runOBSMethod('CreateScene', { sceneName: 'yellowcard' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'yellowcard',
@@ -181,8 +195,10 @@ export const generateYellowCardSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateFoulSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'foul' });
+export const generateFoulSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'foul')){
+    await runOBSMethod('CreateScene', { sceneName: 'foul' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'foul',
@@ -198,8 +214,10 @@ export const generateFoulSource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generatePenaltySource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'penalty' });
+export const generatePenaltySource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'penalty')){
+    await runOBSMethod('CreateScene', { sceneName: 'penalty' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'penalty',
@@ -218,8 +236,10 @@ export const generatePenaltySource = async () => {
   }).then((data) => console.log(data));
 };
 
-export const generateOffsideSource = async () => {
-  await runOBSMethod('CreateScene', { sceneName: 'offside' });
+export const generateOffsideSource = async (scenes) => {
+  if(scenes.find(e => e.sceneName !== 'offside')){
+    await runOBSMethod('CreateScene', { sceneName: 'offside' });
+  }
 
   await runOBSMethod('CreateInput', {
     sceneName: 'offside',

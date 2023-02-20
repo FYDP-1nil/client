@@ -50,6 +50,9 @@ const App = (props) => {
           <Route exact path="/" element={isLoggedIn? <Dashboard /> : <LoginScreen/>} />
           <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="/soccer-scoreboard" element={<SoccerScoreBoard />} />
+          <Route exact path="/basketball-scoreboard" element={<SoccerScoreBoard />} />
+          <Route exact path="/gridiron-scoreboard" element={<SoccerScoreBoard />} />
+          <Route exact path="/settings" element={<SoccerScoreBoard />} />
         </Routes>
       </div>
     </Router>

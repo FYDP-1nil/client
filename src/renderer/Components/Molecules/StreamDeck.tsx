@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import runOBSMethod from 'renderer/Functions/Obs';
 import { showStats, startStream, stopStream } from 'renderer/Functions/Computation/Soccer';
 import { RootState } from 'renderer/store';
 import * as streamingActions from '../../Slice/streamingSlice';
 import * as gameActions from '../../Slice/gameSlice';
-import * as goalAwayActions from '../../Slice/goalAwaySlice';
-import * as goalHomeActions from '../../Slice/goalHomeSlice';
+import * as pointAwayActions from '../../Slice/pointAwaySlice';
+import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 import '../../Styles/Molecules/StreamDeck.css'
 
@@ -20,8 +21,10 @@ const StreamDeck = (props) => {
   const navigate = useNavigate();
 
   const start = () => {
+    if(!isStreaming){
     startStream();
     dispatch(streamingActions.setStreaming(true));
+    }
   };
 
   const stop = () => {
@@ -31,8 +34,8 @@ const StreamDeck = (props) => {
     if(gameEnded){
       dispatch(gameActions.reset());
       dispatch(teamActions.resetNames());
-      dispatch(goalAwayActions.reset());
-      dispatch(goalHomeActions.reset());
+      dispatch(pointAwayActions.reset());
+      dispatch(pointHomeActions.reset());
       navigate('/dashboard',{replace:true});
     }
   }
@@ -44,7 +47,7 @@ const StreamDeck = (props) => {
 
   return (
     <div className='deck'>
-      <p>STREAM</p>
+      <p onClick={()=> runOBSMethod('GetSceneItemId',{sceneName:'game',sourceName:'test'}).then((data)=>console.log(data)) }>STREAM</p>
       <div className='stream-deck-btn-wrapper'>
       <div onClick={start} className='stream-deck-btn stream-deck-btn-start'>
         <div className='circle'></div>
