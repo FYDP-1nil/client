@@ -3,7 +3,7 @@ import { RootState } from 'renderer/store';
 import '../../Styles/Molecules/SoccerScoreCard.css';
 import Stopwatch from './Stopwatch';
 
-const SoccerScoreCard = () => {
+const GridironScoreCard = () => {
   
   const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
   const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
@@ -48,4 +48,4 @@ const SoccerScoreCard = () => {
   );
 };
 
-export default SoccerScoreCard;
+export default GridironScoreCard;

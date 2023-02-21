@@ -1,9 +1,9 @@
 import '../Styles/ScoreBoard.css';
 import GridironGameButtons from './Molecules/GridironGameButtons';
-import SoccerScoreCard from './Molecules/SoccerScoreCard';
 import Timeline from './Molecules/Timeline';
 import GridironStreamDeck from './Molecules/GridironStreamDeck';
 import GridironTeamButtons from './Molecules/GridironTeamButtons';
+import GridironScoreCard from './Molecules/GridironScoreCard';
 
 
 const GridironScoreBoard = () => {
@@ -14,7 +14,7 @@ const GridironScoreBoard = () => {
     <div className="Scoreboard">
       <GridironTeamButtons isHomeTeam={true} />
       <div className='soccer-board-middle'>
-        <SoccerScoreCard />
+        <GridironScoreCard />
         <GridironGameButtons />
         <GridironStreamDeck />
         <Timeline/>

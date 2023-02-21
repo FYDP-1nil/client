@@ -229,11 +229,11 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
         </div>
         <div className="substitution-btn-wrapper">
           <div onClick={!activeGame ? undefined : shot} className="counter-btn">
-            <div id="plusbg" />
-            <div id="plus" />
+            <div id="plusbg" style={{ marginLeft: '6px' }} />
+            <div id="plus" style={{ marginLeft: '6px' }} />
           </div>
           <div
-            style={{ marginLeft: '10px', height: 'auto' }}
+            style={{ marginLeft: '-10px', height: 'auto' }}
             className="substitution-input-wrapper"
           >
             <input
@@ -303,11 +303,11 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
         </div>
         <div className="substitution-btn-wrapper">
           <div onClick={!activeGame ? undefined : shot} className="counter-btn">
-            <div id="plusbg" />
-            <div id="plus" />
+            <div id="plusbg" style={{ marginLeft: '6px' }} />
+            <div id="plus" style={{ marginLeft: '6px' }} />
           </div>
           <div
-            style={{ marginLeft: '10px' }}
+            style={{ marginLeft: '-10px' }}
             className="substitution-input-wrapper"
           >
             <input
@@ -412,9 +412,9 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
         <p>TURNOVER</p>
       </div>
       <div className="soccer-btn-card shot-wrapper">
-        <p>SHOT</p>
-        <div className="shot-input-wrapper">
-          <label className="on-target-cb-label">
+        <p>FIX SCORE</p>
+        <div className="shot-input-wrapper" style={{ height: 'auto' }}>
+          <label className="on-target-cb-label" style={{ marginTop: '10px' }}>
             <input
               checked={onTarget}
               onChange={() => setShotOnTarget((prev) => !prev)}
@@ -424,55 +424,62 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             />
             <p style={{ fontWeight: 'normal' }}>Confirm?</p>
           </label>
-          <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'row' }}>
-        <div
-          onClick={()=>null}
-          style={{
-            width: 'fit-content',
-            padding: '10px',
-            backgroundColor: 'pink',
-          }}
-          className="soccer-game-btn soccer-game-btn-start"
-        >
-          <p>Q1</p>
-        </div>
-        <div
-          onClick={()=>null}
-          style={{
-            width: 'fit-content',
-            padding: '10px',
-            backgroundColor: 'pink',
-          }}
-          className="soccer-game-btn soccer-game-btn-start"
-        >
-          <p>Q2</p>
-        </div>
-        <div
-          onClick={()=>null}
-          style={{
-            width: 'fit-content',
-            padding: '10px',
-            backgroundColor: 'pink',
-          }}
-          className="soccer-game-btn soccer-game-btn-start"
-        >
-          <p>Q3</p>
-        </div>
-        <div
-          onClick={()=>null}
-          style={{
-            width: 'fit-content',
-            padding: '10px',
-            backgroundColor: 'pink',
-          }}
-          className="soccer-game-btn soccer-game-btn-start"
-        >
-          <p>Q4</p>
+          <div
+            style={{
+              marginTop: '10px',
+              display: 'flex',
+              flexDirection: 'row',
+              marginBottom: '10px',
+              justifyContent:"space-around"
+            }}
+          >
+            <div
+              onClick={() => null}
+              style={{
+                width: 'fit-content',
+                padding: '10px',
+                backgroundColor: 'pink',
+              }}
+              className="soccer-game-btn soccer-game-btn-start"
+            >
+              <p>-1</p>
+            </div>
+            <div
+              onClick={() => null}
+              style={{
+                width: 'fit-content',
+                padding: '10px',
+                backgroundColor: 'pink',
+              }}
+              className="soccer-game-btn soccer-game-btn-start"
+            >
+              <p>-2</p>
+            </div>
+            <div
+              onClick={() => null}
+              style={{
+                width: 'fit-content',
+                padding: '10px',
+                backgroundColor: 'pink',
+              }}
+              className="soccer-game-btn soccer-game-btn-start"
+            >
+              <p>-3</p>
+            </div>
+            <div
+              onClick={() => null}
+              style={{
+                width: 'fit-content',
+                padding: '10px',
+                backgroundColor: 'pink',
+              }}
+              className="soccer-game-btn soccer-game-btn-start"
+            >
+              <p>-6</p>
+            </div>
+          </div>
         </div>
       </div>
-        </div>
-      </div>
-
     </div>
   );
 };

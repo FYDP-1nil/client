@@ -49,6 +49,7 @@ const Stopwatch = () => {
   return (
     <div className="stopwatch">
       {gameEnded ? <div>FT</div> : isHalfTime?<div>HT</div>:<div className="numbers">
+        <span>{`Q1 `}</span>
         <span>{("0" + Math.floor((time / 60000))).slice(-2)}:</span>
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
       </div>}
