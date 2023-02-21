@@ -10,7 +10,7 @@ export const joinLeague = async(name,pass) => {
 
     let res = false;
 
-    console.log(name,pass,store.getState().tokens.userToken);
+    console.log(store.getState().tokens.leagueValid);
 
     try {
       let response = await window.electron.ipcRenderer.invoke('api-call', {

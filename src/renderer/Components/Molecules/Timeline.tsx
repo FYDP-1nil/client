@@ -1,5 +1,5 @@
 import '../../Styles/Molecules/SoccerTimeline.css'
-const SoccerTimeline = (props) => {
+const Timeline = (props) => {
   return (
     <div className='timeline' style={{"visibility":'hidden'}}>
         <div className='timeline-btn'>
@@ -16,4 +16,4 @@ const SoccerTimeline = (props) => {
   );
 };
 
-export default SoccerTimeline;
+export default Timeline;

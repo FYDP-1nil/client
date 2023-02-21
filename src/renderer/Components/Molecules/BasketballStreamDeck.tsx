@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import runOBSMethod from 'renderer/Functions/Obs';
-import { showStats, startStream, stopStream } from 'renderer/Functions/Computation/Soccer';
+import { showStats, startStream, stopStream } from 'renderer/Functions/Computation/Basketball';
 import { RootState } from 'renderer/store';
 import * as streamingActions from '../../Slice/streamingSlice';
 import * as gameActions from '../../Slice/gameSlice';
@@ -11,7 +10,7 @@ import * as teamActions from '../../Slice/teamsSlice';
 import '../../Styles/Molecules/StreamDeck.css'
 
 
-const StreamDeck = (props) => {
+const BasketballStreamDeck = (props) => {
 
   const dispatch = useDispatch();
 
@@ -47,7 +46,7 @@ const StreamDeck = (props) => {
 
   return (
     <div className='deck'>
-      <p onClick={()=> runOBSMethod('GetSceneItemId',{sceneName:'game',sourceName:'test'}).then((data)=>console.log(data)) }>STREAM</p>
+      <p>STREAM</p>
       <div className='stream-deck-btn-wrapper'>
       <div onClick={start} className='stream-deck-btn stream-deck-btn-start'>
         <div className='circle'></div>
@@ -65,4 +64,4 @@ const StreamDeck = (props) => {
   );
 };
 
-export default StreamDeck;
+export default BasketballStreamDeck;

@@ -70,7 +70,7 @@ const SoccerGameButtons = (props) => {
   useEffect(() => {
     if (gameId) {
       //gameId changes and is not blank
-      
+      //TODO: activeGame redux dispatch
       dispatch(gameActions.setActiveGame(true));
       if (isStreaming) {
        (async () => { await generateScoreCardTimer();
@@ -86,16 +86,67 @@ const SoccerGameButtons = (props) => {
   }, [gameId]);
 
   return (
-    <div className="soccer-game-btns">
-      <div onClick={start} className="soccer-game-btn soccer-game-btn-start">
-        <p>START GAME</p>
-        {/* <p>{gameId}</p> */}
+    <div
+      className="soccer-game-btns"
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div onClick={start} className="soccer-game-btn soccer-game-btn-start">
+          <p>START GAME</p>
+        </div>
+        <div onClick={half} className="soccer-game-btn soccer-game-btn-half">
+          <p>HALF TIME</p>
+        </div>
+        <div onClick={end} className="soccer-game-btn soccer-game-btn-end">
+          <p>END GAME</p>
+        </div>
       </div>
-      <div onClick={half} className="soccer-game-btn soccer-game-btn-half">
-        <p>HALF TIME</p>
-      </div>
-      <div onClick={end} className="soccer-game-btn soccer-game-btn-end">
-        <p>END GAME</p>
+
+      <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'row' }}>
+        <div
+          onClick={start}
+          style={{
+            width: 'fit-content',
+            padding: '10px',
+            backgroundColor: 'pink',
+          }}
+          className="soccer-game-btn soccer-game-btn-start"
+        >
+          <p>Q1</p>
+        </div>
+        <div
+          onClick={start}
+          style={{
+            width: 'fit-content',
+            padding: '10px',
+            backgroundColor: 'pink',
+          }}
+          className="soccer-game-btn soccer-game-btn-start"
+        >
+          <p>Q2</p>
+        </div>
+        <div
+          onClick={start}
+          style={{
+            width: 'fit-content',
+            padding: '10px',
+            backgroundColor: 'pink',
+          }}
+          className="soccer-game-btn soccer-game-btn-start"
+        >
+          <p>Q3</p>
+        </div>
+        <div
+          onClick={start}
+          style={{
+            width: 'fit-content',
+            padding: '10px',
+            backgroundColor: 'pink',
+          }}
+          className="soccer-game-btn soccer-game-btn-start"
+        >
+          <p>Q4</p>
+        </div>
       </div>
     </div>
   );

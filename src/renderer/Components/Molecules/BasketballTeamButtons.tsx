@@ -15,7 +15,7 @@ import { RootState } from 'renderer/store';
 import * as homeGoalActions from 'renderer/Slice/pointHomeSlice';
 import * as awayGoalActions from 'renderer/Slice/pointAwaySlice';
 
-const SoccerTeamButtons = ({isHomeTeam}) => {
+const BasketballTeamButtons = ({isHomeTeam}) => {
 
   const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
   const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
@@ -334,4 +334,4 @@ const SoccerTeamButtons = ({isHomeTeam}) => {
   );
 };
 
-export default SoccerTeamButtons;
+export default BasketballTeamButtons;

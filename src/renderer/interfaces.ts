@@ -21,7 +21,7 @@ export interface GameState {
     currentMinute: number,
     isSecondHalf: boolean,
     gameEnded: boolean,
-    currentQuarter: number,
+    currentQuarter: 1 | 2 | 3 | 4,
     gameId:string
 }
 

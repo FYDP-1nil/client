@@ -13,7 +13,7 @@ const [homeTeam, setHomeTeam] = useState('');
 const [awayTeam, setAwayTeam] = useState('');
 
 const setTeams = () => {
-    if(homeTeam && awayTeam){
+    if(homeTeam.trim() && awayTeam.trim()){
         dispatch(teamsSlice.actions.assignTeamNames({homeTeamName:homeTeam,awayTeamName:awayTeam}));
         navigate('/soccer-scoreboard');
     }

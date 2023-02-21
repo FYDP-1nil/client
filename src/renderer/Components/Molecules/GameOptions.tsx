@@ -19,6 +19,7 @@ const GameOptions = (props) => {
     <LeagueScreen
       setOpenModal={props.setOpenModal}
       setSportSelected={setSportSelected}
+      sportSelected={sportSelected}
     />
   ) : (
     <div className="game-options">
@@ -34,7 +35,7 @@ const GameOptions = (props) => {
       <p>CHOOSE SPORT TO STREAM</p>
       <div className="game-options-wrapper">
         <div className="basketball-btn">
-        <p className="logo">🏀</p>
+        <p className="logo"  onClick={() => setSportSelected('BASKETBALL')}>🏀</p>
           BASKETBALL
         </div>
         <div className="soccer-btn" onClick={() => setSportSelected('SOCCER')}>
@@ -42,7 +43,7 @@ const GameOptions = (props) => {
           SOCCER
         </div>
         <div className="gridiron-btn">
-          <p className="logo">🏈</p>
+          <p className="logo" onClick={() => setSportSelected('GRIDIRON')}>🏈</p>
           FOOTBALL
         </div>
       </div>

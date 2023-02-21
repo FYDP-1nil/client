@@ -28,7 +28,7 @@ export const startStream = async () => {
   //DONE: obs.connect()
   await obs.connect();
 
-  //TODO: getStreamKey fetch
+  
 
   //------>TODONE: setStreamKey obs call
   await runOBSMethod('SetStreamServiceSettings', {
@@ -168,7 +168,7 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //TODO: write 0-0 scorecard to HTML file
+  
   await writeScoreCard({
     homeTeam: store.getState().teams.homeTeamName,
     awayTeam: store.getState().teams.awayTeamName,
@@ -298,7 +298,7 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //TODO: disable startStream btn
+  
 };
 
 export const stopStream = async () => {
@@ -342,15 +342,14 @@ export const stopStream = async () => {
     )
     .then(() => obs.disconnect().catch((e) => console.log(e)))
     .catch((e) => console.log(e));
-  //TODO: redirect to dashboard
-  //TODO: End Game popup reminder in dashboard
+  
+  
 };
 
 export const showStats = async () => {
-  //TODO: fetch stats
-  //TODO: write to stats file
+  
+  
   let stats = await getStats('soccer');
-  console.log('YO FAM UR IN SHOW STATS', stats);
   if (stats) {
     // await writeStats(null);
     if (store.getState().streaming.isStreaming) {
@@ -398,7 +397,7 @@ export const showStats = async () => {
 };
 
 export const showSubs = async (args) => {
-  //TODO: fetch subs
+  
   //DONE: write to subs file
   if (store.getState().streaming.isStreaming) {
     await writeSubs(args);
@@ -425,7 +424,7 @@ export const showSubs = async (args) => {
 };
 
 export const showRedCard = async (args) => {
-  //TODO: fetch redcard
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
@@ -466,7 +465,7 @@ export const showRedCard = async (args) => {
 };
 
 export const showYellowCard = async (args) => {
-  //TODO: fetch yellowcard
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
@@ -507,7 +506,7 @@ export const showYellowCard = async (args) => {
 };
 
 export const showFoul = async (args) => {
-  //TODO: fetch foul
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
@@ -538,7 +537,7 @@ export const showFoul = async (args) => {
 };
 
 export const showPenalty = async (args) => {
-  //TODO: fetch penalty
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
@@ -568,7 +567,7 @@ export const showPenalty = async (args) => {
 };
 
 export const showOffside = async (args) => {
-  //TODO: fetch offside
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'offside',
@@ -594,8 +593,7 @@ export const showOffside = async (args) => {
 };
 
 export const showGoal = async (args) => {
-  // console.log('SCORE IS', args.homeTeamScore);
-  //TODO: fetch goal
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'shot',
@@ -642,7 +640,7 @@ export const showGoal = async (args) => {
 };
 
 export const showShot = async (args) => {
-  //TODO: fetch shot
+  
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'shot',
@@ -659,12 +657,12 @@ export const showShot = async (args) => {
 };
 
 export const deleteGoal = async (args) => {
-  //TODO: fetch goal DELETE
+  
 };
 
 export const startGame = async (args) => {
   if (args.period === 'first') {
-    //TODO: fetch game create ?
+    
     await createGame();
   } else {
     if (store.getState().streaming.isStreaming) {
@@ -680,19 +678,19 @@ export const startGame = async (args) => {
         noTime: false,
       });
     }
-    //TODO: 00:00 timer.html input added to scene game on top of scoreboard
+    
   }
-  //TODO: start UI timer on scorecard
-  //TODO: disable start game button
+  
+  
 };
 
 export const halfTime = async () => {
-  //TODO: Timer UI stops => 45:09 to HT
+  
   //if (startStreaming redux true?) {
-  //TODO: Update scorecard/timer
-  //TODO: Refresh scorecard/timer
+  
+  
 
-  //TODO: isHalf time dispatch true
+  
   //DONE: showStats()
   if (store.getState().streaming.isStreaming) {
     await showStats();
@@ -703,12 +701,12 @@ export const halfTime = async () => {
       noTime: true,
     });
   }
-  //TODO: enable start game button
+  
 };
 
 export const endGame = async () => {
-  //TODO: fetch game ended?
-  //TODO: Timer UI stops => 90:09 to FT
+  
+  
   if (store.getState().streaming.isStreaming) {
     await showStats();
     await writeTimer({
@@ -720,8 +718,8 @@ export const endGame = async () => {
   }
   store.dispatch(gameSlice.actions.setGameId(''));
   //if(startStreaming redux true){
-  //TODO: timer.html stopped -> FT, refresh OBS
-  //TODO: disable all buttons (except stream)
+  
+  
   //else{
-  //TODO: Redirect to dashboard
+  
 };

@@ -51,11 +51,9 @@ const LoginScreen = (props) => {
         />
         {error && <p style={{textAlign:"center"}}>{error}</p>}
         <div className="btn-wrapper">
-          {/* <Link to="/dashboard"> */}
           <button onClick={login} className="btn login-btn">
             {isLoading?<Spinner style={{'transform':'scale(0.4)'}} />:`LOGIN`}
           </button>
-          {/* </Link> */}
           <button className="btn signup-btn">SIGNUP</button>
         </div>
       </div>
