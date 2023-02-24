@@ -16,7 +16,7 @@ import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 
 import '../../Styles/Molecules/SoccerGameButtons.css';
-const SoccerGameButtons = (props) => {
+const BasketballGameButtons = (props) => {
   const dispatch = useDispatch();
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
@@ -56,8 +56,7 @@ const SoccerGameButtons = (props) => {
       dispatch(teamActions.resetNames());
       dispatch(pointAwayActions.reset());
       dispatch(pointHomeActions.reset());
-      navigate("/dashboard", { replace: true });
-
+      navigate('/dashboard', { replace: true });
     } else {
       dispatch(gameActions.setGameEnded(true));
       dispatch(gameActions.setHalfTime(false));
@@ -73,14 +72,16 @@ const SoccerGameButtons = (props) => {
       //TODO: activeGame redux dispatch
       dispatch(gameActions.setActiveGame(true));
       if (isStreaming) {
-       (async () => { await generateScoreCardTimer();
-        sleep(43);
-        await writeTimer({
-          gameSequence: 'First Half',
-          minute: 0,
-          startTimePrint: '00:00',
-          noTime: false
-        }); })();
+        (async () => {
+          await generateScoreCardTimer();
+          sleep(43);
+          await writeTimer({
+            gameSequence: 'First Half',
+            minute: 0,
+            startTimePrint: '00:00',
+            noTime: false,
+          });
+        })();
       }
     }
   }, [gameId]);
@@ -152,4 +153,4 @@ const SoccerGameButtons = (props) => {
   );
 };
 
-export default SoccerGameButtons;
+export default BasketballGameButtons;

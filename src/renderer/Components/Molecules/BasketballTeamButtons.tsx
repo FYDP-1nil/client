@@ -15,12 +15,15 @@ import { RootState } from 'renderer/store';
 import * as homeGoalActions from 'renderer/Slice/pointHomeSlice';
 import * as awayGoalActions from 'renderer/Slice/pointAwaySlice';
 
-const BasketballTeamButtons = ({isHomeTeam}) => {
-
-  const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
-  const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
-  const homeTeamScore = useSelector((state: RootState) => state.pointHome.value);
-  const awayTeamScore = useSelector((state: RootState) => state.pointAway.value);
+const BasketballTeamButtons = ({ isHomeTeam }) => {
+  const homeTeam = useSelector((state: RootState) => state.teams.homeTeamName);
+  const awayTeam = useSelector((state: RootState) => state.teams.awayTeamName);
+  const homeTeamScore = useSelector(
+    (state: RootState) => state.pointHome.value
+  );
+  const awayTeamScore = useSelector(
+    (state: RootState) => state.pointAway.value
+  );
   const time = useSelector((state: RootState) => state.game.currentMinute);
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
 
@@ -84,7 +87,6 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
         assist: assistPlayer,
         celebrate: false,
       });
-
     }
     setGoalPlayer('');
     setAssistPlayer('');
@@ -136,7 +138,7 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
     await showOffside({
       teamFor: isHomeTeam ? homeTeam : awayTeam,
       teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-  });
+    });
   };
 
   const yellowcard = async (e) => {
@@ -168,100 +170,106 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
     await showPenalty({
       teamFor: isHomeTeam ? homeTeam : awayTeam,
       teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-  });
+    });
   };
 
   return (
-    <div style={{opacity:activeGame?"1":"0.5"}} className="soccer-team-btns">
+    <div
+      style={{ opacity: activeGame ? '1' : '0.5' }}
+      className="soccer-team-btns"
+    >
       <div
         className=" goal-counter-wrapper"
         style={{ flexDirection: isHomeTeam ? 'row' : 'row-reverse' }}
       >
-        <div className="goal-scorer-input-wrapper">
-          <input
-            className="player-input"
-            placeholder="*Goal from"
-            value={goalPlayer}
-            onChange={(e) => setGoalPlayer(e.target.value)}
-          />
-          <input
-            className="player-input"
-            placeholder="Assist from"
-            value={assistPlayer}
-            onChange={(e) => setAssistPlayer(e.target.value)}
-          />
-        </div>
-        <div className="counter">
-          <div onClick={!activeGame ? undefined : goal} className="counter-btn">
-            <div id="plusbg" />
-            <div id="plus" />
-          </div>
-          <p>{isHomeTeam ? homeTeamScore : awayTeamScore}</p>
+        <div className="soccer-btn-card shot-wrapper">
+          <p>SHOT</p>
           <div
-            onClick={!activeGame ? undefined : deleteGoal}
-            className="counter-btn"
+            onChange={() => null}
+            style={{
+              fontWeight: 'normal',
+              margin: '5px 0px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}
           >
-            <div id="minusbg" />
-            <div id="minus" />
+            <div>
+              <input
+                style={{ margin: '0px 5px' }}
+                type="radio"
+                value={3}
+                name="shot"
+              />
+              1pt
+            </div>
+            <div>
+              <input
+                style={{ margin: '0px 5px' }}
+                type="radio"
+                value={1}
+                name="shot"
+              />
+              2pt
+            </div>
+            <div>
+              <input
+                style={{ margin: '0px 5px' }}
+                type="radio"
+                value={0}
+                name="shot"
+              />
+              3pt
+            </div>
+            <div>
+              <input
+                style={{ margin: '0px 5px' }}
+                type="radio"
+                value={-1}
+                name="shot"
+              />
+              Miss
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div className="soccer-btn-card shot-wrapper">
-        <p>SHOT</p>
-        <div className="shot-input-wrapper">
-          <label className="on-target-cb-label">
-            <input
-              checked={onTarget}
-              onChange={() => setShotOnTarget((prev) => !prev)}
-              className="on-target-cb"
-              type="checkbox"
-              placeholder="On Target?"
-            />
-            <p style={{ fontWeight: 'normal' }}>On Target?</p>
-          </label>
-          <div className="shot-btn-wrapper">
+          <div className="substitution-btn-wrapper" style={{justifyContent:"flex-end"}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             <div
               onClick={!activeGame ? undefined : shot}
               className="counter-btn"
             >
-              <div id="plusbg" />
-              <div id="plus" />
+              <div id="plusbg" style={{ marginLeft: '6px' }} />
+              <div id="plus" style={{ marginLeft: '6px', marginRight:"10px" }} />
             </div>
-            <input
-              className="player-input"
-              placeholder="*Player"
-              value={shotPlayer}
-              onChange={(e) => setShotPlayer(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="soccer-btn-card substitution-wrapper">
-        <p>SUBSTITUTION</p>
-        <div className="substitution-btn-wrapper">
-          <div
-            onClick={!activeGame ? undefined : subs}
-            className="substitution-btn"
+            <div
+            onClick={!activeGame ? undefined : deleteGoal}
+            className="counter-btn"
+            style={{marginRight:"8px"}}
           >
-            🔄
+            <div id="minusbg" />
+            <div id="minus" style={{marginRight:"10px"}} />
           </div>
-          <div className="substitution-input-wrapper">
-            <input
-              className="player-input"
-              placeholder="*Player ON"
-              value={playerOn}
-              onChange={(e) => setPlayerOn(e.target.value)}
-            />
-            <input
-              className="player-input"
-              placeholder="*Player OFF"
-              value={playerOff}
-              onChange={(e) => setPlayerOff(e.target.value)}
-            />
           </div>
-        </div>
+            <div
+              style={{ marginLeft: '-10px', height: 'auto' }}
+              className="substitution-input-wrapper"
+            >
+              <input
+                className="player-input"
+                placeholder="*Player"
+                style={{ margin: '3px 0px' }}
+                value={playerOn}
+                onChange={(e) => setPlayerOn(e.target.value)}
+              />
+              <input
+                className="player-input"
+                placeholder="Assist"
+                style={{ margin: '3px 0px' }}
+                value={playerOn}
+                onChange={(e) => setPlayerOn(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>{' '}
       </div>
 
       <div className="soccer-btn-card foul-wrapper">
@@ -287,20 +295,13 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
         </div>
       </div>
 
-      <div
-        onClick={!activeGame ? undefined : offside}
-        className="soccer-btn-card team-btn offside-btn"
-      >
-        <p>OFFSIDE</p>
-      </div>
       <div className="soccer-btn-card yellow-card-wrapper">
-        <p>YELLOW CARD</p>
+        <p>REBOUND</p>
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
-          <div
-            onClick={!activeGame ? undefined : yellowcard}
-            className="yellow-card-btn"
-          />
+          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+            🫱🏽
+          </div>
           <input
             className="player-input"
             placeholder="*Player"
@@ -309,13 +310,29 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
           />
         </div>
       </div>
-      <div className="soccer-btn-card red-card-wrapper">
-        <p>RED CARD</p>
-        <div className="red-card-btn-wrapper">
-          <div
-            onClick={!activeGame ? undefined : redcard}
-            className="red-card-btn"
+
+      <div className="soccer-btn-card yellow-card-wrapper">
+        <p>BLOCK</p>
+        {/* <p>*Player</p> */}
+        <div className="yellow-card-btn-wrapper">
+          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+            🖐🏽
+          </div>
+          <input
+            className="player-input"
+            placeholder="*Player"
+            value={yellowPlayer}
+            onChange={(e) => setYellowPlayer(e.target.value)}
           />
+        </div>
+      </div>
+
+      <div className="soccer-btn-card red-card-wrapper">
+        <p>STEAL</p>
+        <div className="red-card-btn-wrapper">
+          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+            🫳🏽
+          </div>
           <input
             className="player-input"
             placeholder="*Player"
@@ -324,11 +341,28 @@ const BasketballTeamButtons = ({isHomeTeam}) => {
           />
         </div>
       </div>
+
+      <div className="soccer-btn-card yellow-card-wrapper">
+        <p>TURNOVER</p>
+        {/* <p>*Player</p> */}
+        <div className="yellow-card-btn-wrapper">
+          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+            ↩️
+          </div>
+          <input
+            className="player-input"
+            placeholder="*Player"
+            value={yellowPlayer}
+            onChange={(e) => setYellowPlayer(e.target.value)}
+          />
+        </div>
+      </div>
+
       <div
         onClick={!activeGame ? undefined : penalty}
         className="soccer-btn-card team-btn penalty-btn"
       >
-        <p>PENALTY</p>
+        <p>TIMEOUT</p>
       </div>
     </div>
   );

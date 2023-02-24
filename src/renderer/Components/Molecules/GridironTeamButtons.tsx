@@ -195,7 +195,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={3}
-              name="kick"
+              name="throw"
             />
             2pt
           </div>
@@ -204,7 +204,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={1}
-              name="kick"
+              name="throw"
             />
             6pt
           </div>
@@ -213,7 +213,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={0}
-              name="kick"
+              name="throw"
             />
             Down
           </div>
@@ -222,7 +222,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={-1}
-              name="kick"
+              name="throw"
             />
             Miss
           </div>
@@ -278,7 +278,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={3}
-              name="kick"
+              name="rush"
             />
             2pt
           </div>
@@ -287,7 +287,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={1}
-              name="kick"
+              name="rush"
             />
             6pt
           </div>
@@ -296,7 +296,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               style={{ margin: '0px 5px' }}
               type="radio"
               value={0}
-              name="kick"
+              name="rush"
             />
             Down
           </div>

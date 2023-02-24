@@ -3,7 +3,7 @@ import { RootState } from 'renderer/store';
 import '../../Styles/Molecules/SoccerScoreCard.css';
 import Stopwatch from './Stopwatch';
 
-const SoccerScoreCard = () => {
+const BasketballScoreCard = () => {
   
   const homeTeam = useSelector((state:RootState)=>state.teams.homeTeamName);
   const awayTeam = useSelector((state:RootState)=>state.teams.awayTeamName);
@@ -30,7 +30,7 @@ const SoccerScoreCard = () => {
               <span style={{color:'red'}} className="soccer-score-match-score-number">{awayTeamScore}</span>
             </div>
             <div style={{color:'green'}} className="soccer-score-match-time-lapsed">
-             <Stopwatch />
+             <Stopwatch qtr={true} />
             </div>
           </div>
         </div>
@@ -48,4 +48,4 @@ const SoccerScoreCard = () => {
   );
 };
 
-export default SoccerScoreCard;
+export default BasketballScoreCard;

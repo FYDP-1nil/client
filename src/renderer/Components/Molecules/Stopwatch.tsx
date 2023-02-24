@@ -4,7 +4,7 @@ import { RootState } from "renderer/store";
 import * as gameActions from 'renderer/Slice/gameSlice';
 
 
-const Stopwatch = () => {
+const Stopwatch = ({qtr}) => {
   const [time, setTime] = useState(0);
   const [counter, setCounter] = useState(0);
   const [running, setRunning] = useState(true);
@@ -49,7 +49,7 @@ const Stopwatch = () => {
   return (
     <div className="stopwatch">
       {gameEnded ? <div>FT</div> : isHalfTime?<div>HT</div>:<div className="numbers">
-        <span>{`Q1 `}</span>
+        {qtr && <span>{`Q1 `}</span>}
         <span>{("0" + Math.floor((time / 60000))).slice(-2)}:</span>
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
       </div>}

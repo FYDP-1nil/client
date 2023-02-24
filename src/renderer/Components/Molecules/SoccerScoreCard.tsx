@@ -30,7 +30,7 @@ const SoccerScoreCard = () => {
               <span style={{color:'red'}} className="soccer-score-match-score-number">{awayTeamScore}</span>
             </div>
             <div style={{color:'green'}} className="soccer-score-match-time-lapsed">
-             <Stopwatch />
+             <Stopwatch qtr={false} />
             </div>
           </div>
         </div>
