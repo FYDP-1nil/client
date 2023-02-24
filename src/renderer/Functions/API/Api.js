@@ -122,11 +122,30 @@ export const getStats = async(type) => {
 
 };
 
-// export const createUser = async() => {
-//   axios.post(`${baseURL}/1`).then((response) => {
-//     setPost(response.data);
-//   }).catch((e)=>return e)
+export const createUser = async(email,user,pass) => {
+  let res = false;
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data: {
+        email: email,
+        username: user,
+        userpassword: pass,
+      },
+      method: 'POST',
+      url: `${baseURL}/users/create`,
+    });
+    res = true;
+  } catch (err) {
+    return res;
+  }
+  return res;
+};
+
+// export const createLeague = async() => {
+
 // };
+
 
 export const loginUser = async (user, pass) => {
 

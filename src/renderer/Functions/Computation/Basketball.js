@@ -111,9 +111,15 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //DONE: create substitution scene
-  //DONE: add input to substitution scene
-  await generateSubsSource(sceneList?.scenes);
+  //DONE: create 2pt scene
+  //DONE: add input to 2pt scene
+  await generate2PTSource(sceneList?.scenes);
+
+  sleep(43);
+
+  //DONE: create 3pt scene
+  //DONE: add input to 3pt scene
+  await generate3PTSource(sceneList?.scenes);
 
   sleep(43);
 
@@ -123,33 +129,9 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //DONE: create offside scene
-  //DONE: add input to offside scene
-  await generateOffsideSource(sceneList?.scenes);
-
-  sleep(43);
-
-  //DONE: create yellow card scene
-  //DONE: add input to yellow card scene
-  await generateYellowCardSource(sceneList?.scenes);
-
-  sleep(43);
-
-  //DONE: create red card scene
-  //DONE: add input to red card scene
-  await generateRedCardSource(sceneList?.scenes);
-
-  sleep(43);
-
-  //DONE: create penalty scene
-  //DONE: add input to penalty scene
-  await generatePenaltySource(sceneList?.scenes);
-
-  sleep(43);
-
-  //DONE: create goal scene
-  //DONE: add input to goal scene
-  await generateGoalSource(sceneList?.scenes);
+  //DONE: create timeout scene
+  //DONE: add input to timeout scene
+  await generateTimeoutSource(sceneList?.scenes);
 
   sleep(43);
 
@@ -171,7 +153,7 @@ export const startStream = async () => {
     await generateScoreCardTimer();
     sleep(43);
     await writeTimer({
-      gameSequence: 'First Half',
+      gameSequence: 'Q1',
       minute: store.getState().game.currentMinute,
       startTimePrint: `${store.getState().game.currentMinute}:00`,
       noTime: false,
@@ -181,49 +163,49 @@ export const startStream = async () => {
   sleep(43);
 
   //IRAM DEBUGGING REMOVE THIS CALL
-  await runOBSMethod('CreateInput', {
-    sceneName: 'game',
-    inputName: 'test',
-    inputKind: 'browser_source',
-    inputSettings: {
-      height: 195,
-      is_local_file: true,
-      local_file: pathJoin(
-      getAssetPath(),
-      '/browser_source/gridiron/kick.html'
-      ),
-      width: 424,
-      css: '',
-    },
-  }).then((res) =>
-    runOBSMethod('SetSceneItemTransform', {
-      sceneName: 'game',
-      sceneItemId: res?.sceneItemId,
-      sceneItemTransform: {
-        alignment: 5,
-        boundsAlignment: 0,
-        boundsHeight: 1.0,
-        boundsType: 'OBS_BOUNDS_NONE',
-        boundsWidth: 1.0,
-        cropBottom: 0,
-        cropLeft: 0,
-        cropRight: 0,
-        cropTop: 0,
-        height: 195,
-        positionX: 430,
-        positionY: 512,
-        rotation: 0,
-        scaleX: 0.8479999899864197,
-        scaleY: 0.8478260636329651,
-        sourceHeight: 230,
-        sourceWidth: 500,
-        width: 424,
-      },
-    })
-  );
-  await runOBSMethod('GetInputDefaultSettings', {
-    inputKind: 'browser_source',
-  }).then((res) => console.log('{}{}{}', res));
+  // await runOBSMethod('CreateInput', {
+  //   sceneName: 'game',
+  //   inputName: 'test',
+  //   inputKind: 'browser_source',
+  //   inputSettings: {
+  //     height: 195,
+  //     is_local_file: true,
+  //     local_file: pathJoin(
+  //     getAssetPath(),
+  //     '/browser_source/gridiron/kick.html'
+  //     ),
+  //     width: 424,
+  //     css: '',
+  //   },
+  // }).then((res) =>
+  //   runOBSMethod('SetSceneItemTransform', {
+  //     sceneName: 'game',
+  //     sceneItemId: res?.sceneItemId,
+  //     sceneItemTransform: {
+  //       alignment: 5,
+  //       boundsAlignment: 0,
+  //       boundsHeight: 1.0,
+  //       boundsType: 'OBS_BOUNDS_NONE',
+  //       boundsWidth: 1.0,
+  //       cropBottom: 0,
+  //       cropLeft: 0,
+  //       cropRight: 0,
+  //       cropTop: 0,
+  //       height: 195,
+  //       positionX: 430,
+  //       positionY: 512,
+  //       rotation: 0,
+  //       scaleX: 0.8479999899864197,
+  //       scaleY: 0.8478260636329651,
+  //       sourceHeight: 230,
+  //       sourceWidth: 500,
+  //       width: 424,
+  //     },
+  //   })
+  // );
+  // await runOBSMethod('GetInputDefaultSettings', {
+  //   inputKind: 'browser_source',
+  // }).then((res) => console.log('{}{}{}', res));
   //REMOVE BETWEEN
 
   //DONE: startstream OBS call
@@ -330,200 +312,90 @@ export const showStats = async () => {
   }
 };
 
-export const showSubs = async (args) => {
-  //TODO: fetch subs
-  //DONE: write to subs file
+//TODO
+export const show2PT = async (args) => {
+  //TODO: api send event
   if (store.getState().streaming.isStreaming) {
-    await writeSubs(args);
-
-    //DONE: refresh subs input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'substitutioncard',
-      propertyName: 'refreshnocache',
-    });
-
-    sleep(43);
-
-    //DONE: switch to subs scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'substitution',
-    });
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
+    //TODO: enable 2pt source and add delay
+    //TODO: disable 2pt source
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'substitution',
+    // });
+    // //DONE: sleep(3000)
+    // await sleep(3000);
+    // // DONE: switch back to game
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'game',
+    // });
   }
 };
 
-export const showRedCard = async (args) => {
-  //TODO: fetch redcard
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'foul',
-    event: {
-      is_yellow: false,
-      is_red: true,
-      player: args.player,
-      reason: 'Red Card',
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      time: store.getState().game.currentMinute,
-    },
-  });
-
-  if (store.getState().streaming.isStreaming) {
-    //DONE: write to redcard file
-    await writeRedCard(args);
-
-    //DONE: refresh redcard input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'redcardcard',
-      propertyName: 'refreshnocache',
-    });
-
-    sleep(43);
-
-    //DONE: switch to redcard scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'redcard',
-    });
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
-  }
+export const show1pt = async (args) => {
+    //TODO: api send event
 };
 
-export const showYellowCard = async (args) => {
-  //TODO: fetch yellowcard
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'foul',
-    event: {
-      is_yellow: true,
-      is_red: false,
-      player: args.player,
-      reason: 'Yellow Card',
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      time: store.getState().game.currentMinute,
-    },
-  });
+export const showMiss = async (args) => {
+  //TODO: api send event
+};
 
+//TODO
+export const show3PT = async (args) => {
+  //TODO: api send event
   if (store.getState().streaming.isStreaming) {
-    //DONE: write to yellowcard file
-    await writeYellowCard(args);
-
-    //DONE: refresh yellowcard input
-    await runOBSMethod('PressInputPropertiesButton', {
-      inputName: 'yellowcardcard',
-      propertyName: 'refreshnocache',
-    });
-
-    sleep(43);
-
-    //DONE: switch to subs scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'yellowcard',
-    });
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
+    //TODO: enable 3pt source and add delay
+    //TODO: disable 3pt source
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'substitution',
+    // });
+    // //DONE: sleep(3000)
+    // await sleep(3000);
+    // // DONE: switch back to game
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'game',
+    // });
   }
 };
 
 export const showFoul = async (args) => {
-  //TODO: fetch foul
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'foul',
-    event: {
-      is_yellow: false,
-      is_red: false,
-      player: args.player,
-      reason: args.reason,
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      time: store.getState().game.currentMinute,
-    },
-  });
-
+  //TODO: api send event
   if (store.getState().streaming.isStreaming) {
-    //DONE: switch to foul scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'foul',
-    });
-
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
+    //TODO: enable foul source and add delay
+    //TODO: disable foul source
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'substitution',
+    // });
+    // //DONE: sleep(3000)
+    // await sleep(3000);
+    // // DONE: switch back to game
+    // await runOBSMethod('SetCurrentProgramScene', {
+    //   sceneName: 'game',
+    // });
   }
 };
 
-export const showPenalty = async (args) => {
-  //TODO: fetch penalty
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'foul',
-    event: {
-      is_yellow: false,
-      is_red: false,
-      player: '',
-      reason: 'Penalty',
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      time: store.getState().game.currentMinute,
-    },
-  });
-
-  if (store.getState().streaming.isStreaming) {
-    //DONE: switch to penalty scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'penalty',
-    });
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
-  }
+export const showRebound = async (args) => {
+  //TODO: api send event
 };
 
-export const showOffside = async (args) => {
-  //TODO: fetch offside
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'offside',
-    event: {
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      time: store.getState().game.currentMinute,
-    },
-  });
+export const showBlock = async (args) => {
+  //TODO: api send event
+};
 
-  if (store.getState().streaming.isStreaming) {
-    //DONE: switch to offside scene
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'offside',
-    });
-    //DONE: sleep(3000)
-    await sleep(3000);
-    // DONE: switch back to game
-    await runOBSMethod('SetCurrentProgramScene', {
-      sceneName: 'game',
-    });
-  }
+export const showSteal = async (args) => {
+  //TODO: api send event
+};
+
+export const showTurnover = async (args) => {
+  //TODO: api send event
+};
+
+export const showTimeout = async (args) => {
+  //TODO: api send event
+};
+
+//TODO
+export const showQtr = async (args) => {
+  // which quarter is args? or redux
 };
 
 export const showGoal = async (args) => {
