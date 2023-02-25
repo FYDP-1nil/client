@@ -1,19 +1,10 @@
 import '../../Styles/Molecules/SoccerTeamButtons.css';
 import { useEffect, useState } from 'react';
-import {
-  showFoul,
-  showGoal,
-  showOffside,
-  showPenalty,
-  showRedCard,
-  showShot,
-  showSubs,
-  showYellowCard,
-} from 'renderer/Functions/Computation/Soccer';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'renderer/store';
 import * as homeGoalActions from 'renderer/Slice/pointHomeSlice';
 import * as awayGoalActions from 'renderer/Slice/pointAwaySlice';
+import { show1pt, show2PT, show3PT, showBlock, showFixedScore, showFoul, showMiss, showRebound, showSteal, showTimeout, showTurnover } from 'renderer/Functions/Computation/Basketball';
 
 const BasketballTeamButtons = ({ isHomeTeam }) => {
   const homeTeam = useSelector((state: RootState) => state.teams.homeTeamName);
@@ -24,154 +15,331 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
   const awayTeamScore = useSelector(
     (state: RootState) => state.pointAway.value
   );
-  const time = useSelector((state: RootState) => state.game.currentMinute);
+  const period = useSelector((state: RootState) => state.game.currentQuarter);
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
 
   const dispatch = useDispatch();
 
-  const [goalPlayer, setGoalPlayer] = useState('');
+  const [player, setPlayer] = useState('');
   const [assistPlayer, setAssistPlayer] = useState('');
-  const [shotPlayer, setShotPlayer] = useState('');
-  const [onTarget, setShotOnTarget] = useState(false);
-  const [playerOn, setPlayerOn] = useState('');
-  const [playerOff, setPlayerOff] = useState('');
   const [foulPlayer, setFoulPlayer] = useState('');
   const [foulReason, setFoulReason] = useState('');
-  const [yellowPlayer, setYellowPlayer] = useState('');
-  const [redPlayer, setRedPlayer] = useState('');
+  const [reboundPlayer, setReboundPlayer] = useState('');
+  const [blockPlayer, setBlockPlayer] = useState('');
+  const [stealPlayer, setStealPlayer] = useState('');
+  const [turnoverPlayer, setTurnoverPlayer] = useState('');
+  const [point, setPoint] = useState<any>(0);
+  const [miss, setMiss] = useState(false);
 
-  const goal = async (e) => {
+  const deletePt = async (e) => {
     e.preventDefault();
-    if (goalPlayer) {
-      let homeScore = homeTeamScore + 1;
-      let awayScore = awayTeamScore + 1;
-
-      dispatch(
-        isHomeTeam ? homeGoalActions.increment() : awayGoalActions.increment()
-      );
-
-      await showGoal({
-        homeTeam,
-        awayTeam,
-        homeTeamScore: isHomeTeam ? homeScore : homeTeamScore,
-        awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
-        time,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-        scorer: goalPlayer,
-        assist: assistPlayer,
-        celebrate: true,
-      });
+    if (isHomeTeam) {
+      if (homeTeamScore - parseInt(point) >= 0) {
+        await showFixedScore({
+          homeTeam,
+          awayTeam,
+          homeTeamScore: homeTeamScore - parseInt(point),
+          awayTeamScore: awayTeamScore,
+        });
+        switch (point) {
+          case "1":
+            // code block
+            dispatch(homeGoalActions.decrement());
+            break;
+          case "2":
+            // code block
+            dispatch(homeGoalActions.minus2());
+            break;
+          case "3":
+            // code block
+            dispatch(homeGoalActions.minus3());
+            break;
+          default:
+            break;
+        }
+      }
+    } else {
+      if (awayTeamScore - parseInt(point) >= 0) {
+        await showFixedScore({
+          homeTeam,
+          awayTeam,
+          homeTeamScore: homeTeamScore,
+          awayTeamScore: awayTeamScore - parseInt(point),
+        });
+        switch (point) {
+          case "1":
+            // code block
+            dispatch(awayGoalActions.decrement());
+            break;
+          case "2":
+            // code block
+            dispatch(awayGoalActions.minus2());
+            break;
+          case "3":
+            // code block
+            dispatch(awayGoalActions.minus3());
+            break;
+          default:
+            break;
+        }
+      }
     }
-    setGoalPlayer('');
-    setAssistPlayer('');
-  };
-
-  const deleteGoal = async (e) => {
-    e.preventDefault();
-
-    if ((isHomeTeam && homeTeamScore) || (!isHomeTeam && awayTeamScore)) {
-      dispatch(
-        isHomeTeam ? homeGoalActions.decrement() : awayGoalActions.decrement()
-      );
-
-      await showGoal({
-        homeTeam,
-        awayTeam,
-        homeTeamScore: isHomeTeam ? homeTeamScore - 1 : homeTeamScore,
-        awayTeamScore: isHomeTeam ? awayTeamScore : awayTeamScore - 1,
-        time,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-        scorer: goalPlayer,
-        assist: assistPlayer,
-        celebrate: false,
-      });
-    }
-    setGoalPlayer('');
+    setPlayer('');
     setAssistPlayer('');
   };
 
   const shot = async (e) => {
     e.preventDefault();
-    if (shotPlayer) {
-      await showShot({
-        scorer: shotPlayer,
-        onTarget,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-      });
+    if (player) {
+      if (isHomeTeam) {
+        switch (point) {
+          case "1":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else {
+              dispatch(homeGoalActions.increment());
+              await show1pt({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',
+              });
+            }
+            break;
+          case "2":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else {
+              dispatch(homeGoalActions.plus2());
+              await show2PT({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',
+              });
+            }
+            break;
+          case "3":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else { 
+              dispatch(homeGoalActions.plus3());
+              await show3PT({
+                team_for: homeTeam,
+                team_against: awayTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (point) {
+          case "1":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else {
+              dispatch(awayGoalActions.increment());
+              await show1pt({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',
+              });
+            }
+            break;
+          case "2":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else {
+              dispatch(awayGoalActions.plus2());
+              await show2PT({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',    
+              });
+            }
+            break;
+          case "3":
+            // code block
+            if(miss){
+              await showMiss({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'miss',
+              });
+            }
+            else {
+              dispatch(awayGoalActions.plus3());
+              await show3PT({
+                team_for: awayTeam,
+                team_against: homeTeam,
+                player,
+                assist: assistPlayer,
+                period,
+                point: parseInt(point),
+                result: 'made',    
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      }
     }
-    setShotPlayer('');
+    setPlayer('');
+    setAssistPlayer('');
   };
 
-  const subs = async (e) => {
-    e.preventDefault();
-    if (playerOn && playerOff) {
-      await showSubs({
-        playerOn,
-        playerOff,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
-      });
-    }
-    setPlayerOff('');
-    setPlayerOn('');
-  };
 
   const foul = async (e) => {
     e.preventDefault();
     if (foulPlayer) {
       await showFoul({
+        team_for: isHomeTeam? homeTeam : awayTeam,
+        team_against: isHomeTeam? awayTeam : homeTeam,
         player: foulPlayer,
         reason: foulReason,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+        period,
       });
     }
     setFoulPlayer('');
     setFoulReason('');
   };
 
-  const offside = async (e) => {
+  const rebound = async (e) => {
     e.preventDefault();
-    await showOffside({
-      teamFor: isHomeTeam ? homeTeam : awayTeam,
-      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-    });
-  };
-
-  const yellowcard = async (e) => {
-    e.preventDefault();
-    if (yellowPlayer) {
-      await showYellowCard({
-        player: yellowPlayer,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+    if(reboundPlayer){
+      await showRebound({
+        team_for: isHomeTeam? homeTeam : awayTeam,
+        team_against: isHomeTeam? awayTeam : homeTeam,
+        player: reboundPlayer,
+        period,
       });
     }
-    setYellowPlayer('');
+    setReboundPlayer('');
   };
 
-  const redcard = async (e) => {
+  const block = async (e) => {
     e.preventDefault();
-    if (redPlayer) {
-      await showRedCard({
-        player: redPlayer,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+    if(blockPlayer){
+      await showBlock({
+        team_for: isHomeTeam? homeTeam : awayTeam,
+        team_against: isHomeTeam? awayTeam : homeTeam,
+        player: blockPlayer,
+        period,
       });
     }
-    setRedPlayer('');
+    setBlockPlayer('');
   };
 
-  const penalty = async (e) => {
+  const steal = async (e) => {
     e.preventDefault();
-    await showPenalty({
-      teamFor: isHomeTeam ? homeTeam : awayTeam,
-      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-    });
+    if(stealPlayer){
+      await showSteal({
+        team_for: isHomeTeam? homeTeam : awayTeam,
+        team_against: isHomeTeam? awayTeam : homeTeam,
+        player: stealPlayer,
+        period,
+      });
+    }
+    setStealPlayer('');
   };
+
+  const turnover = async (e) => {
+    e.preventDefault();
+    if(turnoverPlayer){
+      await showTurnover({
+        team_for: isHomeTeam? homeTeam : awayTeam,
+        team_against: isHomeTeam? awayTeam : homeTeam,
+        player: turnoverPlayer,
+        period,
+      });
+    }
+    setTurnoverPlayer('');
+  };
+
+  const timeout = async (e) => {
+    e.preventDefault();
+    await showTimeout();
+  };
+
+  function onChangeShot(event) {
+    setPoint(event.target.value);
+  }
+
 
   return (
     <div
@@ -185,7 +353,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         <div className="soccer-btn-card shot-wrapper">
           <p>SHOT</p>
           <div
-            onChange={() => null}
+            onChange={onChangeShot}
             style={{
               fontWeight: 'normal',
               margin: '5px 0px',
@@ -198,7 +366,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
               <input
                 style={{ margin: '0px 5px' }}
                 type="radio"
-                value={3}
+                value={1}
                 name="shot"
               />
               1pt
@@ -207,7 +375,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
               <input
                 style={{ margin: '0px 5px' }}
                 type="radio"
-                value={1}
+                value={2}
                 name="shot"
               />
               2pt
@@ -216,21 +384,22 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
               <input
                 style={{ margin: '0px 5px' }}
                 type="radio"
-                value={0}
+                value={3}
                 name="shot"
               />
               3pt
             </div>
-            <div>
-              <input
-                style={{ margin: '0px 5px' }}
-                type="radio"
-                value={-1}
-                name="shot"
-              />
-              Miss
-            </div>
           </div>
+          <label className="on-target-cb-label" style={{ marginTop: '10px' }}>
+            <input
+              checked={miss}
+              onChange={() => setMiss((prev) => !prev)}
+              className="on-target-cb"
+              type="checkbox"
+              placeholder="Missed Shot?"
+            />
+            <p style={{ fontWeight: 'normal' }}>Missed Shot?</p>
+          </label>
           <div className="substitution-btn-wrapper" style={{justifyContent:"flex-end"}}>
             <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             <div
@@ -241,7 +410,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
               <div id="plus" style={{ marginLeft: '6px', marginRight:"10px" }} />
             </div>
             <div
-            onClick={!activeGame ? undefined : deleteGoal}
+            onClick={!activeGame ? undefined : deletePt}
             className="counter-btn"
             style={{marginRight:"8px"}}
           >
@@ -257,15 +426,15 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 className="player-input"
                 placeholder="*Player"
                 style={{ margin: '3px 0px' }}
-                value={playerOn}
-                onChange={(e) => setPlayerOn(e.target.value)}
+                value={player}
+                onChange={(e) => setPlayer(e.target.value)}
               />
               <input
                 className="player-input"
                 placeholder="Assist"
                 style={{ margin: '3px 0px' }}
-                value={playerOn}
-                onChange={(e) => setPlayerOn(e.target.value)}
+                value={assistPlayer}
+                onChange={(e) => setAssistPlayer(e.target.value)}
               />
             </div>
           </div>
@@ -299,14 +468,14 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         <p>REBOUND</p>
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
-          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : rebound} className="foul-btn">
             🫱🏽
           </div>
           <input
             className="player-input"
             placeholder="*Player"
-            value={yellowPlayer}
-            onChange={(e) => setYellowPlayer(e.target.value)}
+            value={reboundPlayer}
+            onChange={(e) => setReboundPlayer(e.target.value)}
           />
         </div>
       </div>
@@ -315,14 +484,14 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         <p>BLOCK</p>
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
-          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : block} className="foul-btn">
             🖐🏽
           </div>
           <input
             className="player-input"
             placeholder="*Player"
-            value={yellowPlayer}
-            onChange={(e) => setYellowPlayer(e.target.value)}
+            value={blockPlayer}
+            onChange={(e) => setBlockPlayer(e.target.value)}
           />
         </div>
       </div>
@@ -330,14 +499,14 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
       <div className="soccer-btn-card red-card-wrapper">
         <p>STEAL</p>
         <div className="red-card-btn-wrapper">
-          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : steal} className="foul-btn">
             🫳🏽
           </div>
           <input
             className="player-input"
             placeholder="*Player"
-            value={redPlayer}
-            onChange={(e) => setRedPlayer(e.target.value)}
+            value={stealPlayer}
+            onChange={(e) => setStealPlayer(e.target.value)}
           />
         </div>
       </div>
@@ -346,20 +515,20 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         <p>TURNOVER</p>
         {/* <p>*Player</p> */}
         <div className="yellow-card-btn-wrapper">
-          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : turnover} className="foul-btn">
             ↩️
           </div>
           <input
             className="player-input"
             placeholder="*Player"
-            value={yellowPlayer}
-            onChange={(e) => setYellowPlayer(e.target.value)}
+            value={turnoverPlayer}
+            onChange={(e) => setTurnoverPlayer(e.target.value)}
           />
         </div>
       </div>
 
       <div
-        onClick={!activeGame ? undefined : penalty}
+        onClick={!activeGame ? undefined : timeout}
         className="soccer-btn-card team-btn penalty-btn"
       >
         <p>TIMEOUT</p>

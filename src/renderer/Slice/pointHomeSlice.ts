@@ -52,6 +52,6 @@ export const pointHomeSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, reset } = pointHomeSlice.actions
+export const { increment, decrement, reset, plus2, plus3, plus6, minus2, minus3, minus6 } = pointHomeSlice.actions
 
 export default pointHomeSlice.reducer

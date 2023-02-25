@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import '../Styles/Dashboard.css';
 // import logo from '../../../assets/icons/128x128.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import GameOptions from './Molecules/GameOptions';
 
 const Dashboard = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [searchField, setSearchField] = useState('');
+
+  const navigate = useNavigate();
 
   return (
     <div className={`dashboard ${openModal ? 'blur' : ''}`}>
@@ -20,7 +22,7 @@ const Dashboard = (props) => {
         <button className="start-stream-btn" onClick={() => setOpenModal(true)}>
           Start Stream
         </button>
-        <button className="settings-btn">Settings</button>
+        <button onClick={()=>navigate('/settings')} className="settings-btn">Settings</button>
       </div>
       <div
         style={{
@@ -32,7 +34,7 @@ const Dashboard = (props) => {
           minHeight: '50px',
         }}
       >
-        <label>Search for league stats</label>
+        <label>Search for League-wide Stats</label>
         <div>
           <input id="example" value={searchField} onChange={(e)=>setSearchField(e.target.value)} type="text" name="text" placeholder='Enter League Name' />
           <input onClick={()=>console.log(searchField)} type="submit" value="Search" />

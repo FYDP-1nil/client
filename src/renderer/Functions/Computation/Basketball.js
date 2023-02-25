@@ -1,6 +1,11 @@
 import { gameSlice } from 'renderer/Slice/gameSlice';
 import { store } from 'renderer/store';
-import { createGame, getStats, postGameEvent } from '../API/Api';
+import {
+  createGame,
+  getStats,
+  postBasketballEvent,
+  postGameEvent,
+} from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
   generate2PTSource,
@@ -9,13 +14,9 @@ import {
   generateScoreCardSource,
   generateScoreCardTimer,
   generateStatsSource,
-  generateTimeoutSource
+  generateTimeoutSource,
 } from './BasketballObsHelper';
-import {
-  writeScoreCard,
-  writeStats,
-  writeTimer
-} from './BasketballTemplates';
+import { writeScoreCard, writeStats, writeTimer } from './BasketballTemplates';
 import { getAssetPath, pathJoin, sleep, writeToFile } from './utility';
 
 export const startStream = async () => {
@@ -50,10 +51,10 @@ export const startStream = async () => {
   sleep(43);
 
   //DONE: Create Game Scene
-  if(sceneList?.scenes.find(e => e.sceneName !== 'game')){
-  await runOBSMethod('CreateScene', {
-    sceneName: 'game',
-  });
+  if (sceneList?.scenes.find((e) => e.sceneName !== 'game')) {
+    await runOBSMethod('CreateScene', {
+      sceneName: 'game',
+    });
   }
 
   sleep(43);
@@ -162,52 +163,6 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //IRAM DEBUGGING REMOVE THIS CALL
-  // await runOBSMethod('CreateInput', {
-  //   sceneName: 'game',
-  //   inputName: 'test',
-  //   inputKind: 'browser_source',
-  //   inputSettings: {
-  //     height: 195,
-  //     is_local_file: true,
-  //     local_file: pathJoin(
-  //     getAssetPath(),
-  //     '/browser_source/gridiron/kick.html'
-  //     ),
-  //     width: 424,
-  //     css: '',
-  //   },
-  // }).then((res) =>
-  //   runOBSMethod('SetSceneItemTransform', {
-  //     sceneName: 'game',
-  //     sceneItemId: res?.sceneItemId,
-  //     sceneItemTransform: {
-  //       alignment: 5,
-  //       boundsAlignment: 0,
-  //       boundsHeight: 1.0,
-  //       boundsType: 'OBS_BOUNDS_NONE',
-  //       boundsWidth: 1.0,
-  //       cropBottom: 0,
-  //       cropLeft: 0,
-  //       cropRight: 0,
-  //       cropTop: 0,
-  //       height: 195,
-  //       positionX: 430,
-  //       positionY: 512,
-  //       rotation: 0,
-  //       scaleX: 0.8479999899864197,
-  //       scaleY: 0.8478260636329651,
-  //       sourceHeight: 230,
-  //       sourceWidth: 500,
-  //       width: 424,
-  //     },
-  //   })
-  // );
-  // await runOBSMethod('GetInputDefaultSettings', {
-  //   inputKind: 'browser_source',
-  // }).then((res) => console.log('{}{}{}', res));
-  //REMOVE BETWEEN
-
   //DONE: startstream OBS call
   await runOBSMethod('StartStream').catch((data) => console.log(data));
 
@@ -232,7 +187,7 @@ export const stopStream = async () => {
   let inputList = await runOBSMethod('GetInputList');
 
   if (inputList) {
-    console.log(inputList)
+    console.log(inputList);
     let results = inputList?.inputs.forEach(async (input) =>
       runOBSMethod('RemoveInput', {
         inputName: input.inputName,
@@ -253,8 +208,8 @@ export const stopStream = async () => {
           runOBSMethod('RemoveScene', {
             sceneName: scene.sceneName,
           });
-      })}
-    )
+      });
+    })
     .then(() => obs.disconnect().catch((e) => console.log(e)))
     .catch((e) => console.log(e));
   //TODO: redirect to dashboard
@@ -264,7 +219,7 @@ export const stopStream = async () => {
 export const showStats = async () => {
   //TODO: fetch stats
   //TODO: write to stats file
-  let stats = await getStats('soccer');
+  let stats = await getStats('basketball');
   console.log('YO FAM UR IN SHOW STATS', stats);
   if (stats) {
     // await writeStats(null);
@@ -274,20 +229,16 @@ export const showStats = async () => {
       await writeStats({
         homeTeam: reduxStore.teams.homeTeamName,
         awayTeam: reduxStore.teams.awayTeamName,
-        homeTeamGoals: reduxStore.pointHome.value,
-        awayTeamGoals: reduxStore.pointAway.value,
-        homeTeamShots: stats.team1.shots,
-        awayTeamShots: stats.team2.shots,
-        homeTeamShotsOnTarget: stats.team1.shots_on_target,
-        awayTeamShotsOnTarget: stats.team2.shots_on_target,
-        homeTeamFouls: stats.team1.fouls,
-        awayTeamFouls: stats.team2.fouls,
-        homeTeamYellowCards: stats.team1.yellow_cards,
-        awayTeamYellowCards: stats.team2.yellow_cards,
-        homeTeamRedCards: stats.team1.red_cards,
-        awayTeamRedCards: stats.team2.red_cards,
-        homeTeamOffsides: stats.team1.offsides,
-        awayTeamOffsides: stats.team2.offsides,
+        homeTeamFG: reduxStore.pointHome.value,
+        awayTeamFG: reduxStore.pointAway.value,
+        homeTeam3PT: stats.team1.shots,
+        awayTeam3PT: stats.team2.shots,
+        homeTeamFT: stats.team1.shots_on_target,
+        awayTeamFT: stats.team2.shots_on_target,
+        homeTeamTurnovers: stats.team1.fouls,
+        awayTeamTurnovers: stats.team2.fouls,
+        homeTeamSteals: stats.team1.yellow_cards,
+        awayTeamSteals: stats.team2.yellow_cards,
       });
 
       //DONE: refresh stats input
@@ -315,174 +266,251 @@ export const showStats = async () => {
 //TODO
 export const show2PT = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'point',
+    event: args,
+  });
   if (store.getState().streaming.isStreaming) {
     //TODO: enable 2pt source and add delay
-    //TODO: disable 2pt source
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'substitution',
-    // });
-    // //DONE: sleep(3000)
-    // await sleep(3000);
-    // // DONE: switch back to game
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'game',
-    // });
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: '2pt',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: true,
+      })
+    );
+    await writeScoreCard({
+      homeTeam: store.getState().teams.homeTeamName,
+      awayTeam: store.getState().teams.awayTeamName,
+      homeTeamScore: store.getState().pointHome.value,
+      awayTeamScore: store.getState().pointAway.value,
+    });
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+    await sleep(3000);
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: '2pt',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: false,
+      })
+    );
   }
 };
 
 export const show1pt = async (args) => {
-    //TODO: api send event
+  //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'point',
+    event: args,
+  });
+  if (store.getState().streaming.isStreaming) {
+    await writeScoreCard({
+      homeTeam: store.getState().teams.homeTeamName,
+      awayTeam: store.getState().teams.awayTeamName,
+      homeTeamScore: store.getState().pointHome.value,
+      awayTeamScore: store.getState().pointAway.value,
+    });
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+  }
 };
 
 export const showMiss = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'point',
+    event: args,
+  });
 };
 
 //TODO
 export const show3PT = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'point',
+    event: args,
+  });
   if (store.getState().streaming.isStreaming) {
-    //TODO: enable 3pt source and add delay
-    //TODO: disable 3pt source
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'substitution',
-    // });
-    // //DONE: sleep(3000)
-    // await sleep(3000);
-    // // DONE: switch back to game
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'game',
-    // });
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: '3pt',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: true,
+      })
+    );
+    await writeScoreCard({
+      homeTeam: store.getState().teams.homeTeamName,
+      awayTeam: store.getState().teams.awayTeamName,
+      homeTeamScore: store.getState().pointHome.value,
+      awayTeamScore: store.getState().pointAway.value,
+    });
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+    await sleep(3000);
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: '3pt',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: false,
+      })
+    );
   }
 };
 
 export const showFoul = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'foul',
+    event: args,
+  });
   if (store.getState().streaming.isStreaming) {
-    //TODO: enable foul source and add delay
-    //TODO: disable foul source
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'substitution',
-    // });
-    // //DONE: sleep(3000)
-    // await sleep(3000);
-    // // DONE: switch back to game
-    // await runOBSMethod('SetCurrentProgramScene', {
-    //   sceneName: 'game',
-    // });
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: 'foul',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: true,
+      })
+    );
+    await sleep(3000);
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: 'foul',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: false,
+      })
+    );
   }
 };
 
 export const showRebound = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'rebound',
+    event: args,
+  });
 };
 
 export const showBlock = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'block',
+    event: args,
+  });
 };
 
 export const showSteal = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'steal',
+    event: args,
+  });
 };
 
 export const showTurnover = async (args) => {
   //TODO: api send event
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'turnover',
+    event: args,
+  });
 };
 
-export const showTimeout = async (args) => {
-  //TODO: api send event
+export const showTimeout = async () => {
+  if (store.getState().streaming.isStreaming) {
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: 'timeout',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: true,
+      })
+    );
+    await sleep(3000);
+    await runOBSMethod('GetSceneItemId', {
+      sceneName: 'game',
+      sourceName: 'timeout',
+    }).then((data) =>
+      runOBSMethod('SetSceneItemEnabled', {
+        sceneName: 'game',
+        sceneItemId: data.sceneItemId,
+        sceneItemEnabled: false,
+      })
+    );
+  }
 };
 
 //TODO
-export const showQtr = async (args) => {
-  // which quarter is args? or redux
-};
-
-export const showGoal = async (args) => {
-  // console.log('SCORE IS', args.homeTeamScore);
-  //TODO: fetch goal
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'shot',
-    event: {
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      is_goal: true,
-      is_on_target: true,
-      scorer: args.scorer,
-      assist: args.assist,
-      time: args.time,
-    },
-  });
-  //DONE: write to scorecard file
-  await writeScoreCard(args);
-
+export const showQtr = async (number) => {
   if (store.getState().streaming.isStreaming) {
-    if (args.celebrate) {
-      //DONE: switch to goal scene
-      await runOBSMethod('SetCurrentProgramScene', {
-        sceneName: 'goal',
-      });
-      //DONE: refresh scorecard input
-      await runOBSMethod('PressInputPropertiesButton', {
-        inputName: 'scorecard',
-        propertyName: 'refreshnocache',
-      });
-      //DONE: sleep(3000)
-      await sleep(2000);
-      // DONE: switch back to game
-      await runOBSMethod('SetCurrentProgramScene', {
-        sceneName: 'game',
-      });
-    } else {
-      //DONE: refresh scorecard input
-      await runOBSMethod('PressInputPropertiesButton', {
-        inputName: 'scorecard',
-        propertyName: 'refreshnocache',
-      });
-    }
+    await writeTimer({
+      gameSequence: `Q${number}`,
+      minute: 0,
+      startTimePrint: `00:00`,
+      noTime: false,
+    });
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecardtimer',
+      propertyName: 'refreshnocache',
+    });
   }
-
-  //DONE: redux goal updates
-};
-
-export const showShot = async (args) => {
-  //TODO: fetch shot
-  postGameEvent({
-    game_id: store.getState().game.gameId,
-    event_type: 'shot',
-    event: {
-      team_for: args.teamFor,
-      team_against: args.teamAgainst,
-      is_goal: false,
-      is_on_target: args.onTarget,
-      scorer: args.scorer,
-      assist: '',
-      time: store.getState().game.currentMinute,
-    },
-  });
 };
 
 export const startGame = async (args) => {
   if (args.period === 'first') {
     //TODO: fetch game create ?
     await createGame();
-  } else {
-    if (store.getState().streaming.isStreaming) {
-      // await generateScoreCardTimer();
-      sleep(43);
-      await writeTimer({
-        gameSequence: 'Second Half',
-        minute: Math.min(store.getState().game.currentMinute, 45),
-        startTimePrint: `${Math.min(
-          store.getState().game.currentMinute,
-          45
-        )}:00`,
-        noTime: false,
-      });
-    }
-    //TODO: 00:00 timer.html input added to scene game on top of scoreboard
   }
+  // else {
+  // if (store.getState().streaming.isStreaming) {
+  //   // await generateScoreCardTimer();
+  //   sleep(43);
+  //   await writeTimer({
+  //     gameSequence: 'Second Half',
+  //     minute: Math.min(store.getState().game.currentMinute, 45),
+  //     startTimePrint: `${Math.min(
+  //       store.getState().game.currentMinute,
+  //       45
+  //     )}:00`,
+  //     noTime: false,
+  //   });
+  // }
+  //TODO: 00:00 timer.html input added to scene game on top of scoreboard
+  // }
   //TODO: start UI timer on scorecard
   //TODO: disable start game button
 };
@@ -509,6 +537,15 @@ export const halfTime = async () => {
 
 export const endGame = async () => {
   //TODO: fetch game ended?
+  postBasketballEvent({
+    game_id: store.getState().game.gameId,
+    play_type: 'end',
+    event: {
+      period: 4,
+      pts_home: store.getState().pointHome,
+      pts_away: store.getState().pointAway,
+    },
+  });
   //TODO: Timer UI stops => 90:09 to FT
   if (store.getState().streaming.isStreaming) {
     await showStats();
@@ -525,4 +562,14 @@ export const endGame = async () => {
   //TODO: disable all buttons (except stream)
   //else{
   //TODO: Redirect to dashboard
+};
+
+export const showFixedScore = async (args) => {
+  await writeScoreCard(args);
+  if (store.getState().streaming.isStreaming) {
+    await runOBSMethod('PressInputPropertiesButton', {
+      inputName: 'scorecard',
+      propertyName: 'refreshnocache',
+    });
+  }
 };

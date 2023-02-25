@@ -1,15 +1,16 @@
 import '../../Styles/Molecules/SoccerTeamButtons.css';
 import { useEffect, useState } from 'react';
 import {
-  showFoul,
-  showGoal,
-  showOffside,
-  showPenalty,
-  showRedCard,
-  showShot,
-  showSubs,
-  showYellowCard,
-} from 'renderer/Functions/Computation/Soccer';
+  showFixedScore,
+  showFlag,
+  showKick,
+  showQtr,
+  showRush,
+  showThrow,
+  showSafety,
+  showTimeout,
+  showTurnover,
+} from 'renderer/Functions/Computation/Gridiron';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'renderer/store';
 import * as homeGoalActions from 'renderer/Slice/pointHomeSlice';
@@ -24,153 +25,353 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
   const awayTeamScore = useSelector(
     (state: RootState) => state.pointAway.value
   );
+  const period = useSelector((state: RootState) => state.game.currentQuarter);
   const time = useSelector((state: RootState) => state.game.currentMinute);
   const activeGame = useSelector((state: RootState) => state.game.activeGame);
 
   const dispatch = useDispatch();
 
-  const [goalPlayer, setGoalPlayer] = useState('');
-  const [assistPlayer, setAssistPlayer] = useState('');
-  const [shotPlayer, setShotPlayer] = useState('');
-  const [onTarget, setShotOnTarget] = useState(false);
-  const [playerOn, setPlayerOn] = useState('');
-  const [playerOff, setPlayerOff] = useState('');
-  const [foulPlayer, setFoulPlayer] = useState('');
-  const [foulReason, setFoulReason] = useState('');
-  const [yellowPlayer, setYellowPlayer] = useState('');
-  const [redPlayer, setRedPlayer] = useState('');
+  const [throwPoint, setThrowPoint] = useState<any>(0);
+  const [rushPoint, setRushPoint] = useState<any>(0);
+  const [kickPoint, setKickPoint] = useState<any>(0);
+  const [confirm, setConfirm] = useState(false);
+  const [throwPlayer, setThrowPlayer] = useState('');
+  const [throwReceiver, setThrowReceiver] = useState('');
+  const [throwYds, setThrowYds] = useState('');
+  const [rushPlayer, setRushPlayer] = useState('');
+  const [rushYds, setRushYds] = useState('');
+  const [kickPlayer, setKickPlayer] = useState('');
+  const [kickYds, setKickYds] = useState('');
 
-  const goal = async (e) => {
+  function onChangeThrow(event) {
+    setThrowPoint(event.target.value);
+  }
+
+  function onChangeRush(event) {
+    setRushPoint(event.target.value);
+  }
+
+  function onChangeKick(event) {
+    setKickPoint(event.target.value);
+  }
+
+  const throws = async (e) => {
     e.preventDefault();
-    if (goalPlayer) {
-      let homeScore = homeTeamScore + 1;
-      let awayScore = awayTeamScore + 1;
-
-      dispatch(
-        isHomeTeam ? homeGoalActions.increment() : awayGoalActions.increment()
-      );
-
-      await showGoal({
-        homeTeam,
-        awayTeam,
-        homeTeamScore: isHomeTeam ? homeScore : homeTeamScore,
-        awayTeamScore: isHomeTeam ? awayTeamScore : awayScore,
-        time,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-        scorer: goalPlayer,
-        assist: assistPlayer,
-        celebrate: true,
-      });
+    if (throwPlayer && throwReceiver && throwYds) {
+      if (isHomeTeam) {
+        switch (throwPoint) {
+          case "2":
+            // code block
+            dispatch(homeGoalActions.plus2());
+            break;
+          case "6":
+            // code block
+            dispatch(homeGoalActions.plus6());
+            break;
+          case "0":
+            // code block
+            break;
+          case "-1":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showThrow({
+          team_for: homeTeam,
+          team_against: awayTeam,
+          player_throwing: throwPlayer,
+          player_receiving: throwReceiver,
+          yard: parseInt(throwYds),
+          period,
+          result:
+            throwPoint == 2
+              ? '2pt'
+              : throwPoint == 6
+              ? 'touchdown'
+              : throwPoint == 0
+              ? 'non-scoring'
+              : 'miss',
+        });
+      } else {
+        switch (throwPoint) {
+          case "2":
+            // code block
+            dispatch(awayGoalActions.plus2());
+            break;
+          case "6":
+            // code block
+            dispatch(awayGoalActions.plus6());
+            break;
+          case "0":
+            // code block
+            break;
+          case "-1":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showThrow({
+          team_for: awayTeam,
+          team_against: homeTeam,
+          player_throwing: throwPlayer,
+          player_receiving: throwReceiver,
+          yard: parseInt(throwYds),
+          period,
+          result:
+            throwPoint == 2
+              ? '2pt'
+              : throwPoint == 6
+              ? 'touchdown'
+              : throwPoint == 0
+              ? 'non-scoring'
+              : 'miss',
+        });
+      }
+      //   console.log(parseInt(throwYds));
     }
-    setGoalPlayer('');
-    setAssistPlayer('');
+    setThrowPlayer('');
+    setThrowReceiver('');
+    setThrowYds('');
   };
 
-  const deleteGoal = async (e) => {
+  const rush = async (e) => {
     e.preventDefault();
-
-    if ((isHomeTeam && homeTeamScore) || (!isHomeTeam && awayTeamScore)) {
-      dispatch(
-        isHomeTeam ? homeGoalActions.decrement() : awayGoalActions.decrement()
-      );
-
-      await showGoal({
-        homeTeam,
-        awayTeam,
-        homeTeamScore: isHomeTeam ? homeTeamScore - 1 : homeTeamScore,
-        awayTeamScore: isHomeTeam ? awayTeamScore : awayTeamScore - 1,
-        time,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-        scorer: goalPlayer,
-        assist: assistPlayer,
-        celebrate: false,
-      });
+    if (rushPlayer && rushYds) {
+      if (isHomeTeam) {
+        switch (rushPoint) {
+          case "2":
+            // code block
+            dispatch(homeGoalActions.plus2());
+            break;
+          case "6":
+            // code block
+            dispatch(homeGoalActions.plus6());
+            break;
+          case "0":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showRush({
+          team_for: homeTeam,
+          team_against: awayTeam,
+          player: rushPlayer,
+          yard: parseInt(rushYds),
+          period,
+          result:
+            rushPoint == 2
+              ? '2pt'
+              : rushPoint == 6
+              ? 'touchdown'
+              : 'non-scoring',
+        });
+      } else {
+        switch (rushPoint) {
+          case "2":
+            // code block
+            dispatch(awayGoalActions.plus2());
+            break;
+          case "6":
+            // code block
+            dispatch(awayGoalActions.plus6());
+            break;
+          case "0":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showRush({
+          team_for: awayTeam,
+          team_against: homeTeam,
+          player: rushPlayer,
+          yard: parseInt(rushYds),
+          period,
+          result:
+            rushPoint == 2
+              ? '2pt'
+              : rushPoint == 6
+              ? 'touchdown'
+              : 'non-scoring',
+        });
+      }
     }
-    setGoalPlayer('');
-    setAssistPlayer('');
+    setRushPlayer('');
+    setRushYds('');
   };
 
-  const shot = async (e) => {
+  const kick = async (e) => {
     e.preventDefault();
-    if (shotPlayer) {
-      await showShot({
-        scorer: shotPlayer,
-        onTarget,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-      });
+    if (kickPlayer && kickYds) {
+      console.log(kickPlayer,kickPoint);
+      if (isHomeTeam) {
+        switch (kickPoint) {
+          case "1":
+            // code block
+            dispatch(homeGoalActions.increment());
+            break;
+          case "3":
+            // code block
+            dispatch(homeGoalActions.plus3());
+            break;
+          case "0":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showKick({
+          team_for: homeTeam,
+          team_against: awayTeam,
+          player: kickPlayer,
+          yard: parseInt(kickYds),
+          period,
+          point: kickPoint,
+          result:
+            kickPoint == 1
+              ? 'extra-kick'
+              : kickPoint == 3
+              ? 'field-goal'
+              : 'miss',
+        });
+      } else {
+        switch (kickPoint) {
+          case "1":
+            // code block
+            dispatch(awayGoalActions.increment());
+            break;
+          case "3":
+            // code block
+            dispatch(awayGoalActions.plus3());
+            break;
+          case "0":
+            // code block
+            break;
+          default:
+            break;
+        }
+        await showKick({
+          team_for: awayTeam,
+          team_against: homeTeam,
+          player: kickPlayer,
+          yard: parseInt(kickYds),
+          period,
+          point: kickPoint,
+          result:
+            kickPoint == 1
+              ? 'extra-kick'
+              : kickPoint == 3
+              ? 'field-goal'
+              : 'miss',
+        });
+      }
     }
-    setShotPlayer('');
+    setKickPlayer('');
+    setKickYds('');
   };
 
-  const subs = async (e) => {
+  const safety = async (e) => {
     e.preventDefault();
-    if (playerOn && playerOff) {
-      await showSubs({
-        playerOn,
-        playerOff,
-        time,
-        eventTeam: isHomeTeam ? homeTeam : awayTeam,
-      });
-    }
-    setPlayerOff('');
-    setPlayerOn('');
-  };
-
-  const foul = async (e) => {
-    e.preventDefault();
-    if (foulPlayer) {
-      await showFoul({
-        player: foulPlayer,
-        reason: foulReason,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-      });
-    }
-    setFoulPlayer('');
-    setFoulReason('');
-  };
-
-  const offside = async (e) => {
-    e.preventDefault();
-    await showOffside({
-      teamFor: isHomeTeam ? homeTeam : awayTeam,
-      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+    dispatch(isHomeTeam? homeGoalActions.plus2() : awayGoalActions.plus2());
+    await showSafety({
+      team_for: isHomeTeam ? homeTeam : awayTeam,
+      team_against: isHomeTeam ? awayTeam : homeTeam,
+      period,
     });
   };
 
-  const yellowcard = async (e) => {
-    e.preventDefault();
-    if (yellowPlayer) {
-      await showYellowCard({
-        player: yellowPlayer,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-      });
-    }
-    setYellowPlayer('');
-  };
-
-  const redcard = async (e) => {
-    e.preventDefault();
-    if (redPlayer) {
-      await showRedCard({
-        player: redPlayer,
-        teamFor: isHomeTeam ? homeTeam : awayTeam,
-        teamAgainst: isHomeTeam ? awayTeam : homeTeam,
-      });
-    }
-    setRedPlayer('');
-  };
-
-  const penalty = async (e) => {
-    e.preventDefault();
-    await showPenalty({
-      teamFor: isHomeTeam ? homeTeam : awayTeam,
-      teamAgainst: isHomeTeam ? awayTeam : homeTeam,
+  const flag = async (e) => {
+    e.preventDefault(e);
+    await showFlag({
+      team_for: isHomeTeam ? homeTeam : awayTeam,
+      team_against: isHomeTeam ? awayTeam : homeTeam,
+      period,
     });
+  };
+
+  const timeout = async (e) => {
+    e.preventDefault();
+    await showTimeout({
+      team_for: isHomeTeam ? homeTeam : awayTeam,
+      team_against: isHomeTeam ? awayTeam : homeTeam,
+      period,
+    });
+  };
+
+  const turnover = async (e) => {
+    e.preventDefault();
+    await showTurnover({
+      team_for: isHomeTeam ? homeTeam : awayTeam,
+      team_against: isHomeTeam ? awayTeam : homeTeam,
+      period,
+    });
+  };
+
+  const fixScore = async (e, number) => {
+    e.preventDefault();
+    if (!confirm) {
+      return;
+    }
+    if (isHomeTeam) {
+      if (homeTeamScore + number >= 0) {
+        await showFixedScore({
+          homeTeam,
+          awayTeam,
+          homeTeamScore: homeTeamScore + number,
+          awayTeamScore: awayTeamScore,
+        });
+        switch (number) {
+          case -1:
+            // code block
+            dispatch(homeGoalActions.decrement());
+            break;
+          case -2:
+            // code block
+            dispatch(homeGoalActions.minus2());
+            break;
+          case -3:
+            // code block
+            dispatch(homeGoalActions.minus3());
+            break;
+          case -6:
+            dispatch(homeGoalActions.minus6());
+            break;
+          default:
+            break;
+        }
+      }
+    } else {
+      if (awayTeamScore + number >= 0) {
+        await showFixedScore({
+          homeTeam,
+          awayTeam,
+          homeTeamScore: homeTeamScore,
+          awayTeamScore: awayTeamScore + number,
+        });
+        switch (number) {
+          case -1:
+            // code block
+            dispatch(awayGoalActions.decrement());
+            break;
+          case -2:
+            // code block
+            dispatch(awayGoalActions.minus2());
+            break;
+          case -3:
+            // code block
+            dispatch(awayGoalActions.minus3());
+            break;
+          case -6:
+            dispatch(awayGoalActions.minus6());
+            break;
+          default:
+            break;
+        }
+      }
+    }
   };
 
   return (
@@ -181,54 +382,50 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
       <div className="soccer-btn-card shot-wrapper">
         <p>THROW</p>
         <div
-          onChange={() => null}
+          onChange={onChangeThrow}
           style={{
             fontWeight: 'normal',
             margin: '5px 0px',
             display: 'flex',
             flexDirection: 'row',
+            alignItems: 'center',
             justifyContent: 'space-around',
           }}
         >
-          <div>
-            <input
-              style={{ margin: '0px 5px' }}
-              type="radio"
-              value={3}
-              name="throw"
-            />
-            2pt
-          </div>
-          <div>
-            <input
-              style={{ margin: '0px 5px' }}
-              type="radio"
-              value={1}
-              name="throw"
-            />
-            6pt
-          </div>
-          <div>
-            <input
-              style={{ margin: '0px 5px' }}
-              type="radio"
-              value={0}
-              name="throw"
-            />
-            Down
-          </div>
-          <div>
-            <input
-              style={{ margin: '0px 5px' }}
-              type="radio"
-              value={-1}
-              name="throw"
-            />
-            Miss
-          </div>
+          <input
+            style={{ margin: '0px 5px' }}
+            type="radio"
+            value={2}
+            name="throw"
+          />
+          2pt
+          <input
+            style={{ margin: '0px 5px' }}
+            type="radio"
+            value={6}
+            name="throw"
+          />
+          6pt
+          <input
+            style={{ margin: '0px 5px' }}
+            type="radio"
+            value={0}
+            name="throw"
+          />
+          Down
+          <input
+            style={{ margin: '0px 5px' }}
+            type="radio"
+            value={-1}
+            name="throw"
+          />
+          Miss
         </div>
         <div className="substitution-btn-wrapper">
-          <div onClick={!activeGame ? undefined : shot} className="counter-btn">
+          <div
+            onClick={!activeGame ? undefined : throws}
+            className="counter-btn"
+          >
             <div id="plusbg" style={{ marginLeft: '6px' }} />
             <div id="plus" style={{ marginLeft: '6px' }} />
           </div>
@@ -240,22 +437,23 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               className="player-input"
               placeholder="*Player Thrower"
               style={{ margin: '3px 0px' }}
-              value={playerOn}
-              onChange={(e) => setPlayerOn(e.target.value)}
+              value={throwPlayer}
+              onChange={(e) => setThrowPlayer(e.target.value)}
             />
             <input
               className="player-input"
               placeholder="*Player Receiver"
               style={{ margin: '3px 0px' }}
-              value={playerOn}
-              onChange={(e) => setPlayerOn(e.target.value)}
+              value={throwReceiver}
+              onChange={(e) => setThrowReceiver(e.target.value)}
             />
             <input
               className="player-input"
               placeholder="*Yds"
               style={{ margin: '3px 0px' }}
-              value={playerOff}
-              onChange={(e) => setPlayerOff(e.target.value)}
+              value={throwYds}
+              type="number"
+              onChange={(e) => setThrowYds(e.target.value)}
             />
           </div>
         </div>
@@ -264,7 +462,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
       <div className="soccer-btn-card substitution-wrapper">
         <p>RUSH</p>
         <div
-          onChange={() => null}
+          onChange={onChangeRush}
           style={{
             fontWeight: 'normal',
             margin: '5px 0px',
@@ -277,7 +475,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             <input
               style={{ margin: '0px 5px' }}
               type="radio"
-              value={3}
+              value={2}
               name="rush"
             />
             2pt
@@ -286,7 +484,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             <input
               style={{ margin: '0px 5px' }}
               type="radio"
-              value={1}
+              value={6}
               name="rush"
             />
             6pt
@@ -302,7 +500,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           </div>
         </div>
         <div className="substitution-btn-wrapper">
-          <div onClick={!activeGame ? undefined : shot} className="counter-btn">
+          <div onClick={!activeGame ? undefined : rush} className="counter-btn">
             <div id="plusbg" style={{ marginLeft: '6px' }} />
             <div id="plus" style={{ marginLeft: '6px' }} />
           </div>
@@ -313,14 +511,15 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             <input
               className="player-input"
               placeholder="*Player"
-              value={playerOn}
-              onChange={(e) => setPlayerOn(e.target.value)}
+              value={rushPlayer}
+              onChange={(e) => setRushPlayer(e.target.value)}
             />
             <input
               className="player-input"
               placeholder="*Yds"
-              value={playerOff}
-              onChange={(e) => setPlayerOff(e.target.value)}
+              value={rushYds}
+              type="number"
+              onChange={(e) => setRushYds(e.target.value)}
             />
           </div>
         </div>
@@ -329,7 +528,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
       <div className="soccer-btn-card foul-wrapper">
         <p>KICK</p>
         <div
-          onChange={() => null}
+          onChange={onChangeKick}
           style={{
             fontWeight: 'normal',
             margin: '5px 0px',
@@ -342,7 +541,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             <input
               style={{ margin: '0px 5px' }}
               type="radio"
-              value={3}
+              value={1}
               name="kick"
             />
             1pt
@@ -351,7 +550,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
             <input
               style={{ margin: '0px 5px' }}
               type="radio"
-              value={1}
+              value={3}
               name="kick"
             />
             3pt
@@ -367,46 +566,47 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           </div>
         </div>
         <div className="foul-btn-wrapper">
-          <div onClick={!activeGame ? undefined : foul} className="foul-btn">
+          <div onClick={!activeGame ? undefined : kick} className="foul-btn">
             👟
           </div>
           <div className="foul-input-wrapper">
             <input
               className="player-input"
               placeholder="*Player"
-              value={foulPlayer}
-              onChange={(e) => setFoulPlayer(e.target.value)}
+              value={kickPlayer}
+              onChange={(e) => setKickPlayer(e.target.value)}
             />
             <input
+              type="number"
               className="player-input"
               placeholder="*Yds"
-              value={foulReason}
-              onChange={(e) => setFoulReason(e.target.value)}
+              value={kickYds}
+              onChange={(e) => setKickYds(e.target.value)}
             />
           </div>
         </div>
       </div>
 
       <div
-        onClick={!activeGame ? undefined : offside}
+        onClick={!activeGame ? undefined : safety}
         className="soccer-btn-card team-btn offside-btn"
       >
         <p>SAFETY</p>
       </div>
       <div
-        onClick={!activeGame ? undefined : penalty}
+        onClick={!activeGame ? undefined : flag}
         className="soccer-btn-card team-btn red-card-wrapper"
       >
         <p>FLAG</p>
       </div>
       <div
-        onClick={!activeGame ? undefined : penalty}
+        onClick={!activeGame ? undefined : timeout}
         className="soccer-btn-card team-btn yellow-card-wrapper"
       >
         <p>TIMEOUT</p>
       </div>
       <div
-        onClick={!activeGame ? undefined : penalty}
+        onClick={!activeGame ? undefined : turnover}
         className="soccer-btn-card team-btn penalty-btn"
       >
         <p>TURNOVER</p>
@@ -416,8 +616,8 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
         <div className="shot-input-wrapper" style={{ height: 'auto' }}>
           <label className="on-target-cb-label" style={{ marginTop: '10px' }}>
             <input
-              checked={onTarget}
-              onChange={() => setShotOnTarget((prev) => !prev)}
+              checked={confirm}
+              onChange={() => setConfirm((prev) => !prev)}
               className="on-target-cb"
               type="checkbox"
               placeholder="On Target?"
@@ -430,11 +630,11 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               display: 'flex',
               flexDirection: 'row',
               marginBottom: '10px',
-              justifyContent:"space-around"
+              justifyContent: 'space-around',
             }}
           >
             <div
-              onClick={() => null}
+              onClick={(e) => fixScore(e, -1)}
               style={{
                 width: 'fit-content',
                 padding: '10px',
@@ -445,7 +645,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               <p>-1</p>
             </div>
             <div
-              onClick={() => null}
+              onClick={(e) => fixScore(e, -2)}
               style={{
                 width: 'fit-content',
                 padding: '10px',
@@ -456,7 +656,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               <p>-2</p>
             </div>
             <div
-              onClick={() => null}
+              onClick={(e) => fixScore(e, -3)}
               style={{
                 width: 'fit-content',
                 padding: '10px',
@@ -467,7 +667,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
               <p>-3</p>
             </div>
             <div
-              onClick={() => null}
+              onClick={(e) => fixScore(e, -6)}
               style={{
                 width: 'fit-content',
                 padding: '10px',

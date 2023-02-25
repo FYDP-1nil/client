@@ -43,6 +43,6 @@ export const gameSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setActiveGame, setHalfTime, setCurrentMinute, setSecondHalf, setGameId, setGameEnded, reset } = gameSlice.actions
+export const { setActiveGame, setHalfTime, setCurrentMinute, setSecondHalf, setGameId, setGameEnded, setQuarter, reset } = gameSlice.actions
 
 export default gameSlice.reducer

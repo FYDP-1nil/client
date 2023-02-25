@@ -5,6 +5,7 @@ import SoccerScoreBoard from './Components/SoccerScoreBoard';
 import './App.css';
 import BasketballScoreBoard from './Components/BasketballScoreBoard';
 import GridironScoreBoard from './Components/GridironScoreBoard';
+import SettingsPage from './Components/SettingsPage';
 
 const App = () => {
 
@@ -17,7 +18,7 @@ const App = () => {
           <Route path="/soccer-scoreboard" element={<SoccerScoreBoard />} />
           <Route path="/basketball-scoreboard" element={<BasketballScoreBoard />} />
           <Route path="/gridiron-scoreboard" element={<GridironScoreBoard />} />
-          <Route path="/settings" element={<SoccerScoreBoard />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
     </Router>

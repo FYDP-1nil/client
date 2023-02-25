@@ -36,8 +36,8 @@ const LoginScreen = (props) => {
   const signup = async () => {
     let re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      setIsLoading(true);
-      await sleep(500);
+    setIsLoading(true);
+    await sleep(500);
     if (!re.test(email)) {
       setError('Enter Valid Email');
       setIsLoading(false);
@@ -85,7 +85,9 @@ const LoginScreen = (props) => {
             onChange={(e) => setEmail(e.target.value)}
           />
         )}
-        {error && <p style={{ textAlign: 'center', marginTop:"5px" }}>{error}</p>}
+        {error && (
+          <p style={{ textAlign: 'center', marginTop: '5px' }}>{error}</p>
+        )}
         <div
           className="btn-wrapper"
           style={{ justifyContent: 'center', marginTop: '20px' }}
@@ -105,9 +107,12 @@ const LoginScreen = (props) => {
                   `LOGIN`
                 )}
               </button>
-              <p style={{ color: 'white',marginTop:"5px" }}>
+              <p style={{ color: 'white', marginTop: '5px' }}>
                 <a
-                  onClick={() => {setError(''); setPage('signup');}}
+                  onClick={() => {
+                    setError('');
+                    setPage('signup');
+                  }}
                   style={{
                     color: 'blue',
                     cursor: 'pointer',
@@ -122,24 +127,26 @@ const LoginScreen = (props) => {
           )}
           {page === 'signup' && (
             <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
               <button onClick={() => signup()} className="btn signup-btn">
-              {isLoading ? (
+                {isLoading ? (
                   <Spinner style={{ transform: 'scale(0.4)' }} />
                 ) : (
                   `SIGNUP`
                 )}
               </button>
-              <p style={{ color: 'white', marginTop:"5px" }}>
+              <p style={{ color: 'white', marginTop: '5px' }}>
                 GO BACK TO{' '}
                 <a
-                  onClick={() => {setError('');setPage('login')}}
+                  onClick={() => {
+                    setError('');
+                    setPage('login');
+                  }}
                   style={{
                     color: 'blue',
                     cursor: 'pointer',

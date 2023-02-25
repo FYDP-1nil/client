@@ -5,68 +5,62 @@ import { store } from 'renderer/store';
 
 const baseURL = 'http://127.0.0.1:5000';
 
-
-export const joinLeague = async(name,pass) => {
-
-    let res = false;
-
-    console.log(store.getState().tokens.leagueValid);
-
-    try {
-      let response = await window.electron.ipcRenderer.invoke('api-call', {
-        data: {
-          league_name: name,
-          league_password: pass,
-        },
-        method: 'POST',
-        url: `${baseURL}/league/join`,
-        headers:{
-          "Authorization" : `Bearer ${store.getState().tokens.userToken}`
-        }
-      });
-      console.log(response);
-      store.dispatch(tokenSlice.actions.verifyLeague(true));
-      res = true;
-    } catch (err) {
-      console.log(err);
-      return res;
-    }
-    return res;
-
-};
-
-//todo
-export const createGame = async() => {
-let res = false;
-
-try {
-  let response = await window.electron.ipcRenderer.invoke('api-call', {
-    data: {
-      home_team: store.getState().teams.homeTeamName,
-      away_team: store.getState().teams.awayTeamName,
-    },
-    method: 'POST',
-    url: `${baseURL}/game/create`,
-    headers:{
-      "Authorization" : `Bearer ${store.getState().tokens.userToken}`
-    }
-  });
-  console.log(response.data.game_id);
-  store.dispatch(gameSlice.actions.setGameId(response.data.game_id));
-  res = true;
-} catch (err) {
-  console.log(err);
-  return res;
-}
-return res;
-
-};
-
-//todo
-export const postGameEvent = async(data) => {
-
+export const joinLeague = async (name, pass) => {
   let res = false;
-    
+
+  console.log(store.getState().tokens.leagueValid);
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data: {
+        league_name: name,
+        league_password: pass,
+      },
+      method: 'POST',
+      url: `${baseURL}/league/join`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response);
+    store.dispatch(tokenSlice.actions.verifyLeague(true));
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
+
+//todo
+export const createGame = async () => {
+  let res = false;
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data: {
+        home_team: store.getState().teams.homeTeamName,
+        away_team: store.getState().teams.awayTeamName,
+      },
+      method: 'POST',
+      url: `${baseURL}/game/create`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response.data.game_id);
+    store.dispatch(gameSlice.actions.setGameId(response.data.game_id));
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
+
+//TODO REPLACE ALL calls of postGameEvent to postSoccerEvent
+export const postGameEvent = async (data) => {
+  let res = false;
 
   // {
   //   teamName
@@ -82,9 +76,9 @@ export const postGameEvent = async(data) => {
       data,
       method: 'POST',
       url: `${baseURL}/game/events`,
-      headers:{
-        "Authorization" : `Bearer ${store.getState().tokens.userToken}`
-      }
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
     });
     console.log(response);
     // store.dispatch(gameSlice.actions.setGameId(response.gameId));
@@ -94,21 +88,19 @@ export const postGameEvent = async(data) => {
     return res;
   }
   return res;
-  
-  };
-  
+};
+
 //todo
-export const getStats = async(type) => {
+export const getStats = async (type) => {
   let res = false;
-  
-  
+
   try {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
       method: 'POST',
       url: `${baseURL}/game/${type}/${store.getState().game.gameId}/stats`,
-      headers:{
-        "Authorization" : `Bearer ${store.getState().tokens.userToken}`
-      }
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
     });
     console.log(response);
     // store.dispatch(gameSlice.actions.setGameId(response.gameId));
@@ -119,10 +111,9 @@ export const getStats = async(type) => {
     return res;
   }
   return res;
-
 };
 
-export const createUser = async(email,user,pass) => {
+export const createUser = async (email, user, pass) => {
   let res = false;
 
   try {
@@ -146,9 +137,7 @@ export const createUser = async(email,user,pass) => {
 
 // };
 
-
 export const loginUser = async (user, pass) => {
-
   let res = false;
 
   try {
@@ -164,6 +153,69 @@ export const loginUser = async (user, pass) => {
     store.dispatch(tokenSlice.actions.saveJWT(response.data.access_token));
     res = true;
   } catch (err) {
+    return res;
+  }
+  return res;
+};
+
+export const postSoccerEvent = async (data) => {
+  let res = false;
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data,
+      method: 'POST',
+      url: `${baseURL}/game/soccer/events`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response);
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
+
+export const postBasketballEvent = async (data) => {
+  let res = false;
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data,
+      method: 'POST',
+      url: `${baseURL}/game/basketball/events`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response);
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
+
+export const postGridironEvent = async (data) => {
+  let res = false;
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data,
+      method: 'POST',
+      url: `${baseURL}/game/gridiron/events`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response);
+    res = true;
+  } catch (err) {
+    console.log(err);
     return res;
   }
   return res;

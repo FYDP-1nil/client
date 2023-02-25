@@ -13,6 +13,8 @@ const Stopwatch = ({qtr}) => {
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
   const gameEnded = useSelector((state: RootState) => state.game.gameEnded);
 
+  const quarter = useSelector((state:RootState)=>state.game.currentQuarter);
+
   const dispatch = useDispatch();
 
 
@@ -45,11 +47,16 @@ const Stopwatch = ({qtr}) => {
     }
   }, [isHalfTime]);
 
+  useEffect(()=>{
+    setTime(0);
+    dispatch(gameActions.setCurrentMinute(0));
+    setCounter(0);
+  },[quarter]);
 
   return (
     <div className="stopwatch">
       {gameEnded ? <div>FT</div> : isHalfTime?<div>HT</div>:<div className="numbers">
-        {qtr && <span>{`Q1 `}</span>}
+        {qtr && <span>{`Q${quarter} `}</span>}
         <span>{("0" + Math.floor((time / 60000))).slice(-2)}:</span>
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
       </div>}

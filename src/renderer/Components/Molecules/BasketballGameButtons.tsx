@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { generateScoreCardTimer } from 'renderer/Functions/Computation/SoccerObsHelper';
+import { generateScoreCardTimer } from 'renderer/Functions/Computation/BasketballObsHelper';
 import {
   endGame,
   halfTime,
   startGame,
-} from 'renderer/Functions/Computation/Soccer';
-import { writeTimer } from 'renderer/Functions/Computation/SoccerTemplates';
+} from 'renderer/Functions/Computation/Basketball';
+import { writeTimer } from 'renderer/Functions/Computation/BasketballTemplates';
 import { sleep } from 'renderer/Functions/Computation/utility';
 import { RootState } from 'renderer/store';
 import * as gameActions from '../../Slice/gameSlice';
@@ -16,6 +16,7 @@ import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 
 import '../../Styles/Molecules/SoccerGameButtons.css';
+import { showQtr } from 'renderer/Functions/Computation/Basketball';
 const BasketballGameButtons = (props) => {
   const dispatch = useDispatch();
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
@@ -27,6 +28,7 @@ const BasketballGameButtons = (props) => {
     (state: RootState) => state.streaming.isStreaming
   );
   const gameId = useSelector((state: RootState) => state.game.gameId);
+  const period = useSelector((state: RootState) => state.game.currentQuarter);
 
   const navigate = useNavigate();
 
@@ -38,8 +40,30 @@ const BasketballGameButtons = (props) => {
       startGame({ period: 'second', isStreaming });
       dispatch(gameActions.setHalfTime(false));
       dispatch(gameActions.setSecondHalf(true));
+      showQtr(period+1);
+      switch (period) {
+          case 1:
+            dispatch(gameActions.setQuarter(2));
+            break;
+          case 2:
+            dispatch(gameActions.setQuarter(3));
+            break;
+          case 3:
+            dispatch(gameActions.setQuarter(4));
+            break;
+          case 4:
+            break;
+      }
     }
   };
+
+  const q = async (quarter) => {
+    if (activeGame) {
+      dispatch(gameActions.setQuarter(quarter));
+      showQtr(quarter);
+    }
+  };
+
 
   const half = () => {
     if (!isHalfTime && !isSecondHalf) {
@@ -63,6 +87,7 @@ const BasketballGameButtons = (props) => {
       dispatch(gameActions.setActiveGame(false));
       dispatch(gameActions.setGameId(''));
       dispatch(gameActions.setCurrentMinute(0));
+      dispatch(gameActions.setQuarter(1));
     }
   };
 
@@ -76,7 +101,7 @@ const BasketballGameButtons = (props) => {
           await generateScoreCardTimer();
           sleep(43);
           await writeTimer({
-            gameSequence: 'First Half',
+            gameSequence: `Q${period}`,
             minute: 0,
             startTimePrint: '00:00',
             noTime: false,
@@ -105,7 +130,7 @@ const BasketballGameButtons = (props) => {
 
       <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'row' }}>
         <div
-          onClick={start}
+          onClick={()=>q(1)}
           style={{
             width: 'fit-content',
             padding: '10px',
@@ -116,7 +141,7 @@ const BasketballGameButtons = (props) => {
           <p>Q1</p>
         </div>
         <div
-          onClick={start}
+          onClick={()=>q(2)}
           style={{
             width: 'fit-content',
             padding: '10px',
@@ -127,7 +152,7 @@ const BasketballGameButtons = (props) => {
           <p>Q2</p>
         </div>
         <div
-          onClick={start}
+          onClick={()=>q(3)}
           style={{
             width: 'fit-content',
             padding: '10px',
@@ -138,7 +163,7 @@ const BasketballGameButtons = (props) => {
           <p>Q3</p>
         </div>
         <div
-          onClick={start}
+          onClick={()=>q(4)}
           style={{
             width: 'fit-content',
             padding: '10px',
