@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import '../../Styles/Molecules/GameOptions.css';
 import SoccerTeamSelection from './SoccerTeamSelection';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'renderer/store';
 import { sleep } from 'renderer/Functions/Computation/utility';
-import { joinLeague } from 'renderer/Functions/API/Api';
+import { createLeague, joinLeague } from 'renderer/Functions/API/Api';
 import Spinner from '../Utility/Spinner';
 import BasketballTeamSelection from './BasketballTeamSelection';
 import GridironTeamSelection from './GridironTeamSelection';
+import { tokenSlice } from 'renderer/Slice/tokenSlice';
 
 const LeagueScreen = (props) => {
   const validLeague = useSelector(
-    (state: RootState) => state.tokens.leagueValid
+    (state: RootState) => state.tokens.leagueToken
   );
+  const dispatch = useDispatch();
+
 
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -26,14 +29,40 @@ const LeagueScreen = (props) => {
       await sleep(500);
       let response = await joinLeague(name, password);
       if (response) {
-        setIsLoading(false);
-        setError('');
+        console.log(response,"res;pommmm")
+        if(response.sport == props.sportSelected.toLowerCase()){
+          setIsLoading(false);
+          setError(''); 
+          dispatch(tokenSlice.actions.verifyLeague(response.league_id));
+        }
+        else {
+          setIsLoading(false);
+          setError('Wrong sport for this league');  
+        }
       } else {
         setIsLoading(false);
         setError('Wrong Credentials. Try Again');
       }
     }
   };
+
+  const join = async () => {
+    if (name && password) {
+      setError('');
+      setIsLoading(true);
+      await sleep(500);
+      let response = await createLeague(name, password, props.sportSelected.toLowerCase());
+      if (response) {
+        setIsLoading(false);
+        setError('Now login');
+      } else {
+        setIsLoading(false);
+        setError('Wrong Credentials. Try Again');
+      }
+    }
+  };
+
+console.log(validLeague)
 
   return validLeague ? (
     props.sportSelected === 'SOCCER' ? (
@@ -101,7 +130,13 @@ const LeagueScreen = (props) => {
                 `JOIN`
               )}
             </button>
-            <button className="btn create-btn">CREATE NEW LEAGUE</button>
+            <button className="btn create-btn" onClick={join}>
+            {isLoading ? (
+                <Spinner style={{ transform: 'scale(0.4)' }} />
+              ) : (
+                `CREATE NEW LEAGUE`
+              )}
+            </button>
           </div>
         </div>
       </div>

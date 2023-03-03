@@ -16,6 +16,7 @@ import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 
 import '../../Styles/Molecules/SoccerGameButtons.css';
+import { tokenSlice } from 'renderer/Slice/tokenSlice';
 const SoccerGameButtons = (props) => {
   const dispatch = useDispatch();
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
@@ -57,6 +58,7 @@ const SoccerGameButtons = (props) => {
       dispatch(pointAwayActions.reset());
       dispatch(pointHomeActions.reset());
       navigate("/dashboard", { replace: true });
+      dispatch(tokenSlice.actions.verifyLeague(false));
 
     } else {
       dispatch(gameActions.setGameEnded(true));

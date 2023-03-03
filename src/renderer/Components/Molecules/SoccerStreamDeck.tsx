@@ -9,6 +9,7 @@ import * as pointAwayActions from '../../Slice/pointAwaySlice';
 import * as pointHomeActions from '../../Slice/pointHomeSlice';
 import * as teamActions from '../../Slice/teamsSlice';
 import '../../Styles/Molecules/StreamDeck.css'
+import { tokenSlice } from 'renderer/Slice/tokenSlice';
 
 
 const SoccerStreamDeck = (props) => {
@@ -37,6 +38,7 @@ const SoccerStreamDeck = (props) => {
       dispatch(pointAwayActions.reset());
       dispatch(pointHomeActions.reset());
       navigate('/dashboard',{replace:true});
+      dispatch(tokenSlice.actions.verifyLeague(false));
     }
   }
   };

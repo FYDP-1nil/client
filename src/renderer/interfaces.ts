@@ -30,7 +30,7 @@ export interface StreamState {
 }
 
 export interface TokenState {
-  leagueValid: boolean,
+  leagueToken: string,
   userToken: string
   // awayTeamName: string;
 }

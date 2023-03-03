@@ -3,12 +3,12 @@ import { gameSlice } from 'renderer/Slice/gameSlice';
 import { tokenSlice } from 'renderer/Slice/tokenSlice';
 import { store } from 'renderer/store';
 
-const baseURL = 'http://127.0.0.1:5000';
+const baseURL = 'http://127.0.0.1:3000';
 
 export const joinLeague = async (name, pass) => {
   let res = false;
 
-  console.log(store.getState().tokens.leagueValid);
+  console.log(store.getState().tokens.leagueToken);
 
   try {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
@@ -22,8 +22,37 @@ export const joinLeague = async (name, pass) => {
         Authorization: `Bearer ${store.getState().tokens.userToken}`,
       },
     });
-    console.log(response);
-    store.dispatch(tokenSlice.actions.verifyLeague(true));
+    // console.log(response);
+    // store.dispatch(tokenSlice.actions.verifyLeague(true));
+    // res = true;
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
+
+export const createLeague = async (name, pass, sport) => {
+  let res = false;
+
+  // console.log(store.getState().tokens.leagueToken);
+
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data: {
+        league_name: name,
+        league_password: pass,
+        sport: sport
+      },
+      method: 'POST',
+      url: `${baseURL}/league/create`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    // console.log(response);
+    // store.dispatch(tokenSlice.actions.verifyLeague(true));
     res = true;
   } catch (err) {
     console.log(err);
@@ -32,18 +61,42 @@ export const joinLeague = async (name, pass) => {
   return res;
 };
 
-//todo
-export const createGame = async () => {
+export const schedulePost = async (post_text) => {
   let res = false;
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      data: {
+        post_text
+      },
+      method: 'POST',
+      url: `${baseURL}/schedule/facebook`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    res = true;
+  } catch (err) {
+    console.log(err);
+    return res;
+  }
+  return res;
+};
 
+
+//todo
+export const createGame = async (type) => {
+  let res = false;
+  console.log(type);
   try {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
       data: {
         home_team: store.getState().teams.homeTeamName,
         away_team: store.getState().teams.awayTeamName,
+        league_id: store.getState().tokens.leagueToken
       },
       method: 'POST',
       url: `${baseURL}/game/create`,
+      // url: `${baseURL}/game/${type}/create`,
       headers: {
         Authorization: `Bearer ${store.getState().tokens.userToken}`,
       },
@@ -220,3 +273,197 @@ export const postGridironEvent = async (data) => {
   }
   return res;
 };
+
+export const getLeagueStats = async (leagueName) => {
+  if(leagueName === "soccer"){
+    return [
+      {
+         "name":"Goals",
+         "players":[
+            {
+               "Erling Haaland":27
+            },
+            {
+               "Harry Kane":18
+            },
+            {
+               "Marcus Rashford":14
+            },
+            {
+               "Karim Benzema":11
+            },
+            {
+               "Vinicius Jr.":7
+            }
+         ]
+      },
+      {
+         "name":"Assists",
+         "players":[
+            {
+               "Kevin De Bruyne":12
+            },
+            {
+               "Bukayo Saka":9
+            },
+            {
+               "Bruno Fernandes":6
+            },
+            {
+               "Rodrygo Goes":5
+            },
+            {
+               "Luka Modric":4
+            }
+         ]
+      },
+      {
+         "name":"Red Cards",
+         "players":[
+            {
+               "Sergio Ramos":3
+            },
+            {
+               "Pepe":2
+            },
+            {
+               "Casemiro":1
+            },
+            {
+               "Nick Pope":1
+            },
+            {
+               "Ivan Alejo":1
+            }
+         ]
+      },
+      {
+         "name":"Yellow Cards",
+         "players":[
+            {
+               "Diego Dalot":10
+            },
+            {
+               "Fred":8
+            },
+            {
+               "Casemiro":5
+            },
+            {
+               "Militao":4
+            },
+            {
+               "Vinicius Jr.":3
+            }
+         ]
+      }
+   ]
+  }
+  else if(leagueName==="grid") {
+    return [
+      {
+         "name":"Total Rushing Yards",
+         "players":[
+            {
+               "Christian MaCaffrey":456
+            },
+            {
+               "Isiah Pacheco ":393
+            },
+            {
+               "Joe Mixon":365
+            },
+            {
+               "Daniel Jones":345
+            },
+            {
+               "Miles Sanders":304
+            }
+         ]
+      },
+      {
+         "name":"Total Passing Yards",
+         "players":[
+            {
+               "Joe Burrow":934
+            },
+            {
+               "Patrick Mahomes":872
+            },
+            {
+               "Josh Allen":804
+            },
+            {
+               "Jalen Hurts":785
+            },
+            {
+               "Brock Purdy":732
+            }
+         ]
+      },
+      {
+         "name":"Total Receiving Yards",
+         "players":[
+            {
+               "Steffon Digs":69
+            },
+            {
+               "DeVonta Smith":61
+            },
+            {
+               "Tee Higgins":55
+            },
+            {
+               "Brock Purdy":49
+            },
+            {
+               "CeeDee Lamb":42
+            }
+         ]
+      },
+      {
+         "name":"Total Kicks Made",
+         "players":[
+            {
+               "Robbie Gould":12
+            },
+            {
+               "Harrison Butker":8
+            },
+            {
+               "Cameron Dicker":6
+            },
+            {
+               "Justin Tucker":4
+            },
+            {
+               "Tyler Bass":3
+            }
+         ]
+      },
+      {
+         "name":"Completion %",
+         "players":[
+            {
+               "Patrick Mahomes":69
+            },
+            {
+               "Josh Allen":61
+            },
+            {
+               "Joe Burrow":55
+            },
+            {
+               "Lamar Jackson":49
+            },
+            {
+               "Derek Carr":42
+            }
+         ]
+      }
+   ]
+  } 
+  else {
+    return [];
+  }
+}

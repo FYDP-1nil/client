@@ -17,6 +17,7 @@ import * as teamActions from '../../Slice/teamsSlice';
 
 import '../../Styles/Molecules/SoccerGameButtons.css';
 import { showQtr } from 'renderer/Functions/Computation/Gridiron';
+import { tokenSlice } from 'renderer/Slice/tokenSlice';
 const GridironGameButtons = (props) => {
   const dispatch = useDispatch();
   const isHalfTime = useSelector((state: RootState) => state.game.isHalfTime);
@@ -81,6 +82,7 @@ const GridironGameButtons = (props) => {
       dispatch(pointAwayActions.reset());
       dispatch(pointHomeActions.reset());
       navigate('/dashboard', { replace: true });
+      dispatch(tokenSlice.actions.verifyLeague(false));
     } else {
       dispatch(gameActions.setGameEnded(true));
       dispatch(gameActions.setHalfTime(false));

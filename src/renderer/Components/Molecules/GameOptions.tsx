@@ -44,7 +44,7 @@ const GameOptions = (props) => {
         </div>
         <div className="gridiron-btn">
           <p className="logo" onClick={() => setSportSelected('GRIDIRON')}>🏈</p>
-          FOOTBALL
+          GRIDIRON
         </div>
       </div>
     </div>

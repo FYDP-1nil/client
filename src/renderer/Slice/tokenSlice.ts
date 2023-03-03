@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { TokenState } from 'renderer/interfaces';
 
 const initialState: TokenState = {
-  leagueValid: false,
+  leagueToken: '',
   userToken: '',
 };
 
@@ -11,10 +11,10 @@ export const tokenSlice = createSlice({
   name: 'tokens',
   initialState,
   reducers: {
-    verifyLeague: (state, action: PayloadAction<boolean>) => {
+    verifyLeague: (state, action: PayloadAction<string>) => {
       return {
         ...state,
-        leagueValid: action.payload,
+        leagueToken: action.payload,
       };
     },
     saveJWT: (state, action: PayloadAction<string>) => {

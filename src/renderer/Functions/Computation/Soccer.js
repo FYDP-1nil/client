@@ -1,6 +1,6 @@
 import { gameSlice } from 'renderer/Slice/gameSlice';
 import { store } from 'renderer/store';
-import { createGame, getStats, postGameEvent } from '../API/Api';
+import { createGame, getStats, postGameEvent, schedulePost } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
   generateFoulSource,
@@ -247,52 +247,6 @@ export const startStream = async () => {
 
   sleep(43);
 
-  //IRAM DEBUGGING REMOVE THIS CALL
-  await runOBSMethod('CreateInput', {
-    sceneName: 'game',
-    inputName: 'test',
-    inputKind: 'browser_source',
-    inputSettings: {
-      height: 195,
-      is_local_file: true,
-      local_file: pathJoin(
-      getAssetPath(),
-      '/browser_source/gridiron/kick.html'
-      ),
-      width: 424,
-      css: '',
-    },
-  }).then((res) =>
-    runOBSMethod('SetSceneItemTransform', {
-      sceneName: 'game',
-      sceneItemId: res?.sceneItemId,
-      sceneItemTransform: {
-        alignment: 5,
-        boundsAlignment: 0,
-        boundsHeight: 1.0,
-        boundsType: 'OBS_BOUNDS_NONE',
-        boundsWidth: 1.0,
-        cropBottom: 0,
-        cropLeft: 0,
-        cropRight: 0,
-        cropTop: 0,
-        height: 195,
-        positionX: 430,
-        positionY: 512,
-        rotation: 0,
-        scaleX: 0.8479999899864197,
-        scaleY: 0.8478260636329651,
-        sourceHeight: 230,
-        sourceWidth: 500,
-        width: 424,
-      },
-    })
-  );
-  await runOBSMethod('GetInputDefaultSettings', {
-    inputKind: 'browser_source',
-  }).then((res) => console.log('{}{}{}', res));
-  //REMOVE BETWEEN
-
   //DONE: startstream OBS call
   await runOBSMethod('StartStream').catch((data) => console.log(data));
 
@@ -397,6 +351,8 @@ export const showStats = async () => {
 };
 
 export const showSubs = async (args) => {
+
+  schedulePost(`${store.getState().game.currentMinute}' Substitution\n\n${args.playerOn} ▲\n\n${args.playerOff} ▼`);
   
   //DONE: write to subs file
   if (store.getState().streaming.isStreaming) {
@@ -438,6 +394,8 @@ export const showRedCard = async (args) => {
       time: store.getState().game.currentMinute,
     },
   });
+
+  schedulePost(`${store.getState().game.currentMinute}' RED CARD FOR ${args.player} (${args.teamFor})!`);
 
   if (store.getState().streaming.isStreaming) {
     //DONE: write to redcard file
@@ -593,7 +551,13 @@ export const showOffside = async (args) => {
 };
 
 export const showGoal = async (args) => {
-  
+  if(args.teamFor == store.getState().teams.homeTeamName){
+    schedulePost(`${args.time}' GOAAALLLLL!!!!!\n\n${args.scorer} (${args.teamFor})\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+  }
+  else {
+    schedulePost(`${args.time}' GOAAALLLLL!!!!!\n\n${args.scorer} (${args.teamFor})\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
+  }
+
   postGameEvent({
     game_id: store.getState().game.gameId,
     event_type: 'shot',
@@ -662,8 +626,8 @@ export const deleteGoal = async (args) => {
 
 export const startGame = async (args) => {
   if (args.period === 'first') {
-    
-    await createGame();
+    schedulePost(`Kick-off\n\n${store.getState().teams.homeTeamName} vs ${store.getState().teams.awayTeamName}`);
+    await createGame('soccer');
   } else {
     if (store.getState().streaming.isStreaming) {
       // await generateScoreCardTimer();
@@ -687,7 +651,8 @@ export const startGame = async (args) => {
 export const halfTime = async () => {
   
   //if (startStreaming redux true?) {
-  
+  schedulePost(`Half Time\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+
   
 
   
@@ -706,6 +671,19 @@ export const halfTime = async () => {
 
 export const endGame = async () => {
   
+  let homeScore = store.getState().pointHome.value;
+  let awayScore = store.getState().pointAway.value;
+
+  if(homeScore<awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.awayTeamName} wins it ${awayScore}-${homeScore} against ${store.getState().teams.homeTeamName}`);
+  }
+  else if(homeScore>awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.homeTeamName} wins it ${homeScore}-${awayScore} against ${store.getState().teams.awayTeamName}`);
+  }
+  else {
+    schedulePost(`End of Game\n\n It's a ${homeScore}-${awayScore} draw between ${store.getState().teams.homeTeamName} and ${store.getState().teams.awayTeamName}`);
+  }
+
   
   if (store.getState().streaming.isStreaming) {
     await showStats();

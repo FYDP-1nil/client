@@ -5,6 +5,7 @@ import {
   getStats,
   postBasketballEvent,
   postGameEvent,
+  schedulePost,
 } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
@@ -493,7 +494,9 @@ export const showQtr = async (number) => {
 export const startGame = async (args) => {
   if (args.period === 'first') {
     //TODO: fetch game create ?
-    await createGame();
+    schedulePost(`Kick-off\n\n${store.getState().teams.homeTeamName} vs ${store.getState().teams.awayTeamName}`);
+
+    await createGame('basketball');
   }
   // else {
   // if (store.getState().streaming.isStreaming) {
@@ -516,6 +519,8 @@ export const startGame = async (args) => {
 };
 
 export const halfTime = async () => {
+  schedulePost(`Half Time\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+
   //TODO: Timer UI stops => 45:09 to HT
   //if (startStreaming redux true?) {
   //TODO: Update scorecard/timer
@@ -537,13 +542,26 @@ export const halfTime = async () => {
 
 export const endGame = async () => {
   //TODO: fetch game ended?
+  let homeScore = store.getState().pointHome.value;
+  let awayScore = store.getState().pointAway.value;
+
+  if(homeScore<awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.awayTeamName} wins it ${awayScore}-${homeScore} against ${store.getState().teams.homeTeamName}`);
+  }
+  else if(homeScore>awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.homeTeamName} wins it ${homeScore}-${awayScore} against ${store.getState().teams.awayTeamName}`);
+  }
+  else {
+    schedulePost(`End of Game\n\n It's a ${homeScore}-${awayScore} draw between ${store.getState().teams.homeTeamName} and ${store.getState().teams.awayTeamName}`);
+  }
+
   postBasketballEvent({
     game_id: store.getState().game.gameId,
     play_type: 'end',
     event: {
       period: 4,
-      pts_home: store.getState().pointHome,
-      pts_away: store.getState().pointAway,
+      pts_home: store.getState().pointHome.value,
+      pts_away: store.getState().pointAway.value,
     },
   });
   //TODO: Timer UI stops => 90:09 to FT

@@ -5,6 +5,7 @@ import {
   getStats,
   postGameEvent,
   postGridironEvent,
+  schedulePost,
 } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
@@ -278,17 +279,23 @@ export const showStats = async () => {
 
 //TODO
 export const showThrow = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'throw',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'throw',
+  //   event: args,
+  // });
 
-  if (
-    store.getState().streaming.isStreaming &&
-    args.result !== 'non-scoring' &&
-    args.result !== 'miss'
-  ) {
+  if (args.result !== 'non-scoring' && args.result !== 'miss') {
+
+    if(args.team_for == store.getState().teams.homeTeamName){
+      schedulePost(`TOUCHDOWN!!!!\n\n${args.player_throwing}->${args.player_receiving} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+    }
+    else {
+      schedulePost(`TOUCHDOWN!!!!\n\n${args.player_throwing}->${args.player_receiving} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
+    }
+  
+
+    if(store.getState().streaming.isStreaming) {
     await writeTD({ yds: args.yard });
 
     //DONE: refresh redcard input
@@ -329,17 +336,28 @@ export const showThrow = async (args) => {
       })
     );
   }
+}
 };
 
 //TODO
 export const showRush = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'rush',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'rush',
+  //   event: args,
+  // });
 
-  if (store.getState().streaming.isStreaming && args.result !== 'non-scoring') {
+  if ( args.result !== 'non-scoring') {
+
+    if(args.team_for == store.getState().teams.homeTeamName){
+      schedulePost(`TOUCHDOWN!!!!\n\n${args.player} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+    }
+    else {
+      schedulePost(`TOUCHDOWN!!!!\n\n${args.player} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
+    }
+
+
+    if(store.getState().streaming.isStreaming) {
     await writeTD({ yds: args.yard });
 
     //DONE: refresh redcard input
@@ -379,16 +397,29 @@ export const showRush = async (args) => {
         sceneItemEnabled: false,
       })
     );
+  }
   }
 };
 
 //TODO
 export const showKick = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'kick',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'kick',
+  //   event: args,
+  // });
+
+  if(args.result === 'miss'){
+    schedulePost(`${args.player} misses the kick\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+  }
+  else {
+    if(args.team_for == store.getState().teams.homeTeamName){
+      schedulePost(`KICK IS GOOD!!\n\n${args.player} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+    }
+    else {
+      schedulePost(`KICK IS GOOD!!\n\n${args.player} for ${args.yard} yards\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
+    }
+  }
 
   if (store.getState().streaming.isStreaming && args.result !== 'miss') {
     await writeKick({ yds: args.yard });
@@ -434,11 +465,19 @@ export const showKick = async (args) => {
 
 //BE
 export const showSafety = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'safety',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'safety',
+  //   event: args,
+  // });
+  if(args.team_for == store.getState().teams.homeTeamName){
+    schedulePost(`Safety +2\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+  }
+  else {
+    schedulePost(`Safety +2\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
+  }
+
+
 
   if (store.getState().streaming.isStreaming) {
     await runOBSMethod('GetSceneItemId', {
@@ -477,11 +516,11 @@ export const showSafety = async (args) => {
 
 //BE
 export const showFlag = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'flag',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'flag',
+  //   event: args,
+  // });
 
   if (store.getState().streaming.isStreaming) {
     await runOBSMethod('GetSceneItemId', {
@@ -510,11 +549,11 @@ export const showFlag = async (args) => {
 
 //BE
 export const showTimeout = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'timeout',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'timeout',
+  //   event: args,
+  // });
 
   if (store.getState().streaming.isStreaming) {
     await runOBSMethod('GetSceneItemId', {
@@ -543,11 +582,11 @@ export const showTimeout = async (args) => {
 
 //BE
 export const showTurnover = async (args) => {
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'turnover',
-    event: args,
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'turnover',
+  //   event: args,
+  // });
 };
 
 //DONE
@@ -580,7 +619,9 @@ export const showFixedScore = async (args) => {
 export const startGame = async (args) => {
   //TODO SCHEDULER CALL
   if (args.period === 'first') {
-    await createGame();
+    schedulePost(`Kick-off\n\n${store.getState().teams.homeTeamName} vs ${store.getState().teams.awayTeamName}`);
+
+    await createGame('gridiron');
   }
   // else {
   //   if (store.getState().streaming.isStreaming) {
@@ -600,6 +641,8 @@ export const startGame = async (args) => {
 };
 
 export const halfTime = async () => {
+  schedulePost(`Half Time\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
+
   //TODO Scheduler call
   if (store.getState().streaming.isStreaming) {
     await showStats();
@@ -613,16 +656,29 @@ export const halfTime = async () => {
 };
 
 export const endGame = async () => {
+  let homeScore = store.getState().pointHome.value;
+  let awayScore = store.getState().pointAway.value;
+
+  if(homeScore<awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.awayTeamName} wins it ${awayScore}-${homeScore} against ${store.getState().teams.homeTeamName}`);
+  }
+  else if(homeScore>awayScore){
+    schedulePost(`End of Game\n\n${store.getState().teams.homeTeamName} wins it ${homeScore}-${awayScore} against ${store.getState().teams.awayTeamName}`);
+  }
+  else {
+    schedulePost(`End of Game\n\n It's a ${homeScore}-${awayScore} draw between ${store.getState().teams.homeTeamName} and ${store.getState().teams.awayTeamName}`);
+  }
+
   //TODO SCHEDULER CALL
-  postGridironEvent({
-    game_id: store.getState().game.gameId,
-    play_type: 'end',
-    event: {
-      period: 4,
-      pts_home: store.getState().pointHome,
-      pts_away: store.getState().pointAway,
-    },
-  });
+  // postGridironEvent({
+  //   game_id: store.getState().game.gameId,
+  //   play_type: 'end',
+  //   event: {
+  //     period: 4,
+  //     pts_home: store.getState().pointHome.value,
+  //     pts_away: store.getState().pointAway.value,
+  //   },
+  // });
 
   if (store.getState().streaming.isStreaming) {
     await showStats();
