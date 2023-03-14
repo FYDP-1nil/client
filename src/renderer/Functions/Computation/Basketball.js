@@ -4,7 +4,6 @@ import {
   createGame,
   getStats,
   postBasketballEvent,
-  postGameEvent,
   schedulePost,
 } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
@@ -107,8 +106,8 @@ export const startStream = async () => {
   await writeScoreCard({
     homeTeam: store.getState().teams.homeTeamName,
     awayTeam: store.getState().teams.awayTeamName,
-    homeTeamScore: 0,
-    awayTeamScore: 0,
+    homeTeamScore: store.getState().pointHome.value,
+    awayTeamScore: store.getState().pointAway.value,
   });
 
   sleep(43);
@@ -230,16 +229,16 @@ export const showStats = async () => {
       await writeStats({
         homeTeam: reduxStore.teams.homeTeamName,
         awayTeam: reduxStore.teams.awayTeamName,
-        homeTeamFG: reduxStore.pointHome.value,
-        awayTeamFG: reduxStore.pointAway.value,
-        homeTeam3PT: stats.team1.shots,
-        awayTeam3PT: stats.team2.shots,
-        homeTeamFT: stats.team1.shots_on_target,
-        awayTeamFT: stats.team2.shots_on_target,
-        homeTeamTurnovers: stats.team1.fouls,
-        awayTeamTurnovers: stats.team2.fouls,
-        homeTeamSteals: stats.team1.yellow_cards,
-        awayTeamSteals: stats.team2.yellow_cards,
+        homeTeamFG: stats.team1.fieldgoals_percentage,
+        awayTeamFG: stats.team2.fieldgoals_percentage,
+        homeTeam3PT: stats.team1.threepoint_percentage,
+        awayTeam3PT: stats.team2.threepoint_percentage,
+        homeTeamFT: stats.team1.freethrow_mades,
+        awayTeamFT: stats.team2.freethrow_mades,
+        homeTeamTurnovers: stats.team1.turnovers,
+        awayTeamTurnovers: stats.team2.turnovers,
+        homeTeamSteals: stats.team1.total_steals,
+        awayTeamSteals: stats.team2.total_steals,
       });
 
       //DONE: refresh stats input
@@ -269,7 +268,7 @@ export const show2PT = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'point',
+    event_type: 'point',
     event: args,
   });
   if (store.getState().streaming.isStreaming) {
@@ -312,7 +311,7 @@ export const show1pt = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'point',
+    event_type: 'point',
     event: args,
   });
   if (store.getState().streaming.isStreaming) {
@@ -333,7 +332,7 @@ export const showMiss = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'point',
+    event_type: 'point',
     event: args,
   });
 };
@@ -343,7 +342,7 @@ export const show3PT = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'point',
+    event_type: 'point',
     event: args,
   });
   if (store.getState().streaming.isStreaming) {
@@ -385,7 +384,7 @@ export const showFoul = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'foul',
+    event_type: 'foul',
     event: args,
   });
   if (store.getState().streaming.isStreaming) {
@@ -417,7 +416,7 @@ export const showRebound = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'rebound',
+    event_type: 'rebound',
     event: args,
   });
 };
@@ -426,7 +425,7 @@ export const showBlock = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'block',
+    event_type: 'block',
     event: args,
   });
 };
@@ -435,7 +434,7 @@ export const showSteal = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'steal',
+    event_type: 'steal',
     event: args,
   });
 };
@@ -444,7 +443,7 @@ export const showTurnover = async (args) => {
   //TODO: api send event
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'turnover',
+    event_type: 'turnover',
     event: args,
   });
 };
@@ -557,9 +556,9 @@ export const endGame = async () => {
 
   postBasketballEvent({
     game_id: store.getState().game.gameId,
-    play_type: 'end',
+    event_type: 'end',
     event: {
-      period: 4,
+      period: "4",
       pts_home: store.getState().pointHome.value,
       pts_away: store.getState().pointAway.value,
     },

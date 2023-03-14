@@ -57,7 +57,7 @@ const Dashboard = (props) => {
         </div>
       </div>
       {statistics && statistics?.length ? (
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', flexWrap:"wrap",justifyContent:"center" }}>
           {statistics.map((cat, ix) => (
             <table  key={`${ix}-${ix}`} style={{ minWidth: '200px' }}>
               <thead>

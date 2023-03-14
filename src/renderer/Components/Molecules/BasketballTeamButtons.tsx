@@ -101,8 +101,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -113,8 +113,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',
               });
             }
@@ -127,8 +127,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -139,8 +139,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',
               });
             }
@@ -153,8 +153,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -165,8 +165,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: awayTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',
               });
             }
@@ -184,8 +184,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -196,8 +196,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',
               });
             }
@@ -210,8 +210,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -222,8 +222,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',    
               });
             }
@@ -236,8 +236,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'miss',
               });
             }
@@ -248,8 +248,8 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
                 team_against: homeTeam,
                 player,
                 assist: assistPlayer,
-                period,
-                point: parseInt(point),
+                period: period.toString(),
+                point,
                 result: 'made',    
               });
             }
@@ -272,7 +272,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         team_against: isHomeTeam? awayTeam : homeTeam,
         player: foulPlayer,
         reason: foulReason,
-        period,
+        period: period.toString(),
       });
     }
     setFoulPlayer('');
@@ -286,7 +286,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         team_for: isHomeTeam? homeTeam : awayTeam,
         team_against: isHomeTeam? awayTeam : homeTeam,
         player: reboundPlayer,
-        period,
+        period: period.toString(),
       });
     }
     setReboundPlayer('');
@@ -299,7 +299,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         team_for: isHomeTeam? homeTeam : awayTeam,
         team_against: isHomeTeam? awayTeam : homeTeam,
         player: blockPlayer,
-        period,
+        period: period.toString(),
       });
     }
     setBlockPlayer('');
@@ -312,7 +312,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         team_for: isHomeTeam? homeTeam : awayTeam,
         team_against: isHomeTeam? awayTeam : homeTeam,
         player: stealPlayer,
-        period,
+        period: period.toString(),
       });
     }
     setStealPlayer('');
@@ -325,7 +325,7 @@ const BasketballTeamButtons = ({ isHomeTeam }) => {
         team_for: isHomeTeam? homeTeam : awayTeam,
         team_against: isHomeTeam? awayTeam : homeTeam,
         player: turnoverPlayer,
-        period,
+        period: period.toString(),
       });
     }
     setTurnoverPlayer('');

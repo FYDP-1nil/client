@@ -43,7 +43,7 @@ export const createLeague = async (name, pass, sport) => {
       data: {
         league_name: name,
         league_password: pass,
-        sport: sport
+        sport: sport,
       },
       method: 'POST',
       url: `${baseURL}/league/create`,
@@ -66,7 +66,7 @@ export const schedulePost = async (post_text) => {
   try {
     let response = await window.electron.ipcRenderer.invoke('api-call', {
       data: {
-        post_text
+        post_text,
       },
       method: 'POST',
       url: `${baseURL}/schedule/facebook`,
@@ -82,7 +82,6 @@ export const schedulePost = async (post_text) => {
   return res;
 };
 
-
 //todo
 export const createGame = async (type) => {
   let res = false;
@@ -92,11 +91,11 @@ export const createGame = async (type) => {
       data: {
         home_team: store.getState().teams.homeTeamName,
         away_team: store.getState().teams.awayTeamName,
-        league_id: store.getState().tokens.leagueToken
+        league_id: store.getState().tokens.leagueToken,
       },
       method: 'POST',
-      url: `${baseURL}/game/create`,
-      // url: `${baseURL}/game/${type}/create`,
+      // url: `${baseURL}/game/create`,
+      url: `${baseURL}/game/${type}/create`,
       headers: {
         Authorization: `Bearer ${store.getState().tokens.userToken}`,
       },
@@ -233,6 +232,7 @@ export const postSoccerEvent = async (data) => {
 };
 
 export const postBasketballEvent = async (data) => {
+  console.log(data);
   let res = false;
 
   try {
@@ -275,195 +275,337 @@ export const postGridironEvent = async (data) => {
 };
 
 export const getLeagueStats = async (leagueName) => {
-  if(leagueName === "soccer"){
+  if (leagueName === 'soccer') {
     return [
       {
-         "name":"Goals",
-         "players":[
-            {
-               "Erling Haaland":27
-            },
-            {
-               "Harry Kane":18
-            },
-            {
-               "Marcus Rashford":14
-            },
-            {
-               "Karim Benzema":11
-            },
-            {
-               "Vinicius Jr.":7
-            }
-         ]
+        name: 'Goals',
+        players: [
+          {
+            'Erling Haaland': 27,
+          },
+          {
+            'Harry Kane': 18,
+          },
+          {
+            'Marcus Rashford': 14,
+          },
+          {
+            'Karim Benzema': 11,
+          },
+          {
+            'Vinicius Jr.': 7,
+          },
+        ],
       },
       {
-         "name":"Assists",
-         "players":[
-            {
-               "Kevin De Bruyne":12
-            },
-            {
-               "Bukayo Saka":9
-            },
-            {
-               "Bruno Fernandes":6
-            },
-            {
-               "Rodrygo Goes":5
-            },
-            {
-               "Luka Modric":4
-            }
-         ]
+        name: 'Assists',
+        players: [
+          {
+            'Kevin De Bruyne': 12,
+          },
+          {
+            'Bukayo Saka': 9,
+          },
+          {
+            'Bruno Fernandes': 6,
+          },
+          {
+            'Rodrygo Goes': 5,
+          },
+          {
+            'Luka Modric': 4,
+          },
+        ],
       },
       {
-         "name":"Red Cards",
-         "players":[
-            {
-               "Sergio Ramos":3
-            },
-            {
-               "Pepe":2
-            },
-            {
-               "Casemiro":1
-            },
-            {
-               "Nick Pope":1
-            },
-            {
-               "Ivan Alejo":1
-            }
-         ]
+        name: 'Red Cards',
+        players: [
+          {
+            'Sergio Ramos': 3,
+          },
+          {
+            'Pepe': 2,
+          },
+          {
+            'Casemiro': 1,
+          },
+          {
+            'Nick Pope': 1,
+          },
+          {
+            'Ivan Alejo': 1,
+          },
+        ],
       },
       {
-         "name":"Yellow Cards",
-         "players":[
-            {
-               "Diego Dalot":10
-            },
-            {
-               "Fred":8
-            },
-            {
-               "Casemiro":5
-            },
-            {
-               "Militao":4
-            },
-            {
-               "Vinicius Jr.":3
-            }
-         ]
-      }
-   ]
+        name: 'Yellow Cards',
+        players: [
+          {
+            'Diego Dalot': 10,
+          },
+          {
+            'Fred': 8,
+          },
+          {
+            'Casemiro': 5,
+          },
+          {
+            'Militao': 4,
+          },
+          {
+            'Vinicius Jr.': 3,
+          },
+        ],
+      },
+    ];
+  } else if (leagueName === 'grid') {
+    return [
+      {
+        name: 'Total Rushing Yards',
+        players: [
+          {
+            'Christian MaCaffrey': 456,
+          },
+          {
+            'Isiah Pacheco ': 393,
+          },
+          {
+            'Joe Mixon': 365,
+          },
+          {
+            'Daniel Jones': 345,
+          },
+          {
+            'Miles Sanders': 304,
+          },
+        ],
+      },
+      {
+        name: 'Total Passing Yards',
+        players: [
+          {
+            'Joe Burrow': 934,
+          },
+          {
+            'Patrick Mahomes': 872,
+          },
+          {
+            'Josh Allen': 804,
+          },
+          {
+            'Jalen Hurts': 785,
+          },
+          {
+            'Brock Purdy': 732,
+          },
+        ],
+      },
+      {
+        name: 'Total Receiving Yards',
+        players: [
+          {
+            'Steffon Digs': 69,
+          },
+          {
+            'DeVonta Smith': 61,
+          },
+          {
+            'Tee Higgins': 55,
+          },
+          {
+            'Brock Purdy': 49,
+          },
+          {
+            'CeeDee Lamb': 42,
+          },
+        ],
+      },
+      {
+        name: 'Total Kicks Made',
+        players: [
+          {
+            'Robbie Gould': 12,
+          },
+          {
+            'Harrison Butker': 8,
+          },
+          {
+            'Cameron Dicker': 6,
+          },
+          {
+            'Justin Tucker': 4,
+          },
+          {
+            'Tyler Bass': 3,
+          },
+        ],
+      },
+      {
+        name: 'Completion %',
+        players: [
+          {
+            'Patrick Mahomes': 69,
+          },
+          {
+            'Josh Allen': 61,
+          },
+          {
+            'Joe Burrow': 55,
+          },
+          {
+            'Lamar Jackson': 49,
+          },
+          {
+            'Derek Carr': 42,
+          },
+        ],
+      },
+    ];
+  } else if(leagueName === "ball") {
+    return [
+      {
+          name: "Points Per Game",
+          players: [
+          {
+              "Mike James": 25.3
+          },
+          {
+              "John Stockton": 24.1
+          },
+          {
+              "Eddie Bravo": 23.2
+          },
+          {
+              "Joel Embiid": 22.2
+          },
+          {
+              "Jamal Murray": 21.8
+          }    
+          ]
+      },
+      {
+          name: "Rebounds Per Game",
+          players: [
+              {
+                  "Bismark": 11.3
+              },
+              {
+                  "Collins": 7.1
+              },
+              {
+                  "Eddie Bravo": 3.2
+              },
+              {
+                  "Theo Pinson": 4.6
+              },
+              {
+                  "Damian": 3.8
+              }    
+              ]
+      },
+      {
+          name: "Assists Per Game",
+          players: [
+              {
+                  "Tyrese": 8.3
+              },
+              {
+                  "Chris Paul": 6.1
+              },
+              {
+                  "Steve Nash": 4.73
+              },
+              {
+                  "Freddie": 4.5
+              },
+              {
+                  "Westbrook": 4.0
+              }    
+          ]
+      },
+      {
+          name: "Blocks Per Game",
+          players: [
+              {
+                  "Ayton": 8.3
+              },
+              {
+                  "Freddie": 6.1
+              },
+              {
+                  "Lorent": 4.73
+              },
+              {
+                  "Saab": 4.5
+              },
+              {
+                  "Damian": 4.0
+              }    
+          ]
+      },
+      {
+          name: "Steals Per Game",
+          players: [
+              {
+                  "Lebron": 8.3
+              },
+              {
+                  "Harden": 6.1
+              },
+              {
+                  "Claxton": 4.73
+              },
+              {
+                  "KAT": 4.5
+              },
+              {
+                  "ANT": 4.0
+              }    
+          ]
+      },
+      {
+          name: "Field Goal Percentage",
+          players: [
+              {
+                  "Tyrese": 51
+              },
+              {
+                  "Chris Paul": 49
+              },
+              {
+                  "Steve Nash": 44
+              },
+              {
+                  "Freddie": 42
+              },
+              {
+                  "Westbrook": 42
+              }    
+          ]
+      },
+      {
+          name: "3pt Percentage",
+          players: [
+              {
+                  "Curry": 48
+              },
+              {
+                  "Klay": 40
+              },
+              {
+                  "Lebron": 37
+              },
+              {
+                  "PG": 36
+              },
+              {
+                  "Shai": 21
+              }    
+          ]
+      },
+  ];
   }
-  else if(leagueName==="grid") {
-    return [
-      {
-         "name":"Total Rushing Yards",
-         "players":[
-            {
-               "Christian MaCaffrey":456
-            },
-            {
-               "Isiah Pacheco ":393
-            },
-            {
-               "Joe Mixon":365
-            },
-            {
-               "Daniel Jones":345
-            },
-            {
-               "Miles Sanders":304
-            }
-         ]
-      },
-      {
-         "name":"Total Passing Yards",
-         "players":[
-            {
-               "Joe Burrow":934
-            },
-            {
-               "Patrick Mahomes":872
-            },
-            {
-               "Josh Allen":804
-            },
-            {
-               "Jalen Hurts":785
-            },
-            {
-               "Brock Purdy":732
-            }
-         ]
-      },
-      {
-         "name":"Total Receiving Yards",
-         "players":[
-            {
-               "Steffon Digs":69
-            },
-            {
-               "DeVonta Smith":61
-            },
-            {
-               "Tee Higgins":55
-            },
-            {
-               "Brock Purdy":49
-            },
-            {
-               "CeeDee Lamb":42
-            }
-         ]
-      },
-      {
-         "name":"Total Kicks Made",
-         "players":[
-            {
-               "Robbie Gould":12
-            },
-            {
-               "Harrison Butker":8
-            },
-            {
-               "Cameron Dicker":6
-            },
-            {
-               "Justin Tucker":4
-            },
-            {
-               "Tyler Bass":3
-            }
-         ]
-      },
-      {
-         "name":"Completion %",
-         "players":[
-            {
-               "Patrick Mahomes":69
-            },
-            {
-               "Josh Allen":61
-            },
-            {
-               "Joe Burrow":55
-            },
-            {
-               "Lamar Jackson":49
-            },
-            {
-               "Derek Carr":42
-            }
-         ]
-      }
-   ]
-  } 
   else {
     return [];
   }
-}
+};

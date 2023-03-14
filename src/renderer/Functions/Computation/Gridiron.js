@@ -3,7 +3,6 @@ import { store } from 'renderer/store';
 import {
   createGame,
   getStats,
-  postGameEvent,
   postGridironEvent,
   schedulePost,
 } from '../API/Api';
@@ -114,8 +113,8 @@ export const startStream = async () => {
   await writeScoreCard({
     homeTeam: store.getState().teams.homeTeamName,
     awayTeam: store.getState().teams.awayTeamName,
-    homeTeamScore: 0,
-    awayTeamScore: 0,
+    homeTeamScore: store.getState().pointHome.value,
+    awayTeamScore: store.getState().pointAway.value,
   });
 
   sleep(43);
@@ -281,7 +280,7 @@ export const showStats = async () => {
 export const showThrow = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'throw',
+  //   event_type: 'throw',
   //   event: args,
   // });
 
@@ -343,7 +342,7 @@ export const showThrow = async (args) => {
 export const showRush = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'rush',
+  //   event_type: 'rush',
   //   event: args,
   // });
 
@@ -405,7 +404,7 @@ export const showRush = async (args) => {
 export const showKick = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'kick',
+  //   event_type: 'kick',
   //   event: args,
   // });
 
@@ -467,7 +466,7 @@ export const showKick = async (args) => {
 export const showSafety = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'safety',
+  //   event_type: 'safety',
   //   event: args,
   // });
   if(args.team_for == store.getState().teams.homeTeamName){
@@ -518,7 +517,7 @@ export const showSafety = async (args) => {
 export const showFlag = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'flag',
+  //   event_type: 'flag',
   //   event: args,
   // });
 
@@ -551,7 +550,7 @@ export const showFlag = async (args) => {
 export const showTimeout = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'timeout',
+  //   event_type: 'timeout',
   //   event: args,
   // });
 
@@ -584,7 +583,7 @@ export const showTimeout = async (args) => {
 export const showTurnover = async (args) => {
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'turnover',
+  //   event_type: 'turnover',
   //   event: args,
   // });
 };
@@ -672,7 +671,7 @@ export const endGame = async () => {
   //TODO SCHEDULER CALL
   // postGridironEvent({
   //   game_id: store.getState().game.gameId,
-  //   play_type: 'end',
+  //   event_type: 'end',
   //   event: {
   //     period: 4,
   //     pts_home: store.getState().pointHome.value,

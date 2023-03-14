@@ -1,6 +1,6 @@
 import { gameSlice } from 'renderer/Slice/gameSlice';
 import { store } from 'renderer/store';
-import { createGame, getStats, postGameEvent, schedulePost } from '../API/Api';
+import { createGame, getStats, postSoccerEvent, schedulePost } from '../API/Api';
 import runOBSMethod, { obs } from '../Obs';
 import {
   generateFoulSource,
@@ -172,8 +172,8 @@ export const startStream = async () => {
   await writeScoreCard({
     homeTeam: store.getState().teams.homeTeamName,
     awayTeam: store.getState().teams.awayTeamName,
-    homeTeamScore: 0,
-    awayTeamScore: 0,
+    homeTeamScore: store.getState().pointHome.value,
+    awayTeamScore: store.getState().pointAway.value,
   });
 
   sleep(43);
@@ -381,7 +381,7 @@ export const showSubs = async (args) => {
 
 export const showRedCard = async (args) => {
   
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
     event: {
@@ -424,7 +424,7 @@ export const showRedCard = async (args) => {
 
 export const showYellowCard = async (args) => {
   
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
     event: {
@@ -465,7 +465,7 @@ export const showYellowCard = async (args) => {
 
 export const showFoul = async (args) => {
   
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
     event: {
@@ -496,7 +496,9 @@ export const showFoul = async (args) => {
 
 export const showPenalty = async (args) => {
   
-  postGameEvent({
+  schedulePost(`${store.getState().game.currentMinute}' Penalty for ${args.teamFor}!!`);
+
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'foul',
     event: {
@@ -526,7 +528,7 @@ export const showPenalty = async (args) => {
 
 export const showOffside = async (args) => {
   
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'offside',
     event: {
@@ -551,14 +553,16 @@ export const showOffside = async (args) => {
 };
 
 export const showGoal = async (args) => {
+  if (args.celebrate) {
   if(args.teamFor == store.getState().teams.homeTeamName){
     schedulePost(`${args.time}' GOAAALLLLL!!!!!\n\n${args.scorer} (${args.teamFor})\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
   }
   else {
     schedulePost(`${args.time}' GOAAALLLLL!!!!!\n\n${args.scorer} (${args.teamFor})\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} [${store.getState().pointAway.value}]`);
   }
+  }
 
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'shot',
     event: {
@@ -605,7 +609,7 @@ export const showGoal = async (args) => {
 
 export const showShot = async (args) => {
   
-  postGameEvent({
+  postSoccerEvent({
     game_id: store.getState().game.gameId,
     event_type: 'shot',
     event: {

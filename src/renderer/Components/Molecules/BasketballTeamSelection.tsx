@@ -3,6 +3,7 @@ import '../../Styles/Molecules/GameOptions.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { teamsSlice } from 'renderer/Slice/teamsSlice';
+import { tokenSlice } from 'renderer/Slice/tokenSlice';
 
 const BasketballTeamSelection = (props) => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const BasketballTeamSelection = (props) => {
         onClick={() => {
           props.setOpenModal(false);
           props.setSportSelected('');
+          dispatch(tokenSlice.actions.verifyLeague(''));
         }}
       >
         x
