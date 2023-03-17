@@ -21,6 +21,7 @@ const LeagueScreen = (props) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   const login = async () => {
     if (name && password) {
@@ -29,7 +30,6 @@ const LeagueScreen = (props) => {
       await sleep(500);
       let response = await joinLeague(name, password);
       if (response) {
-        console.log(response,"res;pommmm")
         if(response.sport == props.sportSelected.toLowerCase()){
           setIsLoading(false);
           setError(''); 
@@ -49,14 +49,14 @@ const LeagueScreen = (props) => {
   const join = async () => {
     if (name && password) {
       setError('');
-      setIsLoading(true);
+      setIsLoading2(true);
       await sleep(500);
       let response = await createLeague(name, password, props.sportSelected.toLowerCase());
       if (response) {
-        setIsLoading(false);
+        setIsLoading2(false);
         setError('Now login');
       } else {
-        setIsLoading(false);
+        setIsLoading2(false);
         setError('Wrong Credentials. Try Again');
       }
     }
@@ -131,7 +131,7 @@ console.log(validLeague)
               )}
             </button>
             <button className="btn create-btn" onClick={join}>
-            {isLoading ? (
+            {isLoading2 ? (
                 <Spinner style={{ transform: 'scale(0.4)' }} />
               ) : (
                 `CREATE NEW LEAGUE`

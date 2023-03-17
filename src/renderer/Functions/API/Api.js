@@ -274,8 +274,25 @@ export const postGridironEvent = async (data) => {
   return res;
 };
 
-export const getLeagueStats = async (leagueName) => {
-  if (leagueName === 'soccer') {
+export const getLeagueList = async () => {
+  try {
+    let response = await window.electron.ipcRenderer.invoke('api-call', {
+      method: 'GET',
+      url: `${baseURL}/leagues`,
+      headers: {
+        Authorization: `Bearer ${store.getState().tokens.userToken}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+export const getLeagueStats = async (leagueName, leagueId) => {
+  if (leagueName === 'soccer' && !leagueId) {
     return [
       {
         name: 'Goals',
@@ -358,254 +375,21 @@ export const getLeagueStats = async (leagueName) => {
         ],
       },
     ];
-  } else if (leagueName === 'grid') {
-    return [
-      {
-        name: 'Total Rushing Yards',
-        players: [
-          {
-            'Christian MaCaffrey': 456,
-          },
-          {
-            'Isiah Pacheco ': 393,
-          },
-          {
-            'Joe Mixon': 365,
-          },
-          {
-            'Daniel Jones': 345,
-          },
-          {
-            'Miles Sanders': 304,
-          },
-        ],
-      },
-      {
-        name: 'Total Passing Yards',
-        players: [
-          {
-            'Joe Burrow': 934,
-          },
-          {
-            'Patrick Mahomes': 872,
-          },
-          {
-            'Josh Allen': 804,
-          },
-          {
-            'Jalen Hurts': 785,
-          },
-          {
-            'Brock Purdy': 732,
-          },
-        ],
-      },
-      {
-        name: 'Total Receiving Yards',
-        players: [
-          {
-            'Steffon Digs': 69,
-          },
-          {
-            'DeVonta Smith': 61,
-          },
-          {
-            'Tee Higgins': 55,
-          },
-          {
-            'Brock Purdy': 49,
-          },
-          {
-            'CeeDee Lamb': 42,
-          },
-        ],
-      },
-      {
-        name: 'Total Kicks Made',
-        players: [
-          {
-            'Robbie Gould': 12,
-          },
-          {
-            'Harrison Butker': 8,
-          },
-          {
-            'Cameron Dicker': 6,
-          },
-          {
-            'Justin Tucker': 4,
-          },
-          {
-            'Tyler Bass': 3,
-          },
-        ],
-      },
-      {
-        name: 'Completion %',
-        players: [
-          {
-            'Patrick Mahomes': 69,
-          },
-          {
-            'Josh Allen': 61,
-          },
-          {
-            'Joe Burrow': 55,
-          },
-          {
-            'Lamar Jackson': 49,
-          },
-          {
-            'Derek Carr': 42,
-          },
-        ],
-      },
-    ];
-  } else if(leagueName === "ball") {
-    return [
-      {
-          name: "Points Per Game",
-          players: [
-          {
-              "Mike James": 25.3
-          },
-          {
-              "John Stockton": 24.1
-          },
-          {
-              "Eddie Bravo": 23.2
-          },
-          {
-              "Joel Embiid": 22.2
-          },
-          {
-              "Jamal Murray": 21.8
-          }    
-          ]
-      },
-      {
-          name: "Rebounds Per Game",
-          players: [
-              {
-                  "Bismark": 11.3
-              },
-              {
-                  "Collins": 7.1
-              },
-              {
-                  "Eddie Bravo": 3.2
-              },
-              {
-                  "Theo Pinson": 4.6
-              },
-              {
-                  "Damian": 3.8
-              }    
-              ]
-      },
-      {
-          name: "Assists Per Game",
-          players: [
-              {
-                  "Tyrese": 8.3
-              },
-              {
-                  "Chris Paul": 6.1
-              },
-              {
-                  "Steve Nash": 4.73
-              },
-              {
-                  "Freddie": 4.5
-              },
-              {
-                  "Westbrook": 4.0
-              }    
-          ]
-      },
-      {
-          name: "Blocks Per Game",
-          players: [
-              {
-                  "Ayton": 8.3
-              },
-              {
-                  "Freddie": 6.1
-              },
-              {
-                  "Lorent": 4.73
-              },
-              {
-                  "Saab": 4.5
-              },
-              {
-                  "Damian": 4.0
-              }    
-          ]
-      },
-      {
-          name: "Steals Per Game",
-          players: [
-              {
-                  "Lebron": 8.3
-              },
-              {
-                  "Harden": 6.1
-              },
-              {
-                  "Claxton": 4.73
-              },
-              {
-                  "KAT": 4.5
-              },
-              {
-                  "ANT": 4.0
-              }    
-          ]
-      },
-      {
-          name: "Field Goal Percentage",
-          players: [
-              {
-                  "Tyrese": 51
-              },
-              {
-                  "Chris Paul": 49
-              },
-              {
-                  "Steve Nash": 44
-              },
-              {
-                  "Freddie": 42
-              },
-              {
-                  "Westbrook": 42
-              }    
-          ]
-      },
-      {
-          name: "3pt Percentage",
-          players: [
-              {
-                  "Curry": 48
-              },
-              {
-                  "Klay": 40
-              },
-              {
-                  "Lebron": 37
-              },
-              {
-                  "PG": 36
-              },
-              {
-                  "Shai": 21
-              }    
-          ]
-      },
-  ];
-  }
-  else {
-    return [];
+  } else {
+    try {
+      let response = await window.electron.ipcRenderer.invoke('api-call', {
+        method: 'GET',
+        url: `${baseURL}/league/${leagueId}/stats`,
+        headers: {
+          Authorization: `Bearer ${store.getState().tokens.userToken}`,
+        },
+      });
+      console.log(response);
+      return response.data;
+    } catch (err) {
+      console.log(`${baseURL}/league/${leagueId}/stats`);
+      console.log(err);
+      // return err;
+    }  
   }
 };

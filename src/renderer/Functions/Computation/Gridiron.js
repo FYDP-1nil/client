@@ -242,16 +242,16 @@ export const showStats = async () => {
       await writeStats({
         homeTeam: reduxStore.teams.homeTeamName,
         awayTeam: reduxStore.teams.awayTeamName,
-        homeTeamTouchdowns: stats.team1.touchdowns,
-        awayTeamTouchdowns: stats.team2.touchdowns,
-        homeTeamRushing: stats.team1.shots,
-        awayTeamRushing: stats.team2.shots,
-        homeTeamPassing: stats.team1.shots_on_target,
-        awayTeamPassing: stats.team2.shots_on_target,
-        homeTeamAvgYds: stats.team1.fouls,
-        awayTeamAvgYds: stats.team2.fouls,
-        homeTeamTurnovers: stats.team1.turnovers,
-        awayTeamTurnovers: stats.team2.turnovers,
+        homeTeamTouchdowns: stats.team1.total_touchdown,
+        awayTeamTouchdowns: stats.team2.total_touchdown,
+        homeTeamRushing: stats.team1.total_rushing_yards,
+        awayTeamRushing: stats.team2.total_rushing_yards,
+        homeTeamPassing: stats.team1.total_passing_yards,
+        awayTeamPassing: stats.team2.total_passing_yards,
+        homeTeamAvgYds: stats.team1.avg_yards_play,
+        awayTeamAvgYds: stats.team2.avg_yards_play,
+        homeTeamTurnovers: stats.team1.total_turnover,
+        awayTeamTurnovers: stats.team2.total_turnover,
       });
 
       //DONE: refresh stats input
@@ -278,11 +278,11 @@ export const showStats = async () => {
 
 //TODO
 export const showThrow = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'throw',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'throw',
+    event: args,
+  });
 
   if (args.result !== 'non-scoring' && args.result !== 'miss') {
 
@@ -340,11 +340,11 @@ export const showThrow = async (args) => {
 
 //TODO
 export const showRush = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'rush',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'rush',
+    event: args,
+  });
 
   if ( args.result !== 'non-scoring') {
 
@@ -402,11 +402,11 @@ export const showRush = async (args) => {
 
 //TODO
 export const showKick = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'kick',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'kick',
+    event: args,
+  });
 
   if(args.result === 'miss'){
     schedulePost(`${args.player} misses the kick\n\n${store.getState().teams.homeTeamName} ${store.getState().pointHome.value} - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
@@ -464,11 +464,11 @@ export const showKick = async (args) => {
 
 //BE
 export const showSafety = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'safety',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'safety',
+    event: args,
+  });
   if(args.team_for == store.getState().teams.homeTeamName){
     schedulePost(`Safety +2\n\n${store.getState().teams.homeTeamName} [${store.getState().pointHome.value}] - ${store.getState().teams.awayTeamName} ${store.getState().pointAway.value}`);
   }
@@ -515,11 +515,11 @@ export const showSafety = async (args) => {
 
 //BE
 export const showFlag = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'flag',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'flag',
+    event: args,
+  });
 
   if (store.getState().streaming.isStreaming) {
     await runOBSMethod('GetSceneItemId', {
@@ -548,11 +548,11 @@ export const showFlag = async (args) => {
 
 //BE
 export const showTimeout = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'timeout',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'timeout',
+    event: args,
+  });
 
   if (store.getState().streaming.isStreaming) {
     await runOBSMethod('GetSceneItemId', {
@@ -581,11 +581,11 @@ export const showTimeout = async (args) => {
 
 //BE
 export const showTurnover = async (args) => {
-  // postGridironEvent({
-  //   game_id: store.getState().game.gameId,
-  //   event_type: 'turnover',
-  //   event: args,
-  // });
+  postGridironEvent({
+    game_id: store.getState().game.gameId,
+    event_type: 'turnover',
+    event: args,
+  });
 };
 
 //DONE

@@ -83,7 +83,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           player_throwing: throwPlayer,
           player_receiving: throwReceiver,
           yard: parseInt(throwYds),
-          period,
+          period: period.toString(),
           result:
             throwPoint == 2
               ? '2pt'
@@ -118,7 +118,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           player_throwing: throwPlayer,
           player_receiving: throwReceiver,
           yard: parseInt(throwYds),
-          period,
+          period: period.toString(),
           result:
             throwPoint == 2
               ? '2pt'
@@ -160,7 +160,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           team_against: awayTeam,
           player: rushPlayer,
           yard: parseInt(rushYds),
-          period,
+          period: period.toString(),
           result:
             rushPoint == 2
               ? '2pt'
@@ -189,7 +189,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           team_against: homeTeam,
           player: rushPlayer,
           yard: parseInt(rushYds),
-          period,
+          period: period.toString(),
           result:
             rushPoint == 2
               ? '2pt'
@@ -228,7 +228,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           team_against: awayTeam,
           player: kickPlayer,
           yard: parseInt(kickYds),
-          period,
+          period: period.toString(),
           point: kickPoint,
           result:
             kickPoint == 1
@@ -258,7 +258,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
           team_against: homeTeam,
           player: kickPlayer,
           yard: parseInt(kickYds),
-          period,
+          period: period.toString(),
           point: kickPoint,
           result:
             kickPoint == 1
@@ -279,7 +279,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
     await showSafety({
       team_for: isHomeTeam ? homeTeam : awayTeam,
       team_against: isHomeTeam ? awayTeam : homeTeam,
-      period,
+      period: period.toString(),
     });
   };
 
@@ -288,7 +288,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
     await showFlag({
       team_for: isHomeTeam ? homeTeam : awayTeam,
       team_against: isHomeTeam ? awayTeam : homeTeam,
-      period,
+      period: period.toString(),
     });
   };
 
@@ -297,7 +297,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
     await showTimeout({
       team_for: isHomeTeam ? homeTeam : awayTeam,
       team_against: isHomeTeam ? awayTeam : homeTeam,
-      period,
+      period: period.toString(),
     });
   };
 
@@ -306,7 +306,7 @@ const GridironTeamButtons = ({ isHomeTeam }) => {
     await showTurnover({
       team_for: isHomeTeam ? homeTeam : awayTeam,
       team_against: isHomeTeam ? awayTeam : homeTeam,
-      period,
+      period: period.toString(),
     });
   };
 

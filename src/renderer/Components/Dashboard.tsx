@@ -3,7 +3,7 @@ import '../Styles/Dashboard.css';
 // import logo from '../../../assets/icons/128x128.png';
 import { Link, useNavigate } from 'react-router-dom';
 import GameOptions from './Molecules/GameOptions';
-import { getLeagueStats } from 'renderer/Functions/API/Api';
+import { getLeagueList, getLeagueStats } from 'renderer/Functions/API/Api';
 
 const Dashboard = (props) => {
   const [openModal, setOpenModal] = useState(false);
@@ -12,9 +12,17 @@ const Dashboard = (props) => {
   const navigate = useNavigate();
 
   const statsFunc = async () => {
-    let res = await getLeagueStats(searchField);
-    setStatistics(res);
-    console.log(res);
+    let list = await getLeagueList();
+    let id = list.leagues && list.leagues.filter((l)=>searchField === l.league_name);
+    if(searchField === "soccer" && !id.length){
+      let res = await getLeagueStats(searchField,'');
+      setStatistics(res);
+    } 
+    else if(id.length && id[0].id){
+      console.log(searchField,id[0].id);
+      let res = await getLeagueStats(searchField,id[0].id);
+      setStatistics(res);
+    }
   };
 
   return (
