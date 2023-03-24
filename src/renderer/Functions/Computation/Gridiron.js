@@ -70,7 +70,7 @@ export const startStream = async () => {
   await runOBSMethod('CreateInput', {
     sceneName: 'game',
     inputName: 'vid',
-    inputKind: 'av_capture_input',
+    inputKind: 'av_capture_input_v2',
   });
 
   sleep(43);
